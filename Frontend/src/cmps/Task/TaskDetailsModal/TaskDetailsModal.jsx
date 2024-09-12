@@ -17,13 +17,12 @@ import { TaskDetailsMarkdown } from "./TaskDetailsMarkdown"
 import { NameInput } from "../../CustomCpms/NameInput"
 import { TaskDetailsCheckList } from "./TaskDetailsCheckList"
 import { TaskDetailsDates } from "./TaskDetailsDates"
-import { updateBoard } from "../../../store/board.actions"
+import { editTask, updateBoard } from "../../../store/board.actions"
 import { TaskDetailsAttachment } from "./TaskDetailsAttachment"
 import { ManageAttachmentsPopover } from "../ManageTaskPopovers/ManageAttachmentsPopover"
 import { useDocumentTitle } from "../../../customHooks/useDocumentTitle"
 export function TaskDetailsModal({
     taskId,
-    editTask,
     labelActions,
     onCloseTask,
     addTask,
@@ -61,27 +60,14 @@ export function TaskDetailsModal({
             },
             user
         )
-        const newTask = {
-            ...task,
-            idMembers: [...task.idMembers, user.id],
-        }
-        const newBoard = {
-            ...board,
-            groups: board.groups.map((g) =>
-                g.id === task.idGroup
-                    ? {
-                          ...g,
-                          tasks: g.tasks.map((t) =>
-                              t.id === newTask.id ? newTask : t
-                          ),
-                      }
-                    : g
-            ),
-            updatedAt: new Date().getTime(),
-            activities: [...board?.activities, newActivity],
-        }
 
-        await updateBoard(newBoard)
+        await editTask(
+            {
+                ...task,
+                idMembers: [...task.idMembers, user.id],
+            },
+            newActivity
+        )
     }
 
     function onClose(e) {

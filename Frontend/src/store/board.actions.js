@@ -177,16 +177,17 @@ export async function addTask(task, user, group, tasksToSkip, board) {
     }
 }
 
-export async function addGroup(group, boardId) {
+export async function addGroup(group, boardId, activity) {
     try {
         const board = await boardService.getById(boardId)
         const newGroup = utilService.createNewGroup(group)
         newGroup.pos = board.groups.length
-        store.dispatch({ type: ADD_GROUP, group: newGroup })
+        store.dispatch({ type: ADD_GROUP, group: newGroup, activity: activity })
         const newBoard = {
             ...board,
             groups: [...board.groups, newGroup],
             updatedAt: new Date().getTime(),
+            activities: [...board?.activities, activity],
         }
         await updateBoard(newBoard)
         return newGroup

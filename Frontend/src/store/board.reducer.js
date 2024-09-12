@@ -39,6 +39,7 @@ export function boardReducer(state = initialState, action) {
                     ...state.board,
                     groups: [...state.board.groups, action.group],
                     updatedAt: new Date().getTime(),
+                    activities: [...state.board.activities, action.activity],
                 },
             }
             break

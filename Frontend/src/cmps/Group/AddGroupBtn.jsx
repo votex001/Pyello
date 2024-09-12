@@ -31,11 +31,8 @@ export function AddGroupBtn({ addGroup }) {
                 },
                 user
             )
-            await updateBoard({
-                ...board,
-                activities: [...board?.activities, newActivity],
-            })
-            addGroup(groupName)
+
+            addGroup(groupName, newActivity)
         }
         setGroupName("")
     }
