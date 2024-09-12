@@ -107,6 +107,7 @@ export function BoardGroup({
     function disableDnD(value) {
         setIsOpenPreviewModal(value)
     }
+
     return (
         <Draggable draggableId={group.id} index={group.pos}>
             {(draggableProvided, snapshot) => (
@@ -172,12 +173,15 @@ export function BoardGroup({
                                         )}
                                         {group.tasks
                                             .sort((a, b) => a.pos - b.pos)
-                                            .filter(
-                                                (task) =>
-                                                    !newTasksAboveInput.includes(
-                                                        task.id
+                                            .filter((task) => {
+                                                const newTaskIds =
+                                                    newTasksAboveInput.map(
+                                                        (newTask) => newTask.id
                                                     )
-                                            )
+                                                return !newTaskIds.includes(
+                                                    task.id
+                                                )
+                                            })
                                             .filter((task) => !task.closed)
                                             .map((task, index) => (
                                                 <Draggable
