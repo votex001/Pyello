@@ -104,11 +104,11 @@ export function BoardIndex() {
         }
     }
 
-    async function onAddGroup(name, activity) {
+    async function onAddGroup(name) {
         const group = {
             name: name,
         }
-        const res = await addGroup(group, board.id, activity)
+        const res = await addGroup(group, board.id)
         // console.log("onAddGroup", res);
     }
 

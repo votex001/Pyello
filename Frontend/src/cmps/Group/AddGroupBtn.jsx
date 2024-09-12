@@ -24,15 +24,7 @@ export function AddGroupBtn({ addGroup }) {
         if (groupName.trim() === "") {
             setIsAddGroupOpen(false)
         } else {
-            const newActivity = utilService.createActivity(
-                {
-                    type: "addGroup",
-                    targetName: groupName,
-                },
-                user
-            )
-
-            addGroup(groupName, newActivity)
+            addGroup(groupName)
         }
         setGroupName("")
     }
