@@ -1,8 +1,9 @@
 import { UserAvatar } from "../../UserAvatar"
 import { SvgButton } from "../../CustomCpms/SvgButton"
 import { useSelector } from "react-redux"
+import { editTask } from "../../../store/board.actions"
 
-export function MemberOption({ task, member, isSelected, editTask }) {
+export function MemberOption({ task, member, isSelected }) {
     const user = useSelector((state) =>
         state.userModule.users.find((user) => member.id === user.id)
     )

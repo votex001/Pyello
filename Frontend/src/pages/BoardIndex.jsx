@@ -120,24 +120,6 @@ export function BoardIndex() {
         const res = await editGroup(board.id, group)
     }
 
-    async function onEditTask(task, activity) {
-        if (task.closed) {
-            const newActivity = utilService.createActivity(
-                {
-                    type: "archiveTask",
-                    targetId: task.id,
-                    targetName: task.name,
-                },
-                user
-            )
-            await editTask(task, newActivity)
-        } else {
-            const newActivity = utilService.createActivity(activity, user)
-            await editTask(task, newActivity)
-        }
-        loadBoard(board.id)
-    }
-
     async function onCopyGroup(group) {
         const res = await copyGroup(board.id, group, user)
     }
@@ -261,7 +243,6 @@ export function BoardIndex() {
                                                 )
                                             }
                                             editGroup={onEditGroup}
-                                            editTask={onEditTask}
                                             copyGroup={onCopyGroup}
                                             moveAllCards={moveAllCards}
                                             archiveAllCards={archiveAllCards}
@@ -280,7 +261,6 @@ export function BoardIndex() {
             {selectedTaskId && (
                 <TaskDetailsModal
                     taskId={selectedTaskId}
-                    editTask={onEditTask}
                     onCloseTask={() => setSelectedTaskId(null)}
                     labelActions={onLabelAction}
                     board={board}

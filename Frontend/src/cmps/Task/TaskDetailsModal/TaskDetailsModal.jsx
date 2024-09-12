@@ -113,34 +113,12 @@ export function TaskDetailsModal({
                                 label="Cover"
                             />
                         }
-                        editTask={editTask}
                         task={task}
                     />
                 </div>
             </article>
         </section>
     )
-    // const colorCoverHeader = (
-    //   <section
-    //     className={`details-header-color-cover`}
-    //     style={{
-    //       backgroundColor: utilService.getColorHashByName(task.cover.color)
-    //         ?.bgColor,
-    //     }}
-    //   >
-    //     <article className={`details-header-cover-actions-wrapper`}>
-    //       <div style={{ position: "relative", display: "inline-block" }}>
-    //         <ManageCoverPopover
-    //           anchorEl={
-    //             <SvgButton src={coverIcon} className="cover-btn" label="Cover" />
-    //           }
-    //           editTask={editTask}
-    //           task={task}
-    //         />
-    //       </div>
-    //     </article>
-    //   </section>
-    // );
 
     const imgCoverHeader = (
         <section
@@ -164,7 +142,6 @@ export function TaskDetailsModal({
                                 label="Cover"
                             />
                         }
-                        editTask={editTask}
                         task={task}
                     />
                 </div>
@@ -308,10 +285,7 @@ export function TaskDetailsModal({
                 <section className="details-body__left">
                     <article className="subsection wrap-section">
                         {hasMembers && (
-                            <TaskDetailsMembers
-                                currentTask={task}
-                                editTask={editTask}
-                            />
+                            <TaskDetailsMembers currentTask={task} />
                         )}
                         {task?.idLabels?.length > 0 && (
                             <TaskDetailsLabels
@@ -323,7 +297,7 @@ export function TaskDetailsModal({
                             <TaskDetailsDates task={task} />
                         )}
                     </article>
-                    <TaskDetailsMarkdown editTask={editTask} task={task} />
+                    <TaskDetailsMarkdown task={task} />
                     {task?.checkLists?.length > 0 &&
                         task?.checkLists
                             ?.sort((a, b) => a.pos - b.pos)
@@ -365,9 +339,7 @@ export function TaskDetailsModal({
                                 <TaskDetailsAttachment
                                     key={attachment.id}
                                     attachment={attachment}
-                                    editTask={editTask}
                                     task={task}
-                                    editBoard={editBoard}
                                 />
                             ))}
                         </section>
@@ -388,16 +360,11 @@ export function TaskDetailsModal({
                     )}
                     <TaskDetailsAddToCard
                         task={task}
-                        editTask={editTask}
                         labelActions={labelActions}
                         editBoard={editBoard}
                         isNoCover={isNoCover}
                     />
-                    <TaskDetailsActions
-                        task={task}
-                        editTask={editTask}
-                        onClose={onClose}
-                    />
+                    <TaskDetailsActions task={task} onClose={onClose} />
                 </section>
             </main>
         </Modal>

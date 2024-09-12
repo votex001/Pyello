@@ -15,7 +15,6 @@ export function BoardGroup({
     addTask,
     archiveGroup,
     editGroup,
-    editTask,
     copyGroup,
     moveAllCards,
     archiveAllCards,
@@ -163,7 +162,6 @@ export function BoardGroup({
                                             <TaskPreview
                                                 key={task.id}
                                                 task={task}
-                                                editTask={editTask}
                                                 labelActions={labelActions}
                                                 disableDnD={disableDnD}
                                             />
@@ -213,9 +211,6 @@ export function BoardGroup({
                                                             <TaskPreview
                                                                 key={task.id}
                                                                 task={task}
-                                                                editTask={
-                                                                    editTask
-                                                                }
                                                                 labelActions={
                                                                     labelActions
                                                                 }

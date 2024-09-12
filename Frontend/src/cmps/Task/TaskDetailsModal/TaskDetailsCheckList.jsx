@@ -30,7 +30,6 @@ export function TaskDetailsCheckList({
     const [hideChecked, setHideCHecked] = useState(false)
     const [checkItems, setCheckItems] = useState([])
     const [isChangingTitle, setIsChangingTitle] = useState(false)
-    const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
     const [inputIsOpen, setInputIsOpen] = useState(false)
 

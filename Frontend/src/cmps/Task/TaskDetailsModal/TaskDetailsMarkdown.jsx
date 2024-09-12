@@ -8,8 +8,9 @@ import {
 } from "@mdxeditor/editor"
 import { TaskDetailsSectionHeader } from "./TaskDetailsSectionHeader"
 import { useClickOutside } from "../../../customHooks/useClickOutside"
+import { editTask } from "../../../store/board.actions"
 
-export function TaskDetailsMarkdown({ editTask, task }) {
+export function TaskDetailsMarkdown({ task }) {
     const [sectionRef, isEditing, setIsEditing] = useClickOutside(false)
     const [markdown, setMarkdown] = useState("")
     const ref = useRef(null)

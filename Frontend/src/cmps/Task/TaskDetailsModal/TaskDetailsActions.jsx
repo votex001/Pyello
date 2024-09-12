@@ -3,18 +3,26 @@ import defaultProfile from "/img/defaultProfile.svg"
 import checkListIcon from "/img/board-index/detailsImgs/checkListIcon.svg"
 
 import { MoveCardPopover } from "../ManageTaskPopovers/MoveCardPopover"
-import { updateBoard } from "../../../store/board.actions"
+import { editTask, updateBoard } from "../../../store/board.actions"
 import { useSelector } from "react-redux"
 import { ActionPopover } from "../../BoardHeader/BoardMenu/ActionPopover"
 import { useNavigate } from "react-router"
 import { utilService } from "../../../services/util.service"
 
-export function TaskDetailsActions({ task, editTask, onClose }) {
+export function TaskDetailsActions({ task, onClose }) {
     const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
     const navigate = useNavigate()
     function onArchiveTask() {
-        editTask({ ...task, closed: true })
+        const newActivity = utilService.createActivity(
+            {
+                type: "archiveTask",
+                targetId: task.id,
+                targetName: task.name,
+            },
+            user
+        )
+        editTask({ ...task, closed: true }, newActivity)
     }
     async function onSendBack() {
         const newActivity = utilService.createActivity(
@@ -26,7 +34,7 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
             user
         )
         task.closed = false
-        await editTask(task,newActivity)
+        await editTask(task, newActivity)
     }
     async function onDeleteTask() {
         const newBoard = {

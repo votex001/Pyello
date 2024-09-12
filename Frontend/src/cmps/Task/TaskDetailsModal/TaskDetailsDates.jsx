@@ -28,7 +28,7 @@ export function TaskDetailsDates({ task }) {
             newActivity.type = "incompleteDate"
         }
 
-        editTask({ ...task, dueComplete: !e.target.checked }, newActivity)
+        editTask({ ...task, dueComplete: e.target.checked }, newActivity)
     }
 
     const [dueStatus, dueLabel] = taskDueStatus(task)
@@ -46,7 +46,6 @@ export function TaskDetailsDates({ task }) {
                 )}
                 <ManageDatesPopover
                     task={task}
-                    editTask={editTask}
                     anchorEl={
                         <article className="dates-info">
                             <label className="date-label">

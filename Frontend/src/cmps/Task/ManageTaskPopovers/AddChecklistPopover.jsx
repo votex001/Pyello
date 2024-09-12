@@ -1,12 +1,11 @@
 import { CloseOutlined } from "@ant-design/icons"
 import Popup from "@atlaskit/popup"
-import TextArea from "antd/es/input/TextArea"
 import { useState, useEffect, useRef } from "react"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
-import TextField from "@atlaskit/textfield"
+import { editTask, updateBoard } from "../../../store/board.actions"
 
-export function AddChecklistPopover({ anchorEl, task, editTask, editBoard }) {
+export function AddChecklistPopover({ anchorEl, task }) {
     const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
     const [isOpen, setIsOpen] = useState(false)
@@ -61,7 +60,7 @@ export function AddChecklistPopover({ anchorEl, task, editTask, editBoard }) {
             !board.checkListTaskIds.length ||
             !board.checkListTaskIds.includes(task.id)
         ) {
-            await editBoard({
+            await updateBoard({
                 ...board,
                 checkListTaskIds: [...board.checkListTaskIds, task.id],
             })

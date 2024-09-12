@@ -4,18 +4,20 @@ import { UserAvatar } from "../../UserAvatar"
 import { PlusOutlined } from "@ant-design/icons"
 import { ManageMembersPopover } from "../ManageTaskPopovers/ManageMembersPopover"
 import { ProfilePopover } from "../ManageTaskPopovers/ProfilePopover"
+import { editTask } from "../../../store/board.actions"
 
-export function TaskDetailsMembers({ currentTask, editTask }) {
+export function TaskDetailsMembers({ currentTask }) {
     const boardMembers = useSelector((state) => state.boardModule.board.members)
     const [selectedMembers, setSelectedMembers] = useState([])
 
     useEffect(() => {
         setSelectedMembers(
             boardMembers.filter((member) =>
-                currentTask.idMembers.includes(member.id),
-            ),
+                currentTask.idMembers.includes(member.id)
+            )
         )
     }, [currentTask, boardMembers])
+
     function onEditTask(memberId) {
         const newTaskMemberIds = [...currentTask.idMembers]
 
@@ -50,7 +52,6 @@ export function TaskDetailsMembers({ currentTask, editTask }) {
                     />
                 ))}
                 <ManageMembersPopover
-                    editTask={editTask}
                     anchorEl={
                         <button className="add-members-btn">
                             <PlusOutlined />

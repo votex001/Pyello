@@ -8,7 +8,6 @@ import { useSelector } from "react-redux"
 
 export function TaskPreview({
     task,
-    editTask,
     labelActions,
     isDragging,
     noHover = false,
@@ -105,7 +104,6 @@ export function TaskPreview({
             <TaskPreviewEditModal
                 task={task}
                 isHovered={isHovered}
-                editTask={editTask}
                 isOpen={isOpenPreviewModal}
                 openPreviewModal={onOpenPreviewModal}
                 taskLabels={taskLabels}

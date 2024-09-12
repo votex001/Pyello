@@ -5,16 +5,11 @@ import { useState } from "react"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
 import { Image } from "antd"
+import { editTask } from "../../../store/board.actions"
 
-export function TaskDetailsAttachment({
-    attachment,
-    editTask,
-    task,
-    editBoard,
-}) {
+export function TaskDetailsAttachment({ attachment, task }) {
     const [previewVisible, setPreviewVisible] = useState(false)
     const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
     const { link, text } = attachment
 
     const isCover = task?.cover?.attachment?.id === attachment.id

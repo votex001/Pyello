@@ -3,9 +3,12 @@ import { Tooltip } from "antd"
 import { useMemo } from "react"
 import dayjs from "dayjs"
 import { editTask } from "../../../store/board.actions"
+import { useSelector } from "react-redux"
 
 export function DateBadge({ task }) {
     //useMemo is used to deal with the re-mount after drag and drop between lists that lead to a flicker of the component
+    const user = useSelector((state) => state.userModule.user)
+
     const dateLabel = useMemo(() => {
         if (!dayjs(task.start).isValid() && !dayjs(task.due).isValid()) {
             return null
@@ -19,16 +22,20 @@ export function DateBadge({ task }) {
     async function onDateClick(e) {
         e.stopPropagation()
 
-        const activityType = !task.dueComplete
-            ? "completeDate"
-            : "incompleteDate"
-        const activity = {
-            targetId: task.id,
-            targetName: task.name,
-            type: activityType,
+        const newActivity = utilService.createActivity(
+            {
+                targetId: task.id,
+                targetName: task.name,
+            },
+            user
+        )
+        if (!task.dueComplete) {
+            newActivity.type = "completeDate"
+        } else {
+            newActivity.type = "incompleteDate"
         }
 
-        editTask({ ...task, dueComplete: !task.dueComplete }, activity)
+        editTask({ ...task, dueComplete: !task.dueComplete }, newActivity)
     }
 
     return (

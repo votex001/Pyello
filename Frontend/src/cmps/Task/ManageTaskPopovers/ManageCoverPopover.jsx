@@ -4,10 +4,11 @@ import { ManageTaskPopoverHeader } from "../ManageTaskPopovers/ManageTaskPopover
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
 import Popup from "@atlaskit/popup"
+import { editTask } from "../../../store/board.actions"
 
-export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
+export function ManageCoverPopover({ anchorEl, task, isFullWidth }) {
     const boardCoverImgs = useSelector(
-        (state) => state.boardModule.board.coverImgs,
+        (state) => state.boardModule.board.coverImgs
     )
     const [isOpen, setIsOpen] = useState(false)
     const triggerRef = useRef(null)

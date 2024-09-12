@@ -6,7 +6,7 @@ import { SvgButton } from "../../CustomCpms/SvgButton"
 import { CustomSelect } from "../../CustomCpms/CustomSelect"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
-import { updateBoard } from "../../../store/board.actions"
+import { editTask } from "../../../store/board.actions"
 import { CheckBox } from "../../CustomCpms/CheckBox"
 import Popup from "@atlaskit/popup"
 
@@ -17,7 +17,7 @@ const customLocale = {
     },
 }
 
-export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
+export function ManageDatesPopover({ anchorEl, task }) {
     const [isOpen, setIsOpen] = useState(false)
 
     function onClose() {
@@ -33,7 +33,6 @@ export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
             <label
                 {...triggerProps}
                 appearance="primary"
-                // isSelected={isOpen}
                 onClick={onTriggerClick}
             >
                 {anchorEl}
@@ -49,12 +48,7 @@ export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
             placement="bottom-start"
             fallbackPlacements={["top-start", "auto"]}
             content={() => (
-                <ManageDatesPopoverContent
-                    editBoard={editBoard}
-                    task={task}
-                    editTask={editTask}
-                    onClose={onClose}
-                />
+                <ManageDatesPopoverContent task={task} onClose={onClose} />
             )}
             trigger={trigger}
             zIndex={10000}
@@ -62,9 +56,8 @@ export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
     )
 }
 
-function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
+function ManageDatesPopoverContent({ task, onClose }) {
     const [value, setValue] = useState(dayjs())
-    const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
 
     const [startDate, setStartDate] = useState(null)

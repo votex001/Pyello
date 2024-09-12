@@ -9,7 +9,6 @@ import { AddChecklistPopover } from "../ManageTaskPopovers/AddChecklistPopover"
 
 export function TaskDetailsAddToCard({
     task,
-    editTask,
     labelActions,
     editBoard,
     isNoCover,
@@ -29,7 +28,6 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Members</label>
                         </button>
                     }
-                    editTask={editTask}
                     task={task}
                 />
             ),
@@ -58,18 +56,14 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Checklists</label>
                         </label>
                     }
-                    editBoard={editBoard}
                     task={task}
-                    editTask={editTask}
                 />
             ),
         },
         {
             popover: (
                 <ManageDatesPopover
-                    editBoard={editBoard}
                     task={task}
-                    editTask={editTask}
                     anchorEl={
                         // <SvgButton
                         //   src={clockIcon}
@@ -112,7 +106,6 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Cover</label>
                         </button>
                     }
-                    editTask={editTask}
                     task={task}
                     isFullWidth={true}
                 />

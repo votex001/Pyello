@@ -60,7 +60,6 @@ function ManageAttachmentsPopoverContent({ task, onClose }) {
     const [focusedLink, setFocusedLink] = useState(false)
     const [focusedText, setFocusedText] = useState(false)
     const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
     const linkRef = useRef(null)
     const textRef = useRef(null)
 

@@ -21,17 +21,19 @@ import { ManageDatesPopover } from "./ManageTaskPopovers/ManageDatesPopover"
 import { useNavigate } from "react-router-dom"
 const { TextArea } = Input
 import Popup from "@atlaskit/popup"
+import { editTask } from "../../store/board.actions"
 
 export function TaskPreviewEditModal({
     task,
     isHovered,
-    editTask,
     isOpen,
     openPreviewModal,
     taskWidth,
     labelActions,
     closePreviewModal,
 }) {
+    const user = useSelector((state) => state.userModule.user)
+
     const boardLabels = useSelector((state) => state.boardModule.board.labels)
     const [taskLabels, setTaskLabels] = useState([])
     const [modalStyle, setModalStyle] = useState({})
@@ -99,6 +101,14 @@ export function TaskPreviewEditModal({
         closePreviewModal()
         navigate(`/c/${task?.id}`, { replace: true })
     }
+    const newActivity = utilService.createActivity(
+        {
+            type: "archiveTask",
+            targetId: task.id,
+            targetName: task.name,
+        },
+        user
+    )
     const modalActionButtons = [
         {
             cover: false,
@@ -138,7 +148,6 @@ export function TaskPreviewEditModal({
                             label="Change members"
                         />
                     }
-                    editTask={editTask}
                     task={task}
                 />
             ),
@@ -154,7 +163,6 @@ export function TaskPreviewEditModal({
                             label="Change cover"
                         />
                     }
-                    editTask={editTask}
                     task={task}
                 />
             ),
@@ -164,7 +172,6 @@ export function TaskPreviewEditModal({
             popover: (
                 <ManageDatesPopover
                     task={task}
-                    editTask={editTask}
                     anchorEl={
                         <SvgButton
                             src={timeIcon}
@@ -200,7 +207,9 @@ export function TaskPreviewEditModal({
                     src={archiveIcon}
                     className="floating-button"
                     label="Archive"
-                    onClick={() => editTask({ ...task, closed: true })}
+                    onClick={() =>
+                        editTask({ ...task, closed: true }, newActivity)
+                    }
                 />
             ),
             cover: true,
