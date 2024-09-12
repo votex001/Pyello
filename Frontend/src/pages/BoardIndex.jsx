@@ -5,8 +5,6 @@ import { BoardGroup } from "../cmps/Group/BoardGroup"
 import {
     addTask,
     addGroup,
-    archiveGroup,
-    editGroup,
     editLabel,
     copyGroup,
     moveAllCards,
@@ -105,14 +103,6 @@ export function BoardIndex() {
         }
         const res = await addGroup(group, board.id)
         // console.log("onAddGroup", res);
-    }
-
-    async function onArchiveGroup(boardId, groupId) {
-        const res = await archiveGroup(boardId, groupId, user)
-    }
-
-    async function onEditGroup(group) {
-        const res = await editGroup(board.id, group)
     }
 
     async function onCopyGroup(group) {
@@ -227,13 +217,6 @@ export function BoardIndex() {
                                             key={group.id}
                                             group={group}
                                             addTask={onAddTask}
-                                            archiveGroup={() =>
-                                                onArchiveGroup(
-                                                    board.id,
-                                                    group.id
-                                                )
-                                            }
-                                            editGroup={onEditGroup}
                                             copyGroup={onCopyGroup}
                                             moveAllCards={moveAllCards}
                                             archiveAllCards={archiveAllCards}

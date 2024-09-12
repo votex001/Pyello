@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect } from "react"
 import { GroupActionsMenuPopover } from "./GroupActionsMenuPopover"
 import { Input } from "antd"
+import { editGroup } from "../../store/board.actions"
 const { TextArea } = Input
 
 export function BoardGroupHeader({
     draggableProvided,
     group,
-    editGroup,
     openAddTask,
-    archiveGroup,
     copyGroup,
     moveAllCards,
     archiveAllCards,
@@ -17,6 +16,7 @@ export function BoardGroupHeader({
     const [isEditGroupName, setIsEditGroupName] = useState(false)
     const [newGroupName, setNewGroupName] = useState(group.name)
     const textAreaRef = useRef(null)
+    const board = useSelector((state) => state.boardModule.board)
 
     useEffect(() => {
         if (textAreaRef.current) {
@@ -34,12 +34,12 @@ export function BoardGroupHeader({
         }
     }
 
-    function onRenameGroup() {
+    async function onRenameGroup() {
         setIsEditGroupName(false)
         if (newGroupName === group.name || newGroupName.trim() === "") {
             return
         }
-        editGroup({ ...group, name: newGroupName })
+        await editGroup(board.id, { ...group, name: newGroupName })
     }
 
     return (
@@ -67,7 +67,6 @@ export function BoardGroupHeader({
             )}
             <GroupActionsMenuPopover
                 openAddTask={openAddTask}
-                archiveGroup={archiveGroup}
                 group={group}
                 copyGroup={copyGroup}
                 moveAllCards={moveAllCards}

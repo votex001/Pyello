@@ -13,8 +13,6 @@ import { useSelector } from "react-redux"
 export function BoardGroup({
     group,
     addTask,
-    archiveGroup,
-    editGroup,
     copyGroup,
     moveAllCards,
     archiveAllCards,
@@ -136,9 +134,7 @@ export function BoardGroup({
                             <BoardGroupHeader
                                 draggableProvided={draggableProvided}
                                 group={group}
-                                editGroup={editGroup}
                                 openAddTask={openTopAddTask}
-                                archiveGroup={archiveGroup}
                                 copyGroup={copyGroup}
                                 moveAllCards={moveAllCards}
                                 archiveAllCards={archiveAllCards}

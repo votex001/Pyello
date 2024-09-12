@@ -4,11 +4,11 @@ import { EllipsisOutlined } from "@ant-design/icons"
 import { ManageTaskPopoverHeader } from "../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
 import TextArea from "antd/es/input/TextArea"
 import { useSelector } from "react-redux"
+import { archiveGroup } from "../../store/board.actions"
 
 export function GroupActionsMenuPopover({
     group,
     openAddTask,
-    archiveGroup,
     copyGroup,
     moveAllCards,
     archiveAllCards,
@@ -36,8 +36,8 @@ export function GroupActionsMenuPopover({
         setOpenGroupMenu(false)
     }
 
-    function onArchiveGroup() {
-        archiveGroup()
+    async function onArchiveGroup() {
+        await archiveGroup(board?.id, group?.id, user)
         setOpenGroupMenu(false)
     }
 
