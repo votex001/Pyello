@@ -10,7 +10,7 @@ export function TaskDetailsDates({ task, editTask, editBoard }) {
     const currentTask = useSelector((state) =>
         state.boardModule.board.groups
             .find((g) => g.id === task.idGroup)
-            .tasks.find((t) => t.id === task.id),
+            .tasks.find((t) => t.id === task.id)
     )
 
     async function handleDueChange(e) {
@@ -19,19 +19,15 @@ export function TaskDetailsDates({ task, editTask, editBoard }) {
                 targetId: task.id,
                 targetName: task.name,
             },
-            user,
+            user
         )
         if (e.target.checked) {
             newActivity.type = "completeDate"
         } else {
             newActivity.type = "incompleteDate"
         }
-        await editBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
 
-        editTask({ ...task, dueComplete: !e.target.checked })
+        editTask({ ...task, dueComplete: !e.target.checked }, newActivity)
     }
 
     const [dueStatus, dueLabel] = taskDueStatus(task)
