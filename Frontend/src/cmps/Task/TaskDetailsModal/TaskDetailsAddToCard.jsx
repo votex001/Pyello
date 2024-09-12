@@ -10,7 +10,6 @@ import { AddChecklistPopover } from "../ManageTaskPopovers/AddChecklistPopover"
 export function TaskDetailsAddToCard({
     task,
     labelActions,
-    editBoard,
     isNoCover,
 }) {
     const [isCover, setIsCover] = useState(false)
@@ -82,7 +81,6 @@ export function TaskDetailsAddToCard({
             popover: (
                 <ManageAttachmentsPopover
                     task={task}
-                    editBoard={editBoard}
                     anchorEl={
                         <button className="details-anchor-btn">
                             <label className="pyello-icon icon-attachment " />

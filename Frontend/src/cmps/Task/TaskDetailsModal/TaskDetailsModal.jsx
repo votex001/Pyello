@@ -17,7 +17,7 @@ import { TaskDetailsMarkdown } from "./TaskDetailsMarkdown"
 import { NameInput } from "../../CustomCpms/NameInput"
 import { TaskDetailsCheckList } from "./TaskDetailsCheckList"
 import { TaskDetailsDates } from "./TaskDetailsDates"
-import { editTask } from "../../../store/board.actions"
+import { editTask, updateBoard } from "../../../store/board.actions"
 import { TaskDetailsAttachment } from "./TaskDetailsAttachment"
 import { ManageAttachmentsPopover } from "../ManageTaskPopovers/ManageAttachmentsPopover"
 import { useDocumentTitle } from "../../../customHooks/useDocumentTitle"
@@ -27,7 +27,6 @@ export function TaskDetailsModal({
     onCloseTask,
     addTask,
     board,
-    editBoard,
 }) {
     const group = useSelector((state) =>
         state.boardModule.board.groups?.find((g) =>
@@ -197,7 +196,7 @@ export function TaskDetailsModal({
                 (i) => i !== task.id
             )
 
-            await editBoard({
+            await updateBoard({
                 ...board,
                 checkListTaskIds: newCheckListTaskIds,
             })
@@ -313,7 +312,6 @@ export function TaskDetailsModal({
                                     createAsTask={createAsTask}
                                     openedInputId={openedInputId}
                                     setOpenedInputId={onSetOpenId}
-                                    editBoard={editBoard}
                                 />
                             ))}
                     {task?.attachments?.length > 0 && (
@@ -332,7 +330,6 @@ export function TaskDetailsModal({
                                             Add
                                         </button>
                                     }
-                                    editBoard={editBoard}
                                 />
                             </header>
                             {task?.attachments.map((attachment) => (
@@ -361,7 +358,6 @@ export function TaskDetailsModal({
                     <TaskDetailsAddToCard
                         task={task}
                         labelActions={labelActions}
-                        editBoard={editBoard}
                         isNoCover={isNoCover}
                     />
                     <TaskDetailsActions task={task} onClose={onClose} />

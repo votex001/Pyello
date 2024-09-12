@@ -7,7 +7,6 @@ import {
     addGroup,
     archiveGroup,
     editGroup,
-    editTask,
     editLabel,
     copyGroup,
     moveAllCards,
@@ -18,17 +17,13 @@ import {
     deleteLabel,
     updateBoard,
     moveTask,
-    loadBoard,
-    loadBoardBySocket,
 } from "../store/board.actions"
 import { editUser, loadWorkspaceUsers } from "../store/user.actions"
-
 import { AddGroupBtn } from "../cmps/Group/AddGroupBtn"
 import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal.jsx"
 import { BoardHeader } from "../cmps/BoardHeader/BoardHeader.jsx"
 import useScrollByGrab from "../customHooks/useScrollByGrab.js"
 import { useParams, useOutletContext } from "react-router-dom"
-import { utilService } from "../services/util.service.js"
 import { useDocumentTitle } from "../customHooks/useDocumentTitle"
 
 export function BoardIndex() {
@@ -142,10 +137,6 @@ export function BoardIndex() {
         if (action === "create") {
             createLabel(board.id, task, label)
         }
-    }
-
-    async function editBoard(changes) {
-        await updateBoard({ ...board, ...changes })
     }
 
     function onDragStart(result) {
@@ -264,7 +255,6 @@ export function BoardIndex() {
                     onCloseTask={() => setSelectedTaskId(null)}
                     labelActions={onLabelAction}
                     board={board}
-                    editBoard={editBoard}
                     closeTask={() => setSelectedTaskId(null)}
                     addTask={addTask}
                 />

@@ -20,7 +20,6 @@ export function TaskDetailsCheckList({
     setOpenedInputId,
     openedInputId,
     task,
-    editBoard,
 }) {
     const [checkedCount, setCheckedCount] = useState({
         checked: 0,
