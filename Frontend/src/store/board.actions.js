@@ -204,20 +204,14 @@ export async function addGroup(group, boardId) {
     }
 }
 
-export async function archiveGroup(boardId, groupId, user) {
+export async function archiveGroup(boardId, groupId, activity) {
     const board = await boardService.getById(boardId)
     const group = board.groups.find((g) => g.id === groupId)
-    const newActivity = utilService.createActivity(
-        {
-            type: "archiveGroup",
-            targetName: group.name,
-        },
-        user
-    )
+
     store.dispatch({
         type: EDIT_GROUP,
         group: { ...group, closed: true, pos: null },
-        activity: newActivity,
+        activity: activity,
     })
     const newBoard = {
         ...board,
@@ -229,7 +223,7 @@ export async function archiveGroup(boardId, groupId, user) {
             }
             return g
         }),
-        activities: [...board?.activities, newActivity],
+        activities: [...board?.activities, activity],
         updatedAt: new Date().getTime(),
     }
     await updateBoard(newBoard)
