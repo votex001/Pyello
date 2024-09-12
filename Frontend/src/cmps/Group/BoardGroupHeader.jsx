@@ -9,10 +9,8 @@ export function BoardGroupHeader({
     draggableProvided,
     group,
     openAddTask,
-    copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
 }) {
     const [isEditGroupName, setIsEditGroupName] = useState(false)
     const [newGroupName, setNewGroupName] = useState(group.name)
@@ -69,10 +67,8 @@ export function BoardGroupHeader({
             <GroupActionsMenuPopover
                 openAddTask={openAddTask}
                 group={group}
-                copyGroup={copyGroup}
                 moveAllCards={moveAllCards}
                 archiveAllCards={archiveAllCards}
-                sortGroup={sortGroup}
             />
         </header>
     )

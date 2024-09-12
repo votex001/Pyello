@@ -2,11 +2,10 @@ import { useState, useRef, useEffect } from "react"
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons"
 import { Input } from "antd"
 import { Card } from "antd"
-import { utilService } from "../../services/util.service"
-import { updateBoard } from "../../store/board.actions"
+import { addGroup } from "../../store/board.actions"
 import { useSelector } from "react-redux"
 
-export function AddGroupBtn({ addGroup }) {
+export function AddGroupBtn() {
     const [isAddGroupOpen, setIsAddGroupOpen] = useState(false)
     const [groupName, setGroupName] = useState("")
     const inputRef = useRef(null)
@@ -24,7 +23,12 @@ export function AddGroupBtn({ addGroup }) {
         if (groupName.trim() === "") {
             setIsAddGroupOpen(false)
         } else {
-            addGroup(groupName)
+            await addGroup(
+                {
+                    name: groupName,
+                },
+                board.id
+            )
         }
         setGroupName("")
     }

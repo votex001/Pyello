@@ -9,7 +9,6 @@ import { AddChecklistPopover } from "../ManageTaskPopovers/AddChecklistPopover"
 
 export function TaskDetailsAddToCard({
     task,
-    labelActions,
     isNoCover,
 }) {
     const [isCover, setIsCover] = useState(false)
@@ -42,7 +41,6 @@ export function TaskDetailsAddToCard({
                     }
                     taskLabels={task?.labels}
                     task={task}
-                    labelActions={labelActions}
                 />
             ),
         },

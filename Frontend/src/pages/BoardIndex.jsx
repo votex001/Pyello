@@ -3,20 +3,13 @@ import { useSelector } from "react-redux"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
 import { BoardGroup } from "../cmps/Group/BoardGroup"
 import {
-    addTask,
-    addGroup,
-    editLabel,
-    copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
     dragGroup,
-    createLabel,
-    deleteLabel,
     updateBoard,
     moveTask,
 } from "../store/board.actions"
-import { editUser, loadWorkspaceUsers } from "../store/user.actions"
+import { loadWorkspaceUsers } from "../store/user.actions"
 import { AddGroupBtn } from "../cmps/Group/AddGroupBtn"
 import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal.jsx"
 import { BoardHeader } from "../cmps/BoardHeader/BoardHeader.jsx"
@@ -45,7 +38,7 @@ export function BoardIndex() {
             const uniqueIds = new Set([...membersIds, ...activitiesIds])
 
             // Convert the Set back to an array if needed
-            loadUsers([...uniqueIds])
+            loadWorkspaceUsers([...uniqueIds])
         }
     }, [board])
 
@@ -79,55 +72,7 @@ export function BoardIndex() {
         }
     }
 
-    async function loadUsers(membersIds) {
-        await loadWorkspaceUsers(membersIds)
-    }
-
     const { scrollContainerRef, handlers } = useScrollByGrab()
-
-    async function onAddTask(task, group, tasksToSkip) {
-        const newTask = {
-            ...task,
-            idBoard: board.id,
-        }
-        try {
-            await addTask(newTask, user, group, tasksToSkip, board)
-        } catch (error) {
-            console.log("onAddCard", error)
-        }
-    }
-
-    async function onAddGroup(name) {
-        const group = {
-            name: name,
-        }
-        const res = await addGroup(group, board.id)
-        // console.log("onAddGroup", res);
-    }
-
-    async function onCopyGroup(group) {
-        const res = await copyGroup(board.id, group, user)
-    }
-
-    async function onSortGroup(groupId, sortBy, sortOrder) {
-        const res = await sortGroup(board.id, groupId, sortBy, sortOrder)
-    }
-
-    function onStarToggle(starredIds) {
-        editUser({ ...user, starredBoardIds: starredIds })
-    }
-
-    async function onLabelAction(action, label, task) {
-        if (action === "edit") {
-            editLabel(board.id, label)
-        }
-        if (action === "delete") {
-            deleteLabel(board.id, label.id)
-        }
-        if (action === "create") {
-            createLabel(board.id, task, label)
-        }
-    }
 
     function onDragStart(result) {
         setIsDraggingOverId(null)
@@ -176,6 +121,7 @@ export function BoardIndex() {
             await moveTask(dragTaskEvent, board, user)
         }
     }
+
     return board.id ? (
         <section className="board-index">
             <div className="bg">
@@ -183,7 +129,6 @@ export function BoardIndex() {
                     <BoardHeader
                         setOpenBoardMenu={outletProps?.setOpenBoardMenu}
                         openBoardMenu={outletProps?.openBoardMenu}
-                        starToggle={onStarToggle}
                         starredBoardIds={user?.starredBoardIds}
                         showBtn={outletProps?.showBtn}
                         setShowBtn={outletProps?.setShowBtn}
@@ -216,17 +161,13 @@ export function BoardIndex() {
                                         <BoardGroup
                                             key={group.id}
                                             group={group}
-                                            addTask={onAddTask}
-                                            copyGroup={onCopyGroup}
                                             moveAllCards={moveAllCards}
                                             archiveAllCards={archiveAllCards}
-                                            sortGroup={onSortGroup}
-                                            labelActions={onLabelAction}
                                             isDraggingOverId={isDraggingOverId}
                                         />
                                     ))}
                                 {provided.placeholder}
-                                <AddGroupBtn addGroup={onAddGroup} />
+                                <AddGroupBtn />
                             </main>
                         )}
                     </Droppable>
@@ -236,10 +177,8 @@ export function BoardIndex() {
                 <TaskDetailsModal
                     taskId={selectedTaskId}
                     onCloseTask={() => setSelectedTaskId(null)}
-                    labelActions={onLabelAction}
                     board={board}
                     closeTask={() => setSelectedTaskId(null)}
-                    addTask={addTask}
                 />
             )}
         </section>

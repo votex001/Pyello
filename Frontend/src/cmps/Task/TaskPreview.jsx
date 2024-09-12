@@ -8,7 +8,6 @@ import { useSelector } from "react-redux"
 
 export function TaskPreview({
     task,
-    labelActions,
     isDragging,
     noHover = false,
     disableDnD,
@@ -108,7 +107,6 @@ export function TaskPreview({
                 openPreviewModal={onOpenPreviewModal}
                 taskLabels={taskLabels}
                 taskWidth={taskWidth}
-                labelActions={labelActions}
                 closePreviewModal={onClosePreviewModal}
             />
             {taskCover.color && (

@@ -4,16 +4,14 @@ import { EllipsisOutlined } from "@ant-design/icons"
 import { ManageTaskPopoverHeader } from "../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
 import TextArea from "antd/es/input/TextArea"
 import { useSelector } from "react-redux"
-import { archiveGroup } from "../../store/board.actions"
+import { archiveGroup, copyGroup, sortGroup } from "../../store/board.actions"
 import { utilService } from "../../services/util.service"
 
 export function GroupActionsMenuPopover({
     group,
     openAddTask,
-    copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
 }) {
     const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
@@ -74,7 +72,7 @@ export function GroupActionsMenuPopover({
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
-        copyGroup({ ...group, name: copyListName })
+        copyGroup(board.id, { ...group, name: copyListName }, user)
     }
 
     function onSelectMoveAllCards() {
@@ -109,7 +107,7 @@ export function GroupActionsMenuPopover({
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
-        sortGroup(group.id, sortBy, sortOrder)
+        sortGroup(board.id, group.id, sortBy, sortOrder)
     }
     return (
         <Popover

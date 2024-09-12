@@ -7,8 +7,14 @@ import { SvgButton } from "../../CustomCpms/SvgButton"
 import { Tooltip } from "antd"
 import { CheckBox } from "../../CustomCpms/CheckBox"
 import Popup from "@atlaskit/popup"
-import { editTask } from "../../../store/board.actions"
-export function ManageLabelsPopover({ anchorEl, task, labelActions }) {
+import {
+    createLabel,
+    deleteLabel,
+    editLabel,
+    editTask,
+} from "../../../store/board.actions"
+export function ManageLabelsPopover({ anchorEl, task }) {
+    const board = useSelector((state) => state.boardModule.board)
     const boardLabels =
         useSelector((state) => state.boardModule.board.labels) || []
     const [boardTaskLabels, setBoardTaskLabels] = useState([])
@@ -106,7 +112,7 @@ export function ManageLabelsPopover({ anchorEl, task, labelActions }) {
     }
 
     function onSaveLabel() {
-        labelActions("edit", {
+        editLabel(board.id, {
             ...selectedLabel,
             name: editTitle,
             color: editColor,
@@ -117,7 +123,7 @@ export function ManageLabelsPopover({ anchorEl, task, labelActions }) {
     }
 
     function onCreateLabel() {
-        labelActions("create", { name: editTitle, color: editColor }, task)
+        createLabel(board.id, task, { name: editTitle, color: editColor })
         setSelectedLabel(null)
         setEditTitle("")
         setBackToList(null)
@@ -125,7 +131,7 @@ export function ManageLabelsPopover({ anchorEl, task, labelActions }) {
     }
 
     function onDeleteLabel() {
-        labelActions("delete", selectedLabel)
+        deleteLabel(board.id, selectedLabel.id)
         setSelectedLabel(null)
         setEditTitle("")
         setBackToList(null)

@@ -29,7 +29,6 @@ export function TaskPreviewEditModal({
     isOpen,
     openPreviewModal,
     taskWidth,
-    labelActions,
     closePreviewModal,
 }) {
     const user = useSelector((state) => state.userModule.user)
@@ -133,7 +132,6 @@ export function TaskPreviewEditModal({
                         />
                     }
                     task={task}
-                    labelActions={labelActions}
                 />
             ),
         },

@@ -8,16 +8,13 @@ import { useClickOutside } from "../../customHooks/useClickOutside"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import useScrollPercentage from "../../customHooks/useScrollPercentage"
 import { useSelector } from "react-redux"
+import { addTask } from "../../store/board.actions"
 
 //TODO put add new task in array of sorted tasks based on position
 export function BoardGroup({
     group,
-    addTask,
-    copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
-    labelActions,
     isDraggingOverId,
 }) {
     const [newTasksAboveInput, setNewTasksAboveInput] = useState([])
@@ -73,7 +70,10 @@ export function BoardGroup({
     }, [group.tasks?.length, group.updatedAt, isAnyAddTaskOpen])
 
     function addTaskToTop(task, group) {
-        addTask(task, group, newTasksAboveInput.length)
+        addTask(task, user, group, newTasksAboveInput.length, board)
+    }
+    function addTaskToBottom(task, group) {
+        addTask(task, user, group, null, board)
     }
 
     const openTopAddTask = () => {
@@ -136,10 +136,8 @@ export function BoardGroup({
                                 draggableProvided={draggableProvided}
                                 group={group}
                                 openAddTask={openTopAddTask}
-                                copyGroup={copyGroup}
                                 moveAllCards={moveAllCards}
                                 archiveAllCards={archiveAllCards}
-                                sortGroup={sortGroup}
                             />
                             <Droppable droppableId={group.id} type="task">
                                 {(droppableProvided, snapshot) => (
@@ -159,7 +157,6 @@ export function BoardGroup({
                                             <TaskPreview
                                                 key={task.id}
                                                 task={task}
-                                                labelActions={labelActions}
                                                 disableDnD={disableDnD}
                                             />
                                         ))}
@@ -211,9 +208,6 @@ export function BoardGroup({
                                                             <TaskPreview
                                                                 key={task.id}
                                                                 task={task}
-                                                                labelActions={
-                                                                    labelActions
-                                                                }
                                                                 isDragging={
                                                                     dragSnapshot.isDragging
                                                                 }
@@ -231,7 +225,7 @@ export function BoardGroup({
                                                 closeAddTask={
                                                     onCloseBottomAddTask
                                                 }
-                                                addTask={addTask}
+                                                addTask={addTaskToBottom}
                                                 addToTop={false}
                                                 onBtnClick={onAddTaskBtnClick}
                                                 groupRef={groupRef}
@@ -245,7 +239,6 @@ export function BoardGroup({
                             {!isTopAddTaskOpen && !isBottomAddTaskOpen && (
                                 <GroupFooter
                                     groupId={group.id}
-                                    addTask={addTask}
                                     groupRef={groupRef}
                                     openBottomAddTask={openBottomAddTask}
                                 />

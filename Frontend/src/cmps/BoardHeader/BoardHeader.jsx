@@ -11,10 +11,10 @@ import { utilService } from "../../services/util.service"
 import { useState } from "react"
 import { AddModule } from "./AddModule"
 import adminPng from "/img/admin.png"
+import { editUser } from "../../store/user.actions"
 
 export function BoardHeader({
     starredBoardIds,
-    starToggle,
     openBoardMenu,
     setOpenBoardMenu,
     showBtn,
@@ -28,7 +28,7 @@ export function BoardHeader({
         const starredIds = starredBoardIds.includes(boardId)
             ? starredBoardIds.filter((id) => id !== boardId)
             : [...starredBoardIds, boardId]
-        starToggle(starredIds)
+        editUser({ ...user, starredBoardIds: starredIds })
     }
 
     function onBoardNameChange(name) {

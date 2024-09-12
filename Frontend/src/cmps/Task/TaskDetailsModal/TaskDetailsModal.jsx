@@ -17,17 +17,11 @@ import { TaskDetailsMarkdown } from "./TaskDetailsMarkdown"
 import { NameInput } from "../../CustomCpms/NameInput"
 import { TaskDetailsCheckList } from "./TaskDetailsCheckList"
 import { TaskDetailsDates } from "./TaskDetailsDates"
-import { editTask, updateBoard } from "../../../store/board.actions"
+import { addTask, editTask, updateBoard } from "../../../store/board.actions"
 import { TaskDetailsAttachment } from "./TaskDetailsAttachment"
 import { ManageAttachmentsPopover } from "../ManageTaskPopovers/ManageAttachmentsPopover"
 import { useDocumentTitle } from "../../../customHooks/useDocumentTitle"
-export function TaskDetailsModal({
-    taskId,
-    labelActions,
-    onCloseTask,
-    addTask,
-    board,
-}) {
+export function TaskDetailsModal({ taskId, onCloseTask, board }) {
     const group = useSelector((state) =>
         state.boardModule.board.groups?.find((g) =>
             g.tasks?.find((t) => t.id === taskId)
@@ -222,19 +216,13 @@ export function TaskDetailsModal({
     }
 
     async function createAsTask(name) {
-        let maxPos = group.tasks.reduce(
-            (max, item) => (item.pos > max ? item.pos : max),
-            0
-        )
-        maxPos
         const newTask = {
             name,
-            pos: maxPos + 1000,
             groupId: task.idGroup,
             idBoard: task.idBoard,
         }
 
-        await addTask(newTask, user, group)
+        await addTask(newTask, user, group, null, board)
     }
     function onSetOpenId(id) {
         setOpenedInputId(id)
@@ -287,10 +275,7 @@ export function TaskDetailsModal({
                             <TaskDetailsMembers currentTask={task} />
                         )}
                         {task?.idLabels?.length > 0 && (
-                            <TaskDetailsLabels
-                                task={task}
-                                labelActions={labelActions}
-                            />
+                            <TaskDetailsLabels task={task} />
                         )}
                         {(task.start || task.due) && (
                             <TaskDetailsDates task={task} />
@@ -355,11 +340,7 @@ export function TaskDetailsModal({
                             </button>
                         </article>
                     )}
-                    <TaskDetailsAddToCard
-                        task={task}
-                        labelActions={labelActions}
-                        isNoCover={isNoCover}
-                    />
+                    <TaskDetailsAddToCard task={task} isNoCover={isNoCover} />
                     <TaskDetailsActions task={task} onClose={onClose} />
                 </section>
             </main>
