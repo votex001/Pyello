@@ -1,10 +1,11 @@
-import { Popover, Button } from "antd"
+import { Popover } from "antd"
 import { useState, useRef, useEffect } from "react"
 import { EllipsisOutlined } from "@ant-design/icons"
 import { ManageTaskPopoverHeader } from "../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
 import TextArea from "antd/es/input/TextArea"
 import { useSelector } from "react-redux"
 import { archiveGroup } from "../../store/board.actions"
+import { utilService } from "../../services/util.service"
 
 export function GroupActionsMenuPopover({
     group,
@@ -37,7 +38,14 @@ export function GroupActionsMenuPopover({
     }
 
     async function onArchiveGroup() {
-        await archiveGroup(board?.id, group?.id, user)
+        const newActivity = utilService.createActivity(
+            {
+                type: "archiveGroup",
+                targetName: group.name,
+            },
+            user
+        )
+        await archiveGroup(board?.id, group?.id, newActivity)
         setOpenGroupMenu(false)
     }
 
