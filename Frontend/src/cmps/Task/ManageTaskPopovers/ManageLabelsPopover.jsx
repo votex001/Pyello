@@ -7,12 +7,8 @@ import { SvgButton } from "../../CustomCpms/SvgButton"
 import { Tooltip } from "antd"
 import { CheckBox } from "../../CustomCpms/CheckBox"
 import Popup from "@atlaskit/popup"
-export function ManageLabelsPopover({
-    anchorEl,
-    editTask,
-    task,
-    labelActions,
-}) {
+import { editTask } from "../../../store/board.actions"
+export function ManageLabelsPopover({ anchorEl, task, labelActions }) {
     const boardLabels =
         useSelector((state) => state.boardModule.board.labels) || []
     const [boardTaskLabels, setBoardTaskLabels] = useState([])

@@ -3,8 +3,9 @@ import { ManageDatesPopover } from "../ManageTaskPopovers/ManageDatesPopover"
 import { useSelector } from "react-redux"
 import { utilService } from "../../../services/util.service"
 import { CheckBox } from "../../CustomCpms/CheckBox"
+import { editTask } from "../../../store/board.actions"
 
-export function TaskDetailsDates({ task, editTask, editBoard }) {
+export function TaskDetailsDates({ task }) {
     const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
     const currentTask = useSelector((state) =>

@@ -8,13 +8,9 @@ import dayjs from "dayjs"
 import { showSuccessMsg } from "../../../services/event-bus.service"
 import { useSelector } from "react-redux"
 import Popup from "@atlaskit/popup"
+import { editTask } from "../../../store/board.actions"
 
-export function ManageAttachmentsPopover({
-    anchorEl,
-    task,
-    editTask,
-    editBoard,
-}) {
+export function ManageAttachmentsPopover({ anchorEl, task }) {
     const [isOpen, setIsOpen] = useState(false)
 
     function onClose() {
@@ -48,9 +44,7 @@ export function ManageAttachmentsPopover({
             content={() => (
                 <ManageAttachmentsPopoverContent
                     task={task}
-                    editTask={editTask}
                     onClose={onClose}
-                    editBoard={editBoard}
                 />
             )}
             trigger={trigger}
@@ -59,12 +53,7 @@ export function ManageAttachmentsPopover({
     )
 }
 
-function ManageAttachmentsPopoverContent({
-    task,
-    editTask,
-    onClose,
-    editBoard,
-}) {
+function ManageAttachmentsPopoverContent({ task, onClose }) {
     const [link, setLink] = useState("")
     const [text, setText] = useState("")
     const [invalidLink, setInvalidLink] = useState(false)

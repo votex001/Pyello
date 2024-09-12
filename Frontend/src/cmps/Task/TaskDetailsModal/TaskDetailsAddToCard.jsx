@@ -44,7 +44,6 @@ export function TaskDetailsAddToCard({
                         </button>
                     }
                     taskLabels={task?.labels}
-                    editTask={editTask}
                     task={task}
                     labelActions={labelActions}
                 />
@@ -89,7 +88,6 @@ export function TaskDetailsAddToCard({
             popover: (
                 <ManageAttachmentsPopover
                     task={task}
-                    editTask={editTask}
                     editBoard={editBoard}
                     anchorEl={
                         <button className="details-anchor-btn">

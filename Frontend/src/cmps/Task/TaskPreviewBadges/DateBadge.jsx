@@ -2,8 +2,9 @@ import { utilService } from "../../../services/util.service"
 import { Tooltip } from "antd"
 import { useMemo } from "react"
 import dayjs from "dayjs"
+import { editTask } from "../../../store/board.actions"
 
-export function DateBadge({ task, editTask }) {
+export function DateBadge({ task }) {
     //useMemo is used to deal with the re-mount after drag and drop between lists that lead to a flicker of the component
     const dateLabel = useMemo(() => {
         if (!dayjs(task.start).isValid() && !dayjs(task.due).isValid()) {

@@ -17,7 +17,7 @@ import { TaskDetailsMarkdown } from "./TaskDetailsMarkdown"
 import { NameInput } from "../../CustomCpms/NameInput"
 import { TaskDetailsCheckList } from "./TaskDetailsCheckList"
 import { TaskDetailsDates } from "./TaskDetailsDates"
-import { editTask, updateBoard } from "../../../store/board.actions"
+import { editTask } from "../../../store/board.actions"
 import { TaskDetailsAttachment } from "./TaskDetailsAttachment"
 import { ManageAttachmentsPopover } from "../ManageTaskPopovers/ManageAttachmentsPopover"
 import { useDocumentTitle } from "../../../customHooks/useDocumentTitle"
@@ -316,16 +316,11 @@ export function TaskDetailsModal({
                         {task?.idLabels?.length > 0 && (
                             <TaskDetailsLabels
                                 task={task}
-                                editTask={editTask}
                                 labelActions={labelActions}
                             />
                         )}
                         {(task.start || task.due) && (
-                            <TaskDetailsDates
-                                task={task}
-                                editTask={editTask}
-                                editBoard={editBoard}
-                            />
+                            <TaskDetailsDates task={task} />
                         )}
                     </article>
                     <TaskDetailsMarkdown editTask={editTask} task={task} />
@@ -358,7 +353,6 @@ export function TaskDetailsModal({
                                 <h3 className="section-title">Attachments</h3>
                                 <ManageAttachmentsPopover
                                     task={task}
-                                    editTask={editTask}
                                     anchorEl={
                                         <button className="add-attachment-btn">
                                             Add

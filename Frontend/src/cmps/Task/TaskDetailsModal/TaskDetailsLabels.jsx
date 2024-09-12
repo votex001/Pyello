@@ -5,7 +5,7 @@ import { utilService } from "../../../services/util.service"
 import { useState } from "react"
 import { Tooltip } from "antd"
 
-export function TaskDetailsLabels({ task, editTask, labelActions }) {
+export function TaskDetailsLabels({ task, labelActions }) {
     const boardLabels = useSelector((state) => state.boardModule.board.labels)
     const [hoveredLabelId, setHoveredLabelId] = useState(null)
     return (
@@ -13,7 +13,6 @@ export function TaskDetailsLabels({ task, editTask, labelActions }) {
             <p className="sub-title">Labels</p>
 
             <ManageLabelsPopover
-                editTask={editTask}
                 labelActions={labelActions}
                 task={task}
                 anchorEl={

@@ -155,9 +155,7 @@ export function TaskPreview({
                     <span className="group-task-content-title">
                         {task?.name}
                     </span>
-                    {isBadges && (
-                        <TaskPreviewBadges task={task} editTask={editTask} />
-                    )}
+                    {isBadges && <TaskPreviewBadges task={task} />}
                 </section>
             )}
             {coverSize === "full" && (
