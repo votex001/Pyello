@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { GroupActionsMenuPopover } from "./GroupActionsMenuPopover"
 import { Input } from "antd"
 import { editGroup } from "../../store/board.actions"
+import { useSelector } from "react-redux"
 const { TextArea } = Input
 
 export function BoardGroupHeader({
