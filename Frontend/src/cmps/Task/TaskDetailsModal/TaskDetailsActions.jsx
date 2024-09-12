@@ -23,23 +23,10 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
                 targetId: task.id,
                 targetName: task.name,
             },
-            user,
+            user
         )
         task.closed = false
-        await updateBoard({
-            ...board,
-            groups: board.groups.map((g) =>
-                g.id === task.idGroup
-                    ? {
-                          ...g,
-                          tasks: g.tasks.map((t) =>
-                              t.id === task.id ? task : t,
-                          ),
-                      }
-                    : g,
-            ),
-            activities: [...board?.activities, newActivity],
-        })
+        await editTask(task,newActivity)
     }
     async function onDeleteTask() {
         const newBoard = {
@@ -47,7 +34,7 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
             groups: board.groups.map((g) =>
                 g.id === task.idGroup
                     ? { ...g, tasks: g.tasks.filter((t) => t.id !== task.id) }
-                    : g,
+                    : g
             ),
         }
         await updateBoard(newBoard)

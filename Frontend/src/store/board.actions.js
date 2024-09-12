@@ -450,7 +450,9 @@ export async function editTask(task, activity) {
                   }
                 : g
         ),
-        activities: [...board?.activities, activity],
+        activities: activity
+            ? [...(board?.activities || []), activity]
+            : [...(board?.activities || [])],
         updatedAt: new Date().getTime(),
     }
     await boardService.save(newBoard)

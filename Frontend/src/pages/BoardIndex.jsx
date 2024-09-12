@@ -46,7 +46,7 @@ export function BoardIndex() {
     useEffect(() => {
         if (board && board.members && board.activities) {
             const membersIds = board.members.map((u) => u.id)
-            const activitiesIds = board.activities.map((a) => a.userId)
+            const activitiesIds = board.activities.map((a) => a?.userId)
 
             // Combine both arrays and make a Set to ensure uniqueness
             const uniqueIds = new Set([...membersIds, ...activitiesIds])
@@ -130,20 +130,7 @@ export function BoardIndex() {
                 },
                 user
             )
-            await updateBoard({
-                ...board,
-                groups: board.groups.map((g) =>
-                    g.id === task.idGroup
-                        ? {
-                              ...g,
-                              tasks: g.tasks.map((t) =>
-                                  t.id === task.id ? task : t
-                              ),
-                          }
-                        : g
-                ),
-                activities: [...board?.activities, newActivity],
-            })
+            await editTask(task, newActivity)
         } else {
             const newActivity = utilService.createActivity(activity, user)
             await editTask(task, newActivity)

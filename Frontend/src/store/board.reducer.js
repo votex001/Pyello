@@ -39,7 +39,9 @@ export function boardReducer(state = initialState, action) {
                     ...state.board,
                     groups: [...state.board.groups, action.group],
                     updatedAt: new Date().getTime(),
-                    activities: [...state.board.activities, action.activity],
+                    activities: action.activity
+                        ? [...state.board.activities, action.activity]
+                        : [...state.board.activities],
                 },
             }
             break
@@ -53,7 +55,9 @@ export function boardReducer(state = initialState, action) {
                         group.id === action.group.id ? action.group : group
                     ),
                     updatedAt: new Date().getTime(),
-                    activities: [...state.board.activities, action.activity],
+                    activities: action.activity
+                        ? [...state.board.activities, action.activity]
+                        : [...state.board.activities],
                 },
             }
             break
@@ -67,7 +71,9 @@ export function boardReducer(state = initialState, action) {
                     updatedAt: new Date().getTime(),
                     activities: [
                         ...state.board.activities,
-                        ...action.activities,
+                        ...(Array.isArray(action.activities)
+                            ? action.activities.filter(Boolean)
+                            : []),
                     ],
                 },
             }
@@ -143,7 +149,9 @@ export function boardReducer(state = initialState, action) {
                             : group
                     ),
                     updatedAt: new Date().getTime(),
-                    activities: [...state.board.activities, action.activity],
+                    activities: action.activity
+                        ? [...state.board.activities, action.activity]
+                        : [...state.board.activities],
                 },
             }
             break
