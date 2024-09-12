@@ -440,7 +440,6 @@ async function createNewBoard(board) {
             background: board.backgroundData.background,
             backgroundColor: board.backgroundData?.backgroundColor || null,
             backgroundImage: board.backgroundData?.backgroundImage || null,
-
             backgroundBrightness: board.backgroundData.backgroundBrightness,
             backgroundImageScaled:
                 board.backgroundData?.backgroundImageScaled || null,
