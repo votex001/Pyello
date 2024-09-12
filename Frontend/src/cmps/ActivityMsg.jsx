@@ -649,7 +649,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <span className="username">
                                 {activity.userFullName}
                             </span>{" "}
-                            deleted the
+                            deleted the{" "}
                             <Link to={activity.attachmentLink}>
                                 {activity.attachmentName}
                             </Link>{" "}

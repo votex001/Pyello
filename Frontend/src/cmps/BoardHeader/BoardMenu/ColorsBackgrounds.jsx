@@ -6,12 +6,12 @@ export function ColorsBackgrounds() {
     const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
 
-    function onPickGradient(bg) {
+    function onPickBg(bg) {
         const newActivity = utilService.createActivity(
             {
                 type: "changeBackGround",
             },
-            user,
+            user
         )
         const prefs = {
             background: bg.background,
@@ -20,26 +20,6 @@ export function ColorsBackgrounds() {
             backgroundBrightness: bg.backgroundBrightness,
         }
 
-        updateBoard({
-            ...board,
-            prefs,
-            activities: [...board?.activities, newActivity],
-        })
-    }
-
-    function onPickColor(bg) {
-        const newActivity = utilService.createActivity(
-            {
-                type: "changeBackGround",
-            },
-            user,
-        )
-        const prefs = {
-            background: bg.background,
-            backgroundColor: bg.backgroundColor,
-            backgroundImage: bg.backgroundImage,
-            backgroundBrightness: bg.backgroundBrightness,
-        }
         updateBoard({
             ...board,
             prefs,
@@ -52,7 +32,7 @@ export function ColorsBackgrounds() {
             <section className="photos-bg">
                 {utilService.getBgGradientColors().map((bg) => (
                     <section
-                        onClick={() => onPickGradient(bg)}
+                        onClick={() => onPickBg(bg)}
                         className="container"
                         key={bg.background}
                         style={{
@@ -67,7 +47,7 @@ export function ColorsBackgrounds() {
             <section className="colors-picker">
                 {utilService.getBgColors().map((color) => (
                     <section
-                        onClick={() => onPickColor(color)}
+                        onClick={() => onPickBg(color)}
                         className="container"
                         key={color.background}
                         style={{ backgroundColor: color.backgroundColor }}

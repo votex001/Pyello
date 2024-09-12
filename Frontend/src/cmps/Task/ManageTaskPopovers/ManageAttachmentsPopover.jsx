@@ -108,16 +108,15 @@ function ManageAttachmentsPopoverContent({
                 attachmentLink: attachment.link,
                 attachmentName: attachment.text,
             },
-            user,
+            user
         )
-        await editBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
-        editTask({
-            ...task,
-            attachments: [...task.attachments, attachment],
-        })
+        editTask(
+            {
+                ...task,
+                attachments: [...task.attachments, attachment],
+            },
+            newActivity
+        )
         setLink("")
         setText("")
         onClose()
@@ -135,13 +134,13 @@ function ManageAttachmentsPopoverContent({
     async function onAddAttachment(data) {
         const avgBgColor = await utilService.getAverageBorderColor(
             data.secure_url,
-            10,
+            10
         )
 
         const isDark = utilService.isColorDark(
             avgBgColor.r,
             avgBgColor.g,
-            avgBgColor.b,
+            avgBgColor.b
         )
 
         const attachment = {
@@ -166,12 +165,8 @@ function ManageAttachmentsPopoverContent({
                 attachmentLink: attachment.link,
                 attachmentName: attachment.text,
             },
-            user,
+            user
         )
-        await editBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
 
         const newTask = {
             ...task,
@@ -185,7 +180,7 @@ function ManageAttachmentsPopoverContent({
                 size: "normal",
             }
         }
-        editTask(newTask)
+        editTask(newTask, newActivity)
         onClose()
         showSuccessMsg("Success")
     }

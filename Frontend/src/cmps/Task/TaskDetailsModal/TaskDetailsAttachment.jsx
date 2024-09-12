@@ -52,16 +52,13 @@ export function TaskDetailsAttachment({
                 attachmentLink: link,
                 attachmentName: text,
             },
-            user,
+            user
         )
-        await editBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
+
         const newTask = {
             ...task,
             attachments: task?.attachments?.filter(
-                (att) => att.id !== attachment.id,
+                (att) => att.id !== attachment.id
             ),
         }
         if (isCover) {
@@ -70,14 +67,14 @@ export function TaskDetailsAttachment({
                 attachment: null,
             }
         }
-        editTask(newTask)
+        editTask(newTask, newActivity)
     }
 
     function onEdit(newAttachment) {
         editTask({
             ...task,
             attachments: task?.attachments?.map((att) =>
-                att.id === attachment.id ? newAttachment : att,
+                att.id === attachment.id ? newAttachment : att
             ),
         })
     }
@@ -109,7 +106,7 @@ export function TaskDetailsAttachment({
                     size: coverSize,
                 },
                 attachments: task?.attachments?.map((att) =>
-                    att.id === attachment.id ? { ...att, isCover: false } : att,
+                    att.id === attachment.id ? { ...att, isCover: false } : att
                 ),
             })
         } else {
@@ -122,7 +119,7 @@ export function TaskDetailsAttachment({
                     size: coverSize,
                 },
                 attachments: task?.attachments?.map((att) =>
-                    att.id === attachment.id ? { ...att, isCover: true } : att,
+                    att.id === attachment.id ? { ...att, isCover: true } : att
                 ),
             })
         }

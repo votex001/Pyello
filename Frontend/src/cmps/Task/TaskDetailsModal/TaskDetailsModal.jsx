@@ -215,7 +215,7 @@ export function TaskDetailsModal({
             checkLists: task.checkLists.filter((c) => c.id !== checkList.id),
         }
 
-        if (!newTask.checkLists.length) {
+        if (newTask.checkLists.length) {
             const newCheckListTaskIds = board.checkListTaskIds.filter(
                 (i) => i !== task.id
             )
@@ -223,10 +223,9 @@ export function TaskDetailsModal({
             await editBoard({
                 ...board,
                 checkListTaskIds: newCheckListTaskIds,
-                activities: [...board?.activities, newActivity],
             })
         }
-        await editTask(newTask)
+        await editTask(newTask, newActivity)
     }
 
     function deleteItem(listId, itemId) {

@@ -379,7 +379,11 @@ export async function archiveAllCards(boardId, groupId, user) {
         tasks: group.tasks.map((t) => ({ ...t, closed: true })),
         updatedAt: new Date().toISOString(),
     }
-    store.dispatch({ type: ARCHIVE_ALL_CARDS, group: newGroup })
+    store.dispatch({
+        type: ARCHIVE_ALL_CARDS,
+        group: newGroup,
+        activities: [...board?.activities, ...newActivities],
+    })
 
     const newBoard = {
         ...board,

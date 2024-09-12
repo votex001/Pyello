@@ -269,7 +269,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
                 setEndDate(lastSelectedEndDate)
             } else {
                 setSelectedEndDate(
-                    startDate ? dayjs(startDate).add(1, "day") : dayjs(),
+                    startDate ? dayjs(startDate).add(1, "day") : dayjs()
                 )
                 setEndDate(startDate ? dayjs(startDate).add(1, "day") : dayjs())
             }
@@ -341,51 +341,52 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
     }
 
     async function onSave() {
+        let newActivity
         if (endDate) {
-            const newActivity = utilService.createActivity(
+            newActivity = utilService.createActivity(
                 {
                     type: "addDate",
                     targetId: task.id,
                     targetName: task.name,
                     doDate: new Date(endDate["$d"]).getTime(),
                 },
-                user,
+                user
             )
-
-            await updateBoard({
-                ...board,
-                activities: [...board?.activities, newActivity],
-            })
         }
-        editTask({
-            ...task,
-            due: endDate,
-            start: startDate,
-            dueReminder: reminder,
-        })
+        editTask(
+            {
+                ...task,
+                due: endDate,
+                start: startDate,
+                dueReminder: reminder,
+            },
+            newActivity
+        )
         onClose()
     }
 
     async function onRemove() {
-        const newActivity = utilService.createActivity(
+        let newActivity
+        if (endDate) {
+            newActivity = utilService.createActivity(
+                {
+                    type: "removeDate",
+                    targetId: task.id,
+                    targetName: task.name,
+                },
+                user
+            )
+        }
+        editTask(
             {
-                type: "removeDate",
-                targetId: task.id,
-                targetName: task.name,
+                ...task,
+                due: null,
+                start: null,
+                dueReminder: null,
+                dueComplete: false,
             },
-            user,
+            newActivity
         )
-        await updateBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
-        editTask({
-            ...task,
-            due: null,
-            start: null,
-            dueReminder: null,
-            dueComplete: false,
-        })
         onClose()
     }
 

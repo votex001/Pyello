@@ -19,7 +19,7 @@ export function BoardDescription({ onSetPreventLoad }) {
     const [areaValue, setAreaValue] = useState(
         board.desc ||
             "Add a description to let your teammates know what this board is used for." +
-                " You’ll get bonus points if you add instructions for how to collaborate!",
+                " You’ll get bonus points if you add instructions for how to collaborate!"
     )
     const minRows = isOpen ? 5 : 0
     useEffect(() => {
@@ -34,7 +34,7 @@ export function BoardDescription({ onSetPreventLoad }) {
             setAreaValue(
                 board.desc ||
                     "Add a description to let your teammates know what this board is used for." +
-                        " You’ll get bonus points if you add instructions for how to collaborate!",
+                        " You’ll get bonus points if you add instructions for how to collaborate!"
             )
         }
     }, [isOpen])

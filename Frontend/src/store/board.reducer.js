@@ -110,6 +110,12 @@ export function boardReducer(state = initialState, action) {
                         g.id === action.group.id ? action.group : g
                     ),
                     updatedAt: new Date().getTime(),
+                    activities: [
+                        ...state.board.activities,
+                        ...(Array.isArray(action.activities)
+                            ? action.activities.filter(Boolean)
+                            : []),
+                    ],
                 },
             }
             break

@@ -64,7 +64,6 @@ export function AddChecklistPopover({ anchorEl, task, editTask, editBoard }) {
             await editBoard({
                 ...board,
                 checkListTaskIds: [...board.checkListTaskIds, task.id],
-                activities: [...board?.activities, newActivity],
             })
         }
         if (task.checkLists.length > 0) {
@@ -83,7 +82,7 @@ export function AddChecklistPopover({ anchorEl, task, editTask, editBoard }) {
         }
         setChecklistName("Checklist")
         setIsOpen(!isOpen)
-        await editTask(newTask)
+        await editTask(newTask, newActivity)
     }
 
     const content = (
