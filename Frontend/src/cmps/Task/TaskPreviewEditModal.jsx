@@ -42,7 +42,18 @@ export function TaskPreviewEditModal({
     const containerRef = useRef(null)
     const triggerRef = useRef(null)
     const popupRef = useRef(null)
+    const textareaRef = useRef(null)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (isOpen && textareaRef.current) {
+            setTimeout(() => {
+                textareaRef.current.focus({
+                    cursor: "all",
+                })
+            }, 300)
+        }
+    }, [isOpen])
 
     useEffect(() => {
         setShowEditModalBtn(isHovered)
@@ -259,6 +270,7 @@ export function TaskPreviewEditModal({
                         ))}
                     </article>
                     <TextArea
+                        ref={textareaRef}
                         className="task-name-input"
                         autoSize={{ minRows: 3, maxRows: 6 }}
                         value={taskName}
