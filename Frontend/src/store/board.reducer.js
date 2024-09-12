@@ -53,6 +53,7 @@ export function boardReducer(state = initialState, action) {
                         group.id === action.group.id ? action.group : group
                     ),
                     updatedAt: new Date().getTime(),
+                    activities: [...state.board.activities, action.activity],
                 },
             }
             break
@@ -64,6 +65,10 @@ export function boardReducer(state = initialState, action) {
                     ...state.board,
                     groups: action.groups,
                     updatedAt: new Date().getTime(),
+                    activities: [
+                        ...state.board.activities,
+                        ...action.activities,
+                    ],
                 },
             }
             break
