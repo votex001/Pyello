@@ -1,6 +1,8 @@
 // import { storageService } from "./async-storage.service";
+import { Board } from "../models/board.models"
+import { Task } from "../models/task&groups.models"
 import { httpService } from "./http.service"
-import { socketService } from "../services/socket.service"
+import { socketService } from "./socket.service"
 
 export const boardService = {
     getById,
@@ -8,15 +10,14 @@ export const boardService = {
     remove,
     getByTaskId,
 }
-window.boardSer = boardService
 
-async function getByTaskId(taskId) {
+async function getByTaskId(taskId: string): Promise<Board> {
     try {
         //TODO filter boards by taskId in the server!!!!
-        const boards = await httpService.get("boards")
+        const boards = await httpService.get<Board[]>("boards")
         const board = boards?.find((board) =>
             board.groups?.some((group) =>
-                group.tasks?.some((task) => task.id === taskId)
+                group.tasks?.some((task: Task) => task.id === taskId)
             )
         )
         if (!board) {
@@ -29,9 +30,9 @@ async function getByTaskId(taskId) {
     }
 }
 
-async function getById(boardId) {
+async function getById(boardId: string): Promise<Board> {
     try {
-        const board = await httpService.get(`boards/${boardId}`)
+        const board = await httpService.get<Board>(`boards/${boardId}`)
         if (!board) {
             throw `Cannot found board with id ${boardId}`
         }
@@ -42,26 +43,31 @@ async function getById(boardId) {
     }
 }
 
-async function remove(boardId) {
-    await httpService.delete(`boards/${boardId}`)
+async function remove(boardId: string) {
+    try {
+        await httpService.delete(`boards/${boardId}`)
+    } catch (err) {
+        console.log(err)
+    }
 }
 
-async function save(board) {
-    var savedBoard
+async function save(board: Board): Promise<Board> {
     try {
         const boardSize = new Blob([JSON.stringify(board)]).size
         if (boardSize > 200000) {
             throw new Error("Board size is too big, limit is 200kb")
         }
+        let savedBoard: Board
         if (board.id) {
-            savedBoard = await httpService.put("boards", board)
-            socketService.emit("board-updated", { board: board })
+            savedBoard = await httpService.put<Board>("boards", board)
+            socketService.emit("board-updated", { board })
         } else {
-            savedBoard = await httpService.post("boards", board)
+            savedBoard = await httpService.post<Board>("boards", board)
         }
 
         return savedBoard
     } catch (err) {
         console.log(err)
+        throw err
     }
 }
