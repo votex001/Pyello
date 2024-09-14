@@ -1,5 +1,4 @@
 import { LabelColorOption } from "../models/board.models"
-import { utilService } from "./util.service.ts"
 
 export const bgImgs = [
     {
