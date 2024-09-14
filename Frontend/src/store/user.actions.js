@@ -2,14 +2,11 @@ import { userService } from "../services/user.service.js"
 import { socketService } from "../services/socket.service.js"
 import { store } from "../store/store.js"
 
-import { LOADING_DONE, LOADING_START } from "./system.reducer.js"
 import { EDIT_USERS, SET_USERS, SET_USER, EDIT_USER } from "./user.reducer"
 import { httpService } from "../services/http.service.js"
 
 export async function loadWorkspaceUsers(userIds) {
-    // console.log(userIds)
     try {
-        store.dispatch({ type: LOADING_START })
         const users = await userService.getWorkspaceUsers({
             userIds: [...userIds],
         })
@@ -19,8 +16,6 @@ export async function loadWorkspaceUsers(userIds) {
     } catch (err) {
         console.log("UserActions: err in loadUsers", err)
         return false
-    } finally {
-        store.dispatch({ type: LOADING_DONE })
     }
 }
 
