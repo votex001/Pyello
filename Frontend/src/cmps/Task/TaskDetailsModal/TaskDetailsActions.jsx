@@ -3,7 +3,7 @@ import defaultProfile from "/img/defaultProfile.svg"
 import checkListIcon from "/img/board-index/detailsImgs/checkListIcon.svg"
 
 import { MoveCardPopover } from "../ManageTaskPopovers/MoveCardPopover"
-import { updateBoard } from "../../../store/board.actions"
+import { updateBoard } from "../../../store/actions/board.actions"
 import { useSelector } from "react-redux"
 import { ActionPopover } from "../../BoardHeader/BoardMenu/ActionPopover"
 import { useNavigate } from "react-router"
@@ -23,7 +23,7 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
                 targetId: task.id,
                 targetName: task.name,
             },
-            user,
+            user
         )
         task.closed = false
         await updateBoard({
@@ -33,10 +33,10 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
                     ? {
                           ...g,
                           tasks: g.tasks.map((t) =>
-                              t.id === task.id ? task : t,
+                              t.id === task.id ? task : t
                           ),
                       }
-                    : g,
+                    : g
             ),
             activities: [...board?.activities, newActivity],
         })
@@ -47,7 +47,7 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
             groups: board.groups.map((g) =>
                 g.id === task.idGroup
                     ? { ...g, tasks: g.tasks.filter((t) => t.id !== task.id) }
-                    : g,
+                    : g
             ),
         }
         await updateBoard(newBoard)

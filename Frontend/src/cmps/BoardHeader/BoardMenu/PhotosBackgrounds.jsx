@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { utilService } from "../../../services/util.service"
-import { updateBoard } from "../../../store/board.actions"
+import { updateBoard } from "../../../store/actions/board.actions"
 
 export function PhotosBackgrounds() {
     const board = useSelector((state) => state.boardModule.board)
@@ -11,7 +11,7 @@ export function PhotosBackgrounds() {
             {
                 type: "changeBackGround",
             },
-            user,
+            user
         )
         const prefs = {
             background: bg.background,

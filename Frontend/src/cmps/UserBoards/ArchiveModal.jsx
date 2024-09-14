@@ -2,7 +2,7 @@ import { Modal } from "antd"
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { utilService } from "../../services/util.service"
-import { removeBoard, updateBoard } from "../../store/board.actions"
+import { removeBoard, updateBoard } from "../../store/actions/board.actions"
 
 export function ArchiveModal({ onClose }) {
     const boards = useSelector((state) => state.workspaceModule.boards)
@@ -27,7 +27,7 @@ export function ArchiveModal({ onClose }) {
             {
                 type: "reopenBoard",
             },
-            user,
+            user
         )
         if (board) {
             updateBoard({
@@ -69,7 +69,7 @@ export function ArchiveModal({ onClose }) {
                                             className="btn reopen"
                                             disabled={
                                                 !b.members.some(
-                                                    (m) => m.id === user.id,
+                                                    (m) => m.id === user.id
                                                 ) && !user?.isAdmin
                                             }
                                             onClick={() => onReopen(b.id)}
@@ -80,7 +80,7 @@ export function ArchiveModal({ onClose }) {
                                             className="btn delete"
                                             disabled={
                                                 !b.members.some(
-                                                    (m) => m.id === user.id,
+                                                    (m) => m.id === user.id
                                                 ) && !user?.isAdmin
                                             }
                                             onClick={() => onDelete(b.id)}

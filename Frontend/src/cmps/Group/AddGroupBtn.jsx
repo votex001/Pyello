@@ -3,7 +3,7 @@ import { PlusOutlined, CloseOutlined } from "@ant-design/icons"
 import { Input } from "antd"
 import { Card } from "antd"
 import { utilService } from "../../services/util.service"
-import { updateBoard } from "../../store/board.actions"
+import { updateBoard } from "../../store/actions/board.actions"
 import { useSelector } from "react-redux"
 
 export function AddGroupBtn({ addGroup }) {

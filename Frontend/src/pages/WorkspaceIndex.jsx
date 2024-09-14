@@ -3,12 +3,19 @@ import { WorkspaceHeader } from "../cmps/Workspace/WorkspaceHeader"
 import { WorkspaceMenu } from "../cmps/Workspace/WorkspaceMenu"
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { loadBoard, loadBoardByTaskId, viewBoard } from "../store/board.actions"
-import { login, editUser } from "../store/user.actions"
-import { createBoard } from "../store/workspace.actions"
+import {
+    loadBoard,
+    loadBoardByTaskId,
+    viewBoard,
+} from "../store/actions/board.actions"
+import { login, editUser } from "../store/actions/user.actions"
+import { createBoard } from "../store/actions/workspace.actions"
 import { useSelector } from "react-redux"
-import { setBoards, updateWorkspaceBoard } from "../store/workspace.actions"
-import { updateBoard } from "../store/board.actions"
+import {
+    setBoards,
+    updateWorkspaceBoard,
+} from "../store/actions/workspace.actions"
+import { updateBoard } from "../store/actions/board.actions"
 import { BoardMenu } from "../cmps/BoardHeader/BoardMenu/BoardMenu"
 import { utilService } from "../services/util.service"
 import { ErrorPage } from "./ErrorPage"

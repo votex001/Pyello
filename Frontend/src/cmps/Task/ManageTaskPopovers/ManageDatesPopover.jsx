@@ -6,7 +6,7 @@ import { SvgButton } from "../../CustomCpms/SvgButton"
 import { CustomSelect } from "../../CustomCpms/CustomSelect"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
-import { updateBoard } from "../../../store/board.actions"
+import { updateBoard } from "../../../store/actions/board.actions"
 import { CheckBox } from "../../CustomCpms/CheckBox"
 import Popup from "@atlaskit/popup"
 
@@ -269,7 +269,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
                 setEndDate(lastSelectedEndDate)
             } else {
                 setSelectedEndDate(
-                    startDate ? dayjs(startDate).add(1, "day") : dayjs(),
+                    startDate ? dayjs(startDate).add(1, "day") : dayjs()
                 )
                 setEndDate(startDate ? dayjs(startDate).add(1, "day") : dayjs())
             }
@@ -349,7 +349,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
                     targetName: task.name,
                     doDate: new Date(endDate["$d"]).getTime(),
                 },
-                user,
+                user
             )
 
             await updateBoard({
@@ -373,7 +373,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
                 targetId: task.id,
                 targetName: task.name,
             },
-            user,
+            user
         )
         await updateBoard({
             ...board,

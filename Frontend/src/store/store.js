@@ -1,8 +1,8 @@
 import { createStore, combineReducers } from "redux"
-import { userReducer } from "./user.reducer"
+import { userReducer } from "./reducers/user.reducer"
 
-import { boardReducer } from "./board.reducer"
-import { workspaceReducer } from "./workspace.reducer"
+import { boardReducer } from "./reducers/board.reducer"
+import { workspaceReducer } from "./reducers/workspace.reducer"
 
 const rootReducer = combineReducers({
     userModule: userReducer,

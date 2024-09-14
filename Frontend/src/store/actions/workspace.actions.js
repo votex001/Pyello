@@ -1,15 +1,15 @@
-import { boardService } from "../services/board.service"
-import { utilService } from "../services/util.service"
-import { workspaceService } from "../services/workspace.service"
+import { boardService } from "../../services/board.service"
+import { utilService } from "../../services/util.service"
+import { workspaceService } from "../../services/workspace.service"
 import { setBoard } from "./board.actions"
-import { store } from "./store"
+import { store } from "../store"
 import {
     EDIT_WORKSPACE,
     SET_BOARDS,
     ADD_BOARD,
     VIEW_BOARD,
-} from "./workspace.reducer"
-import { SET_BOARD } from "./board.reducer"
+} from "../reducers/workspace.reducer"
+import { SET_BOARD } from "../reducers/board.reducer"
 
 export async function setBoards() {
     const boards = await workspaceService.getAllBoards()

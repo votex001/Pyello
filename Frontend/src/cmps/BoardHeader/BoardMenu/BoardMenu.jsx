@@ -4,8 +4,8 @@ import { BoardActivity } from "./BoardActivity"
 import { BoardDescription } from "./BoardDescription"
 import { useSelector } from "react-redux"
 import { ActionPopover } from "./ActionPopover"
-import { removeBoard, updateBoard } from "../../../store/board.actions"
-import { editUser } from "../../../store/user.actions"
+import { removeBoard, updateBoard } from "../../../store/actions/board.actions"
+import { editUser } from "../../../store/actions/user.actions"
 import { utilService } from "../../../services/util.service"
 import { useNavigate } from "react-router"
 import { ArchivedItems } from "./ArchivedItems"
@@ -70,7 +70,7 @@ export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
         setNavigation(
             <span>
                 Photos by <Link to={"https://unsplash.com/"}>Unsplash</Link>
-            </span>,
+            </span>
         )
     }
     function onGoToColors() {
@@ -139,7 +139,7 @@ export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
                             {(board.members.some(
                                 (m) =>
                                     m.id === user.id &&
-                                    m.permissionStatus === "admin",
+                                    m.permissionStatus === "admin"
                             ) ||
                                 user.isAdmin) && (
                                 <ActionPopover

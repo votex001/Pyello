@@ -1,7 +1,7 @@
 import { utilService } from "../../services/util.service"
 import { useSelector } from "react-redux"
 import { useState } from "react"
-import { toggleIsExpanded } from "../../store/board.actions"
+import { toggleIsExpanded } from "../../store/actions/board.actions"
 import { Tooltip } from "antd"
 
 export function TaskPreviewLabel({ label }) {
@@ -21,7 +21,9 @@ export function TaskPreviewLabel({ label }) {
             overlayInnerStyle={utilService.tooltipOuterStyle()}
         >
             <button
-                className={`card-label ${isExpanded ? "expanded" : "minimized"}`}
+                className={`card-label ${
+                    isExpanded ? "expanded" : "minimized"
+                }`}
                 style={{
                     backgroundColor:
                         hoveredLabelId === label.id

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { login } from "../store/user.actions"
+import { login } from "../store/actions/user.actions"
 import { Link, useNavigate } from "react-router-dom"
 import { ReactSVG } from "react-svg"
 import atlassian from "/img/atlassianLogo.svg"
@@ -38,7 +38,7 @@ export function HomePage() {
             <header className="home-header">
                 <nav className="home-nav">
                     <Link to={"/home"} className="logo-link">
-                        <ReactSVG src={atlassian} wrapper="span"/>
+                        <ReactSVG src={atlassian} wrapper="span" />
                     </Link>
 
                     <div className="btns">

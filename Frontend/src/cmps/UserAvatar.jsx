@@ -24,7 +24,7 @@ export function UserAvatar({
         ? memberProp
         : user
         ? user
-        : users.find((u) => u.id === memberId)
+        : users?.find((u) => u.id === memberId)
 
     const ratio = 120 / 250
     const dynamicStyles = member

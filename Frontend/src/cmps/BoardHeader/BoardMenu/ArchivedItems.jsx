@@ -1,14 +1,14 @@
 import { useSelector } from "react-redux"
 import { TaskPreview } from "../../Task/TaskPreview"
 import { ActionPopover } from "./ActionPopover"
-import { editTask, updateBoard } from "../../../store/board.actions"
+import { editTask, updateBoard } from "../../../store/actions/board.actions"
 import { utilService } from "../../../services/util.service"
 
 export function ArchivedItems() {
     const board = useSelector((state) => state.boardModule.board)
     const user = useSelector((state) => state.userModule.user)
     const closedTasks = board?.groups.flatMap((group) =>
-        group.tasks.filter((task) => task.closed),
+        group.tasks.filter((task) => task.closed)
     )
 
     function onDeleteTask(task) {
@@ -20,7 +20,7 @@ export function ArchivedItems() {
                 targetName: task.name,
                 groupName: groupName,
             },
-            user,
+            user
         )
 
         updateBoard({
@@ -28,7 +28,7 @@ export function ArchivedItems() {
             groups: board.groups.map((g) =>
                 g.id === task.idGroup
                     ? { ...g, tasks: g.tasks.filter((t) => t.id !== task.id) }
-                    : g,
+                    : g
             ),
             activities: [...board?.activities, newActivity],
         })
@@ -41,7 +41,7 @@ export function ArchivedItems() {
                 targetId: task.id,
                 targetName: task.name,
             },
-            user,
+            user
         )
         task.closed = false
         await updateBoard({
@@ -51,10 +51,10 @@ export function ArchivedItems() {
                     ? {
                           ...g,
                           tasks: g.tasks.map((t) =>
-                              t.id === task.id ? task : t,
+                              t.id === task.id ? task : t
                           ),
                       }
-                    : g,
+                    : g
             ),
             activities: [...board?.activities, newActivity],
         })

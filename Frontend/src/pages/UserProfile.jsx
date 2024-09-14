@@ -7,14 +7,14 @@ import { userService } from "../services/user.service"
 import { Skeleton } from "antd"
 import { MdAddAPhoto } from "react-icons/md"
 import CloudinaryUpload from "../cmps/CloudinaryUpload"
-import { editUser } from "../store/user.actions"
+import { editUser } from "../store/actions/user.actions"
 import { showSuccessMsg } from "../services/event-bus.service"
 import { useDocumentTitle } from "../customHooks/useDocumentTitle"
 export function UserProfile() {
     useDocumentTitle(`Profile | Pyello`)
     const params = useParams()
     const user = useSelector((state) => state.userModule.user)
-    const [currentUser, setCurrentUser] = useState({})
+    const [currentUser, setCurrentUser] = useState(null)
     const navigate = useNavigate()
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -23,14 +23,10 @@ export function UserProfile() {
             navigate(`/u/${params.userName}`)
         }
     }, [params])
+
     useEffect(() => {
         if (params.userName && user) {
-            if (params.userName === user.username) {
-                setCurrentUser(user)
-                setIsLoaded(true)
-            } else {
-                getUser(params.userName)
-            }
+            getUser(params.userName)
         }
     }, [params.userName, user])
 
@@ -43,23 +39,26 @@ export function UserProfile() {
         // { label: "Cards", to: `/u/${user?.username}/cards`, visible: true },
     ]
     async function getUser(username) {
-        setIsLoaded(false)
+        setIsLoaded(false) // Start loading
+
         try {
             const foundUser = await userService.getByUserName(username)
-            if (foundUser) {
+
+            // Check if the found user is the same as the current user or if it should update the state
+            if (foundUser && params.userName === foundUser.username) {
                 setCurrentUser(foundUser)
             } else {
-                setCurrentUser(null)
+                setCurrentUser(foundUser || null)
             }
         } catch (err) {
-            console.log(err)
+            console.error("Error fetching user:", err)
+            setCurrentUser(null) // Handle errors by setting user to null
         } finally {
-            setIsLoaded(true)
+            setIsLoaded(true) // End loading
         }
     }
 
     function uploadPhoto(data) {
-        console.log(data.secure_url)
         editUser({ ...user, imgUrl: data.secure_url })
         showSuccessMsg("Success")
     }
@@ -67,7 +66,7 @@ export function UserProfile() {
         <>
             {isLoaded ? (
                 <>
-                    {currentUser?.id ? (
+                    {currentUser ? (
                         <section className="user-profile">
                             <header className="header-members-details">
                                 {currentUser.id === user.id ? (

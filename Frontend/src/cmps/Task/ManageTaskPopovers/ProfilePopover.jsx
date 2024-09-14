@@ -2,7 +2,6 @@ import { CloseOutlined } from "@ant-design/icons"
 import { UserAvatar } from "../../UserAvatar"
 import { Link } from "react-router-dom"
 import { Popover } from "antd"
-import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 
@@ -13,7 +12,7 @@ export function ProfilePopover({
     placement = "bottomLeft",
 }) {
     const member = useSelector((state) =>
-        state.userModule.users.find((u) => u?.id === memberId),
+        state.userModule.users?.find((u) => u?.id === memberId),
     )
     const [isOpen, setIsOpen] = useState(false)
     const user = useSelector((state) => state.userModule.user)

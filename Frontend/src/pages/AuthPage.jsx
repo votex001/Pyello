@@ -3,7 +3,7 @@ import logo from "/img/trelloAuthLogo.svg"
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { useSelector } from "react-redux"
-import { login, signup } from "../store/user.actions"
+import { login, signup } from "../store/actions/user.actions"
 import { UserAvatar } from "../cmps/UserAvatar"
 import { Link, useSearchParams } from "react-router-dom"
 import { userService } from "../services/user.service"
@@ -133,7 +133,9 @@ export function AuthPage({ isLogin = false }) {
                                 <h1>Login to continue</h1>
                                 {!verified && (
                                     <input
-                                        className={`email ${alert ? "alert" : ""}`}
+                                        className={`email ${
+                                            alert ? "alert" : ""
+                                        }`}
                                         ref={emailInput}
                                         type="email"
                                         value={email}
@@ -162,7 +164,9 @@ export function AuthPage({ isLogin = false }) {
                                             <span className="pyello-icon icon-edit" />
                                         </span>
                                         <input
-                                            className={`password ${alert ? "alert" : ""}`}
+                                            className={`password ${
+                                                alert ? "alert" : ""
+                                            }`}
                                             ref={passInput}
                                             placeholder="Enter your password"
                                             type="password"

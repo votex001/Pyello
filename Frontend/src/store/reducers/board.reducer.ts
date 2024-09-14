@@ -1,11 +1,15 @@
-export const SET_MEMBERS = "SET_MEMBERS"
+import {
+    BoardAction,
+    BoardActionsTypes,
+    BoardState,
+} from "../interface/board.store"
+
 export const SET_BOARD = "SET_BOARD"
 export const EDIT_LABEL = "EDIT_LABEL"
 export const VIEW_BOARD = "VIEW_BOARD"
 
 export const SET_IS_EXPANDED = "SET_IS_EXPANDED"
 
-export const ADD_TASK = "ADD_TASK"
 export const EDIT_TASK = "EDIT_TASK"
 export const ADD_LABEL = "ADD_LABEL"
 export const DELETE_LABEL = "DELETE_LABEL"
@@ -15,41 +19,42 @@ export const EDIT_GROUP = "EDIT_GROUP"
 export const COPY_GROUP = "COPY_GROUP"
 export const MOVE_ALL_CARDS = "MOVE_ALL_CARDS"
 export const ARCHIVE_ALL_CARDS = "ARCHIVE_ALL_CARDS"
-export const SORT_GROUP = "SORT_GROUP"
 
-const initialState = {
-    board: {},
+const initialState: BoardState = {
+    board: null,
     isExpanded: true,
 }
 
-export function boardReducer(state = initialState, action) {
+export function boardReducer(state = initialState, action = {} as BoardAction) {
     var newState = state
     switch (action.type) {
-        case SET_BOARD:
+        case BoardActionsTypes.SET_BOARD:
             newState = { ...state, board: action.board }
             break
-        case SET_IS_EXPANDED:
+        case BoardActionsTypes.SET_IS_EXPANDED:
             newState = { ...state, isExpanded: action.isExpanded }
             break
 
-        case ADD_GROUP:
+        case BoardActionsTypes.ADD_GROUP:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    groups: [...state.board.groups, action.group],
+                    ...state.board!,
+                    groups: [...state.board!.groups, action.group],
                     updatedAt: new Date().getTime(),
-                    activities: [...state.board.activities, action.activity],
+                    activities: action.activity
+                        ? [...state.board!.activities, action.activity]
+                        : state.board!.activities || [],
                 },
             }
             break
 
-        case EDIT_GROUP:
+        case BoardActionsTypes.EDIT_GROUP:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    groups: state.board.groups.map((group) =>
+                    ...state.board!,
+                    groups: state.board!.groups.map((group) =>
                         group.id === action.group.id ? action.group : group
                     ),
                     updatedAt: new Date().getTime(),
@@ -57,23 +62,23 @@ export function boardReducer(state = initialState, action) {
             }
             break
 
-        case COPY_GROUP:
+        case BoardActionsTypes.COPY_GROUP:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
+                    ...state.board!,
                     groups: action.groups,
                     updatedAt: new Date().getTime(),
                 },
             }
             break
 
-        case MOVE_ALL_CARDS:
+        case BoardActionsTypes.MOVE_ALL_CARDS:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    groups: state.board.groups.map((g) => {
+                    ...state.board!,
+                    groups: state.board!.groups.map((g) => {
                         if (g.id === action.sourceGroup.id) {
                             return { ...g, tasks: action.sourceGroup.tasks }
                         }
@@ -90,12 +95,12 @@ export function boardReducer(state = initialState, action) {
             }
             break
 
-        case ARCHIVE_ALL_CARDS:
+        case BoardActionsTypes.ARCHIVE_ALL_CARDS:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    groups: state.board.groups.map((g) =>
+                    ...state.board!,
+                    groups: state.board!.groups.map((g) =>
                         g.id === action.group.id ? action.group : g
                     ),
                     updatedAt: new Date().getTime(),
@@ -103,30 +108,12 @@ export function boardReducer(state = initialState, action) {
             }
             break
 
-        case ADD_TASK:
+        case BoardActionsTypes.EDIT_TASK:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    groups: state.board.groups.map((group) =>
-                        group.id === action.task.idGroup
-                            ? {
-                                  ...group,
-                                  tasks: [...(group.tasks || []), action.task],
-                              }
-                            : group
-                    ),
-                    updatedAt: new Date().getTime(),
-                },
-            }
-            break
-
-        case EDIT_TASK:
-            newState = {
-                ...state,
-                board: {
-                    ...state.board,
-                    groups: state.board.groups.map((group) =>
+                    ...state.board!,
+                    groups: state.board!.groups.map((group) =>
                         group.id === action.task.idGroup
                             ? {
                                   ...group,
@@ -138,17 +125,19 @@ export function boardReducer(state = initialState, action) {
                             : group
                     ),
                     updatedAt: new Date().getTime(),
-                    activities: [...state.board.activities, action.activity],
+                    activities: action.activity
+                        ? [...state.board!.activities, action.activity]
+                        : state.board!.activities || [],
                 },
             }
             break
 
-        case EDIT_LABEL:
+        case BoardActionsTypes.EDIT_LABEL:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    labels: state.board.labels.map((l) =>
+                    ...state.board!,
+                    labels: state.board!.labels.map((l) =>
                         l.id === action.label.id ? action.label : l
                     ),
                     updatedAt: new Date().getTime(),
@@ -156,45 +145,32 @@ export function boardReducer(state = initialState, action) {
             }
             break
 
-        case ADD_LABEL:
+        case BoardActionsTypes.ADD_LABEL:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    labels: [...state.board.labels, action.label],
+                    ...state.board!,
+                    labels: [...state.board!.labels, action.label],
                 },
             }
             break
 
-        case SORT_GROUP:
+        case BoardActionsTypes.VIEW_BOARD:
             newState = {
                 ...state,
-                board: {
-                    ...state.board,
-                    groups: state.board.groups.map((g) =>
-                        g.id === action.group.id ? action.group : g
-                    ),
-                    updatedAt: new Date().getTime(),
-                },
+                board: { ...state.board!, viewedAt: Date.now() },
             }
             break
 
-        case VIEW_BOARD:
-            newState = {
-                ...state,
-                board: { ...state.board, viewedAt: Date.now() },
-            }
-            break
-
-        case DELETE_LABEL:
+        case BoardActionsTypes.DELETE_LABEL:
             newState = {
                 ...state,
                 board: {
-                    ...state.board,
-                    labels: state.board.labels.filter(
+                    ...state.board!,
+                    labels: state.board!.labels.filter(
                         (l) => l.id !== action.labelId
                     ),
-                    groups: state.board.groups.map((g) => ({
+                    groups: state.board!.groups.map((g) => ({
                         ...g,
                         tasks: g.tasks.map((t) => ({
                             ...t,
@@ -213,30 +189,3 @@ export function boardReducer(state = initialState, action) {
     }
     return newState
 }
-
-// unitTestReducer()
-
-// function unitTestReducer() {
-//     var state = initialState
-//     const board1 = { _id: 'b101', title: 'Board ' + parseInt(Math.random() * 10) }
-//     const board2 = { _id: 'b102', title: 'Board ' + parseInt(Math.random() * 10) }
-
-//     state = boardReducer(state, { type: SET_BOARDS, boards: [board1] })
-//     console.log('After SET_BOARDS:', state)
-
-//     state = boardReducer(state, { type: ADD_BOARD, board: board2 })
-//     console.log('After ADD_BOARD:', state)
-
-//     state = boardReducer(state, { type: UPDATE_BOARD, board: { ...board2, title: 'Good' } })
-//     console.log('After UPDATE_BOARD:', state)
-
-//     state = boardReducer(state, { type: REMOVE_BOARD, boardId: board2._id })
-//     console.log('After REMOVE_BOARD:', state)
-
-//     const msg = { _id: 'm' + parseInt(Math.random() * 100), txt: 'Some msg' }
-//     state = boardReducer(state, { type: ADD_BOARD_MSG, boardId: board1._id, msg })
-//     console.log('After ADD_BOARD_MSG:', state)
-
-//     state = boardReducer(state, {type: REMOVE_BOARD, boardId: board1._id})
-//     console.log('After REMOVE_BOARD:', state)
-// }

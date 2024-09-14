@@ -4,7 +4,7 @@ import themeLight from "/img/workspace/theme-light.svg"
 import themeDark from "/img/workspace/theme-dark.svg"
 import themeDefault from "/img/workspace/theme-default.svg"
 import { useSelector } from "react-redux"
-import { editUser } from "../../store/user.actions"
+import { editUser } from "../../store/actions/user.actions"
 
 export function WorkspaceThemePopover({ anchorEl, setDarkMode, darkMode }) {
     const user = useSelector((state) => state.userModule.user)
@@ -64,7 +64,9 @@ export function WorkspaceThemePopover({ anchorEl, setDarkMode, darkMode }) {
             </span>
         </label>,
         <label
-            className={`theme-switch ${darkMode === "default" ? "checked" : ""}`}
+            className={`theme-switch ${
+                darkMode === "default" ? "checked" : ""
+            }`}
         >
             <input
                 className="theme-radio"

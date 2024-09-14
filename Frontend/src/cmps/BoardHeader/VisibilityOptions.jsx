@@ -5,14 +5,14 @@ import privateIcon from "/img/board-index/headerImgs/privateIcon.svg"
 import publicIcon from "/img/board-index/headerImgs/publicIcon.svg"
 import peopleIcon from "/img/board-index/headerImgs/peopleIcon.svg"
 import permissionIcon from "/img/board-index/headerImgs/permissionIcon.svg"
-import { updateBoard } from "../../store/board.actions"
+import { updateBoard } from "../../store/actions/board.actions"
 import { utilService } from "../../services/util.service"
 
 export function VisibilityOptions({ setOpenListMenu, setPermission }) {
     const [hasAcces, setHasAcces] = useState(false)
     const user = useSelector((state) => state.userModule.user)
     const currentMember = useSelector((state) =>
-        state.boardModule.board.members.find((member) => member.id === user.id),
+        state.boardModule.board.members.find((member) => member.id === user.id)
     )
     const board = useSelector((state) => state.boardModule.board)
     useEffect(() => {
@@ -42,7 +42,7 @@ export function VisibilityOptions({ setOpenListMenu, setPermission }) {
                 type: "changeVisibility",
                 visibility: value,
             },
-            user,
+            user
         )
         board.prefs.permissionLevel = value
         board.activities.push(newActivity)

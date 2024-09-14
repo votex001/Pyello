@@ -20,8 +20,8 @@ import {
     moveTask,
     loadBoard,
     loadBoardBySocket,
-} from "../store/board.actions"
-import { editUser, loadWorkspaceUsers } from "../store/user.actions"
+} from "../store/actions/board.actions.js"
+import { editUser, loadWorkspaceUsers } from "../store/actions/user.actions.js"
 
 import { AddGroupBtn } from "../cmps/Group/AddGroupBtn"
 import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal.jsx"

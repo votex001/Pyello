@@ -2,7 +2,7 @@ import TextArea from "antd/es/input/TextArea"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router"
-import { editUser } from "../../store/user.actions"
+import { editUser } from "../../store/actions/user.actions"
 
 export function UserSettings() {
     const params = useParams()
@@ -18,8 +18,8 @@ export function UserSettings() {
     async function onSubmitForm(e) {
         e.preventDefault()
         const ans = await editUser({ ...user, ...inputs })
-        console.log(ans)
         navigate(`/u/${inputs.username}`)
+        // history.replaceState(null, "", `/u/${inputs.username}`)
     }
     useEffect(() => {
         if (logginedUser) {

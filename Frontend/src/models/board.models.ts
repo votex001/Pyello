@@ -1,4 +1,5 @@
 import { Activity } from "./activities.models"
+import { Group } from "./task&groups.models"
 
 export interface Label {
     id: string
@@ -31,8 +32,10 @@ export interface Board {
     }[]
     checkListTaskIds: string[]
     name: string
-    groups: any[] // Adjust this type based on your actual groups structure
+    groups: Group[]
     labels: Label[]
-    coverImgs: any[] // Adjust this type based on the structure of taskCoverImgs
+    coverImgs?: any[]
     activities: Activity[]
+    updatedAt?: number
+    viewedAt?: number
 }

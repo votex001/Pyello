@@ -1,8 +1,13 @@
-import { userService } from "../services/user.service"
-import { store } from "../store/store.js"
+import { userService } from "../../services/user.service.js"
+import { store } from "../store.js"
 
-import { EDIT_USERS, SET_USERS, SET_USER, EDIT_USER } from "./user.reducer"
-import { httpService } from "../services/http.service"
+import {
+    EDIT_USERS,
+    SET_USERS,
+    SET_USER,
+    EDIT_USER,
+} from "../reducers/user.reducer.js"
+import { httpService } from "../../services/http.service.js"
 
 export async function loadWorkspaceUsers(userIds) {
     try {
@@ -20,9 +25,9 @@ export async function loadWorkspaceUsers(userIds) {
 
 export async function editUser(user) {
     try {
-        store.dispatch({ type: EDIT_USER, user })
+        const newUser = await userService.updateUser(user)
         store.dispatch({ type: EDIT_USERS, user })
-        await userService.updateUser(user)
+        store.dispatch({ type: EDIT_USER, user })
     } catch (err) {
         console.log("UserActions: err in editUser", err)
     }

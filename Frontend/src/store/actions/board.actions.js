@@ -1,6 +1,6 @@
-import { boardService } from "../services/board.service"
-import { utilService } from "../services/util.service"
-import { store } from "./store"
+import { boardService } from "../../services/board.service"
+import { utilService } from "../../services/util.service"
+import { store } from "../store"
 import { editWorkspaceBoard } from "./workspace.actions"
 import {
     SET_BOARD,
@@ -12,15 +12,13 @@ import {
     COPY_GROUP,
     MOVE_ALL_CARDS,
     ARCHIVE_ALL_CARDS,
-    SORT_GROUP,
-    VIEW_BOARD,
     ADD_LABEL,
     DELETE_LABEL,
-} from "./board.reducer"
+} from "../reducers/board.reducer"
 import { viewWorkspaceBoard } from "./workspace.actions"
-import { REMOVE_BOARD } from "./workspace.reducer"
+import { REMOVE_BOARD } from "../reducers/workspace.reducer"
 import { loadWorkspaceUsers } from "./user.actions"
-import { httpService } from "../services/http.service"
+import { httpService } from "../../services/http.service"
 
 export async function loadBoard(boardId) {
     try {
@@ -428,7 +426,7 @@ export async function sortGroup(boardId, groupId, sortBy, sortOrder) {
         ),
         updatedAt: new Date().getTime(),
     }
-    store.dispatch({ type: SORT_GROUP, group: newGroup })
+    store.dispatch({ type: EDIT_GROUP, group: newGroup })
     await boardService.save(newBoard)
 }
 

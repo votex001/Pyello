@@ -1,7 +1,7 @@
 import { Modal } from "antd"
 import { FaLink } from "react-icons/fa"
 import { useSelector } from "react-redux"
-import { updateBoard } from "../../store/board.actions"
+import { updateBoard } from "../../store/actions/board.actions"
 import { utilService } from "../../services/util.service"
 import { UserAvatar } from "../UserAvatar"
 import { useState } from "react"
