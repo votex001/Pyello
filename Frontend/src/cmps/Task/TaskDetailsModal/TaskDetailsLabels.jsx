@@ -46,7 +46,7 @@ export function TaskDetailsLabels({ task, editTask, labelActions }) {
                                                     labelInfo.id
                                                         ? utilService.getColorHashByName(
                                                               labelInfo.color
-                                                          ).hoverdBgColor
+                                                          ).hoveredBgColor
                                                         : utilService.getColorHashByName(
                                                               labelInfo.color
                                                           ).bgColor,

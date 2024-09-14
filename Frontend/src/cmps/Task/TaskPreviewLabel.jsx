@@ -28,7 +28,7 @@ export function TaskPreviewLabel({ label }) {
                     backgroundColor:
                         hoveredLabelId === label.id
                             ? utilService.getColorHashByName(label.color)
-                                  .hoverdBgColor
+                                  .hoveredBgColor
                             : utilService.getColorHashByName(label.color)
                                   .bgColor,
                     color: utilService.getColorHashByName(label.color)

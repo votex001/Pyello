@@ -220,7 +220,7 @@ export function ManageLabelsPopover({
                                     style={{
                                         backgroundColor:
                                             hoveredColor === color.color
-                                                ? color.hoverdBgColor
+                                                ? color.hoveredBgColor
                                                 : color.bgColor,
                                     }}
                                     onClick={() => setEditColor(color.color)}
@@ -340,7 +340,7 @@ function LabelsOption({ taskLabel, selectLabel, editColor }) {
                             hoveredLabelId === taskLabel.id
                                 ? utilService.getColorHashByName(
                                       taskLabel.color
-                                  ).hoverdBgColor
+                                  ).hoveredBgColor
                                 : utilService.getColorHashByName(
                                       taskLabel.color
                                   ).bgColor,

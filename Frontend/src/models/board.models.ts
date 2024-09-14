@@ -9,7 +9,7 @@ export interface Label {
 export interface LabelColorOption {
     color: string
     bgColor: string
-    hoverdBgColor: string
+    hoveredBgColor: string
     darkFontColor: string
     lightFontColor: string
     isCover?: boolean // Optional, only for certain labels
