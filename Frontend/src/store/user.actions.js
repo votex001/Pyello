@@ -1,4 +1,4 @@
-import { userService } from "../services/user.service.js"
+import { userService } from "../services/user.service"
 import { store } from "../store/store.js"
 
 import { EDIT_USERS, SET_USERS, SET_USER, EDIT_USER } from "./user.reducer"
