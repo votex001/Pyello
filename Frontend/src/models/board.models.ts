@@ -15,6 +15,11 @@ export interface LabelColorOption {
     isCover?: boolean // Optional, only for certain labels
     brightness?: "light" // Optional, only for certain labels
 }
+export interface Member {
+    id: string
+    permissionStatus: string
+    fullName: string
+}
 
 export interface Board {
     id?: string
@@ -25,17 +30,13 @@ export interface Board {
         backgroundBrightness: string
         backgroundImageScaled: string | null
     }
-    members: {
-        id: string
-        permissionStatus: string
-        fullName: string
-    }[]
+    members: Member[]
     checkListTaskIds: string[]
     name: string
     groups: Group[]
     labels: Label[]
-    coverImgs?: any[]
+    coverImgs: any[]
     activities: Activity[]
-    updatedAt?: number
-    viewedAt?: number
+    updatedAt: number
+    viewedAt: number
 }
