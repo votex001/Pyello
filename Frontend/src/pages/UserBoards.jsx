@@ -47,7 +47,7 @@ export function UserBoards() {
                     </header>
                     <article className="section-content">
                         {boards
-                            .filter((board) =>
+                            ?.filter((board) =>
                                 user?.starredBoardIds.includes(board.id)
                             )
                             .map((board) => (
@@ -70,7 +70,7 @@ export function UserBoards() {
                     </header>
                     <article className="section-content">
                         {boards
-                            .sort((a, b) => b.viewedAt - a.viewedAt)
+                            ?.sort((a, b) => b.viewedAt - a.viewedAt)
                             .filter((b) => !b.closed)
                             .slice(0, 4)
                             .map((board) => (
@@ -102,7 +102,7 @@ export function UserBoards() {
                     </article>
                     <article className="section-content workspace-boards">
                         {boards
-                            .sort((a, b) => b.updatedAt - a.updatedAt) // Sort boards by updatedAt in descending order
+                            ?.sort((a, b) => b.updatedAt - a.updatedAt) // Sort boards by updatedAt in descending order
                             .filter((b) => !b.closed)
                             .map((board) => (
                                 <BoardTab
@@ -122,7 +122,7 @@ export function UserBoards() {
                                     </p>
                                     <p className="board-tab-add-subtitle">
                                         {10 -
-                                            boards.filter((b) => !b.closed)
+                                            boards?.filter((b) => !b.closed)
                                                 .length}{" "}
                                         remaining
                                     </p>
@@ -134,7 +134,7 @@ export function UserBoards() {
                 <section className="bottom">
                     <button
                         className="btn"
-                        disabled={!boards.filter((b) => b.closed).length > 0}
+                        disabled={!boards?.filter((b) => b.closed).length > 0}
                         onClick={() => setIsOpenModal(true)}
                     >
                         View all closed boards

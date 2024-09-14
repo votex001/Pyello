@@ -19,7 +19,7 @@ interface SetBoardsAction {
 
 interface EditWorkspaceAction {
     type: WorkspaceActionTypes.EDIT_WORKSPACE
-    boards: Board[]
+    board: Board
 }
 
 interface AddBoardAction {

@@ -1,7 +1,6 @@
 import { boardService } from "../../services/board.service"
 import { utilService } from "../../services/util.service"
 import { workspaceService } from "../../services/workspace.service"
-import { setBoard } from "./board.actions"
 import { store } from "../store"
 import {
     EDIT_WORKSPACE,

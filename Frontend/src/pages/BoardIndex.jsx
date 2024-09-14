@@ -226,7 +226,7 @@ export function BoardIndex() {
             await moveTask(dragTaskEvent, board, user)
         }
     }
-    return board.id ? (
+    return board ? (
         <section className="board-index">
             <div className="bg">
                 {board && (

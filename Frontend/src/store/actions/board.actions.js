@@ -23,7 +23,7 @@ import { httpService } from "../../services/http.service"
 export async function loadBoard(boardId) {
     try {
         const currentBoard = store.getState().boardModule.board
-        if (currentBoard.id === boardId) {
+        if (currentBoard && currentBoard.id === boardId) {
             return currentBoard
         }
         const boardData = await boardService.getById(boardId)
