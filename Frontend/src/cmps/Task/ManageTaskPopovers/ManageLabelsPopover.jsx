@@ -7,6 +7,7 @@ import { SvgButton } from "../../CustomCpms/SvgButton"
 import { Tooltip } from "antd"
 import { CheckBox } from "../../CustomCpms/CheckBox"
 import Popup from "@atlaskit/popup"
+import { boardLabelColorOptions } from "../../../services/Data"
 export function ManageLabelsPopover({
     anchorEl,
     editTask,
@@ -210,7 +211,7 @@ export function ManageLabelsPopover({
                     />
                     <label className="labels-sub-title">Select a color</label>
                     <article className="color-picker-wrapper">
-                        {utilService.boardLabelColorOptions
+                        {boardLabelColorOptions
                             .filter((color) => color.color !== "none")
                             .map((color) => (
                                 <div

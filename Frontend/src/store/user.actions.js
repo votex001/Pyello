@@ -1,9 +1,8 @@
 import { userService } from "../services/user.service.js"
-import { socketService } from "../services/socket.service.js"
 import { store } from "../store/store.js"
 
 import { EDIT_USERS, SET_USERS, SET_USER, EDIT_USER } from "./user.reducer"
-import { httpService } from "../services/http.service.js"
+import { httpService } from "../services/http.service"
 
 export async function loadWorkspaceUsers(userIds) {
     try {

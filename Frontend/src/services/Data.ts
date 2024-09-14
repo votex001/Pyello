@@ -1,3 +1,6 @@
+import { LabelColorOption } from "../models/board.models"
+import { utilService } from "./util.service"
+
 export const bgImgs = [
     {
         background: "668946a613fbf45a2101e3aa",
@@ -105,10 +108,7 @@ export const bgImgs = [
         title: "Egor Litvinov",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/f5df50ec4659bd165a62b9f2218b116d/photo-1725012858121-9b336157bea4",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1725012858121-9b336157bea4?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDF8MzE3MDk5fHx8fHwyfHwxNzI1NDc5NTIzfA&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 67,
@@ -133,10 +133,7 @@ export const bgImgs = [
         title: "Kevin Oetiker",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/3a065a5a616ef4412890438396b970c1/photo-1723451150503-a82e2ccf121e",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1723451150503-a82e2ccf121e?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDN8MzE3MDk5fHx8fHwyfHwxNzI1NDc5NTIzfA&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 80,
@@ -161,10 +158,7 @@ export const bgImgs = [
         title: "Kevin Wang",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/42f5deedb9efb6332bb026e5e8c2bebe/photo-1723653508269-7b2abc5d8e74",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1723653508269-7b2abc5d8e74?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDZ8MzE3MDk5fHx8fHwyfHwxNzI1NDc5NTIzfA&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -189,10 +183,7 @@ export const bgImgs = [
         title: "Annie Spratt",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/85439380f73d12e4291be6ee99a907a6/photo-1708162664628-6913e8797929",
-        backgroundTile: false,
         backgroundBrightness: "light",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1708162664628-6913e8797929?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDd8MzE3MDk5fHx8fHwyfHwxNzI1NDc5NTIzfA&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 133,
@@ -217,10 +208,7 @@ export const bgImgs = [
         title: "Evgeni Tcherkasski",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/d40b8ef1fec8580648dd8fceac5a0665/photo-1724063590065-7edf4195e215",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1724063590065-7edf4195e215?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDh8MzE3MDk5fHx8fHwyfHwxNzI1NDc5NTIzfA&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 73,
@@ -245,10 +233,7 @@ export const bgImgs = [
         title: "eberhard 🖐 grossgasteiger",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/33e3be69db8023322704d34a7db66d23/photo-1723908183237-d8af011f465d",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1723908183237-d8af011f465d?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDl8MzE3MDk5fHx8fHwyfHwxNzI1NDc5NTIzfA&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -273,10 +258,7 @@ export const bgImgs = [
         title: "Solen Feyissa",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/ee03d17d5c7350178864dc9e03b8455e/photo-1722755417793-6924c6b5ba93",
-        backgroundTile: false,
         backgroundBrightness: "light",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1722755417793-6924c6b5ba93?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDEwfDMxNzA5OXx8fHx8Mnx8MTcyNTQ3OTUyM3w&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 56,
@@ -301,10 +283,7 @@ export const bgImgs = [
         title: "Slava Auchynnikau",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/5535112e2b2d65b9a27099cbb7c92738/photo-1723556146809-2dcb7c1e0bf1",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1723556146809-2dcb7c1e0bf1?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDExfDMxNzA5OXx8fHx8Mnx8MTcyNTQ3OTUyM3w&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -329,10 +308,7 @@ export const bgImgs = [
         title: "Tim Oun",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/1cf5e0489328be1186d91141c502dab1/photo-1724010930544-59b11726a226",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1724010930544-59b11726a226?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDEyfDMxNzA5OXx8fHx8Mnx8MTcyNTQ3OTUyM3w&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -357,10 +333,7 @@ export const bgImgs = [
         title: "Alex Moliski",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/9c9c7a97b7901de64df6f407cd651d1c/photo-1693341052623-c70686d937a4",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1693341052623-c70686d937a4?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDIxfDMxNzA5OXx8fHx8Mnx8MTcyNTQ3OTUyM3w&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 75,
@@ -384,11 +357,8 @@ export const bgImgs = [
         backgroundColor: "null",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/1f9613dae0b1d97dbcc7a9eebcce8152/photo-1721633617180-97c67428a48e",
-        backgroundTile: false,
         title: "Alexandros Giannakakis",
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1721633617180-97c67428a48e?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDQ3fDMxNzA5OXx8fHx8Mnx8MTcyNTUzMDEzMnw&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -413,10 +383,7 @@ export const bgImgs = [
         title: "Noam Cohen",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/7a8338b6dc39b2296692d49e14ae4181/photo-1691157915037-68576ba139b1",
-        backgroundTile: false,
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1691157915037-68576ba139b1?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDU2fDMxNzA5OXx8fHx8Mnx8MTcyNTUzMDEzMnw&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -440,11 +407,8 @@ export const bgImgs = [
         backgroundColor: "null",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/1d152b93e814badf059d45c80d5e75ba/photo-1721633616855-d483ff7c784a",
-        backgroundTile: false,
         title: "Alexandros Giannakakis",
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1721633616855-d483ff7c784a?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDU5fDMxNzA5OXx8fHx8Mnx8MTcyNTUzMDEzMnw&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -468,11 +432,8 @@ export const bgImgs = [
         backgroundColor: "null",
         backgroundImage:
             "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/original/2e05b5f46c5a907bf532a8c2637ce857/photo-1721041879224-ff011603ada5",
-        backgroundTile: false,
         title: "Fiona",
         backgroundBrightness: "dark",
-        sharedSourceUrl:
-            "https://images.unsplash.com/photo-1721041879224-ff011603ada5?ixid=M3w3MDY2fDB8MXxjb2xsZWN0aW9ufDc1fDMxNzA5OXx8fHx8Mnx8MTcyNTUzMDI2MXw&ixlib=rb-4.0.3&w=2560&h=2048&q=90",
         backgroundImageScaled: [
             {
                 width: 140,
@@ -569,7 +530,8 @@ export const bgColors = [
     {
         background: "red",
         backgroundColor: "#B04632",
-        backgroundImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAADICAMAAAA9W+hXAAAAA1BMVEWwRjIM0HrJAAAANElEQVR4nO3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAN1+AABVhDU2QAAAABJRU5ErkJggg==",
+        backgroundImage:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAADICAMAAAA9W+hXAAAAA1BMVEWwRjIM0HrJAAAANElEQVR4nO3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAN1+AABVhDU2QAAAABJRU5ErkJggg==",
         backgroundBrightness: "dark",
     },
     {
@@ -606,5 +568,512 @@ export const bgColors = [
         backgroundImage:
             "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAADICAMAAAA9W+hXAAAAA1BMVEWDjJFUN+yWAAAANElEQVR4nO3BMQEAAADCoPVP7WsIoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAN1+AABVhDU2QAAAABJRU5ErkJggg==",
         backgroundBrightness: "dark",
+    },
+]
+
+export const boardLabelColorOptions: LabelColorOption[] = [
+    {
+        color: "skeleton",
+        bgColor: "#091e420f",
+        hoverdBgColor: "#091e4224",
+        darkFontColor: "#B6C2CF",
+        lightFontColor: "#172B4D",
+    },
+    {
+        color: "subtle green",
+        bgColor: "#baf3db",
+        hoverdBgColor: "#7ee2b8",
+        darkFontColor: "#BAF3DB",
+        lightFontColor: "#164B35",
+    },
+    {
+        color: "subtle yellow",
+        bgColor: "#f8e6a0",
+        hoverdBgColor: "#F5CD47",
+        darkFontColor: "#F8E6A0",
+        lightFontColor: "#533F04",
+    },
+    {
+        color: "subtle orange",
+        bgColor: "#fedec8",
+        hoverdBgColor: "#FEC195",
+        darkFontColor: "#FEDEC8",
+        lightFontColor: "#702E00",
+    },
+    {
+        color: "subtle red",
+        bgColor: "#ffd5d2",
+        hoverdBgColor: "#FD9891",
+        darkFontColor: "#FFD5D2",
+        lightFontColor: "#5D1F1A",
+    },
+    {
+        color: "subtle purple",
+        bgColor: "#dfd8fd",
+        hoverdBgColor: "#B8ACF6",
+        darkFontColor: "#DFD8FD",
+        lightFontColor: "#352C63",
+    },
+
+    {
+        color: "green",
+        bgColor: "#4bce97",
+        hoverdBgColor: "#7EE2B8",
+        isCover: true,
+        darkFontColor: "#BAF3DB",
+        lightFontColor: "#164B35",
+        brightness: "light",
+    },
+    {
+        color: "yellow",
+        bgColor: "#f5cd47",
+        hoverdBgColor: "#E2B203",
+        isCover: true,
+        darkFontColor: "#F8E6A0",
+        lightFontColor: "#533F04",
+        brightness: "light",
+    },
+    {
+        color: "orange",
+        bgColor: "#fea362",
+        hoverdBgColor: "#FEC195",
+        isCover: true,
+        darkFontColor: "#FEDEC8",
+        lightFontColor: "#702E00",
+        brightness: "light",
+    },
+    {
+        color: "red",
+        bgColor: "#f87168",
+        hoverdBgColor: "#FD9891",
+        isCover: true,
+        darkFontColor: "#FFD5D2",
+        lightFontColor: "#5D1F1A",
+        brightness: "light",
+    },
+    {
+        color: "purple",
+        bgColor: "#9f8fef",
+        hoverdBgColor: "#B8ACF6",
+        isCover: true,
+        darkFontColor: "#DFD8FD",
+        lightFontColor: "#352C63",
+        brightness: "light",
+    },
+
+    {
+        color: "bold green",
+        bgColor: "#1f845a",
+        hoverdBgColor: "#216E4E",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold yellow",
+        bgColor: "#946f01",
+        hoverdBgColor: "#7F5F01",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold orange",
+        bgColor: "#c25100",
+        hoverdBgColor: "#A54800",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold red",
+        bgColor: "#c9372c",
+        hoverdBgColor: "#AE2E24",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold purple",
+        bgColor: "#6e5dc6",
+        hoverdBgColor: "#5E4DB2",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+
+    //
+
+    {
+        color: "subtle blue",
+        bgColor: "#cce0ff",
+        hoverdBgColor: "#85B8FF",
+        darkFontColor: "#CCE0FF",
+        lightFontColor: "#09326C",
+    },
+    {
+        color: "subtle sky",
+        bgColor: "#c6edfb",
+        hoverdBgColor: "#9DD9EE",
+        darkFontColor: "#C6EDFB",
+        lightFontColor: "#164555",
+    },
+    {
+        color: "subtle lime",
+        bgColor: "#d3f1a7",
+        hoverdBgColor: "#B3DF72",
+        darkFontColor: "#D3F1A7",
+        lightFontColor: "#37471F",
+    },
+    {
+        color: "subtle pink",
+        bgColor: "#fdd0ec",
+        hoverdBgColor: "#F797D2",
+        darkFontColor: "#FDD0EC",
+        lightFontColor: "#50253F",
+    },
+    {
+        color: "subtle black",
+        bgColor: "#dcdfe4",
+        hoverdBgColor: "#B3B9C4",
+        darkFontColor: "#DEE4EA",
+        lightFontColor: "#091E42",
+    },
+
+    {
+        color: "blue",
+        bgColor: "#579dff",
+        hoverdBgColor: "#85B8FF",
+        isCover: true,
+        darkFontColor: "#CCE0FF",
+        lightFontColor: "#091E42",
+        brightness: "light",
+    },
+    {
+        color: "sky",
+        bgColor: "#6cc3e0",
+        hoverdBgColor: "#9DD9EE",
+        isCover: true,
+        darkFontColor: "#C6EDFB",
+        lightFontColor: "#164555",
+        brightness: "light",
+    },
+    {
+        color: "lime",
+        bgColor: "#94c748",
+        hoverdBgColor: "#B3DF72",
+        isCover: true,
+        darkFontColor: "#D3F1A7",
+        lightFontColor: "#37471F",
+        brightness: "light",
+    },
+    {
+        color: "pink",
+        bgColor: "#e774bb",
+        hoverdBgColor: "#F797D2",
+        isCover: true,
+        darkFontColor: "#FDD0EC",
+        lightFontColor: "#50253F",
+        brightness: "light",
+    },
+    {
+        color: "black",
+        bgColor: "#8590a2",
+        hoverdBgColor: "#B3B9C4",
+        isCover: true,
+        darkFontColor: "#DEE4EA",
+        lightFontColor: "#091E42",
+        brightness: "light",
+    },
+
+    {
+        color: "bold blue",
+        bgColor: "#0c66e4",
+        hoverdBgColor: "#0055CC",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold sky",
+        bgColor: "#227d9b",
+        hoverdBgColor: "#206A83",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold lime",
+        bgColor: "#5b7f24",
+        hoverdBgColor: "#4C6B1F",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold pink",
+        bgColor: "#ae4787",
+        hoverdBgColor: "#943D73",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+    {
+        color: "bold black",
+        bgColor: "#626f86",
+        hoverdBgColor: "#44546F",
+        darkFontColor: "#1D2125",
+        lightFontColor: "#fff",
+    },
+
+    //
+    {
+        color: "none",
+        bgColor: "#091e420f",
+        hoverdBgColor: "#091e4224",
+        darkFontColor: "#B6C2CF",
+        lightFontColor: "#172B4D",
+    },
+]
+
+export const taskCoverImgs = [
+    {
+        bg: "#f2a912",
+        fontColor: "#fff",
+        id: "kmeEGE",
+        photographer: "Tomas Malik",
+        scaledImgs: [
+            {
+                id: "6684dcb2ec30a8857a4446d6",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x93/6d7f2d57ebfce6e57a63f9cacc470bb6/photo-1719329411191-be2cda36a37c.webp",
+                bytes: 3766,
+                height: 93,
+                width: 140,
+            },
+            {
+                id: "6684dcb2ec30a8857a4466d7",
+                _id: "6684dcb2ec30a8857a4466d7",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x171/6d7f2d57ebfce6e57a63f9cacc470bb6/photo-1719329411191-be2cda36a37c.webp",
+                bytes: 8914,
+                height: 171,
+                width: 256,
+            },
+            {
+                id: "6684dcb2ec30a8857a4466d8",
+                _id: "6684dcb2ec30a8857a4466d8",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/6d7f2d57ebfce6e57a63f9cacc470bb6/photo-1719329411191-be2cda36a37c.webp",
+                bytes: 20338,
+                height: 320,
+                width: 480,
+            },
+        ],
+        brightness: "light",
+    },
+    {
+        bg: "#a4d4e4",
+        fontColor: "#000",
+        id: "LrFmk",
+        photographer: "Furkan Elveren",
+        scaledImgs: [
+            {
+                id: "6684dcc62182ea43e6103e60",
+                _id: "6684dcc62182ea43e6103e60",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x93/0f86a0bbb044d2bfc21f224456f2044a/photo-1719328555718-90eb4fac3e31.webp",
+                bytes: 2470,
+                height: 93,
+                width: 140,
+            },
+            {
+                id: "6684dcc62182ea43e6103e61",
+                _id: "6684dcc62182ea43e6103e61",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x171/0f86a0bbb044d2bfc21f224456f2044a/photo-1719328555718-90eb4fac3e31.webp",
+                bytes: 6980,
+                height: 171,
+                width: 256,
+            },
+            {
+                id: "6684dcc62182ea43e6103e62",
+                _id: "6684dcc62182ea43e6103e62",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/0f86a0bbb044d2bfc21f224456f2044a/photo-1719328555718-90eb4fac3e31.webp",
+                bytes: 21922,
+                height: 320,
+                width: 480,
+            },
+        ],
+        brightness: "light",
+    },
+    {
+        bg: "#7e8d90",
+        fontColor: "#000",
+        id: "PsFBt",
+        photographer: "Plwel Czerwinski",
+        scaledImgs: [
+            {
+                id: "6684dd435af9199cb6283700",
+                _id: "6684dd435af9199cb6283700",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/67x100/753af4c32d1d87db146413e85ab15ece/photo-1719844841024-3c7166816fc7.webp",
+                bytes: 1104,
+                height: 100,
+                width: 67,
+            },
+            {
+                id: "6684dd435af9199cb6283701",
+                _id: "6684dd435af9199cb6283701",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/128x192/753af4c32d1d87db146413e85ab15ece/photo-1719844841024-3c7166816fc7.webp",
+                bytes: 2946,
+                height: 192,
+                width: 128,
+            },
+            {
+                id: "6684dd435af9199cb6283702",
+                _id: "6684dd435af9199cb6283702",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/320x480/753af4c32d1d87db146413e85ab15ece/photo-1719844841024-3c7166816fc7.webp",
+                bytes: 13346,
+                height: 480,
+                width: 320,
+            },
+        ],
+        brightness: "light",
+    },
+    {
+        bg: "#d9d3c3",
+        fontColor: "#000",
+        id: "ZSfv7J",
+        photographer: "Eberhard Grossgasteiger",
+        scaledImgs: [
+            {
+                id: "6684dcba9bd9eadcbe170caa",
+                _id: "6684dcba9bd9eadcbe170caa",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x93/45fe2b2cb99b9307e941023890f4fe2f/photo-1719217469234-bb53c12ed515.webp",
+                bytes: 1472,
+                height: 93,
+                width: 140,
+            },
+            {
+                id: "6684dcba9bd9eadcbe170cab",
+                _id: "6684dcba9bd9eadcbe170cab",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x171/45fe2b2cb99b9307e941023890f4fe2f/photo-1719217469234-bb53c12ed515.webp",
+                bytes: 3522,
+                height: 171,
+                width: 256,
+            },
+            {
+                id: "6684dcba9bd9eadcbe170cac",
+                _id: "6684dcba9bd9eadcbe170cac",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/45fe2b2cb99b9307e941023890f4fe2f/photo-1719217469234-bb53c12ed515.webp",
+                bytes: 9048,
+                height: 320,
+                width: 480,
+            },
+        ],
+        brightness: "light",
+    },
+    {
+        bg: "#e2e6e6",
+        fontColor: "#fff",
+        id: "Ui4Dng",
+        photographer: "George Bale",
+        scaledImgs: [
+            {
+                id: "6684dd0c0378ec4fd5affe96",
+                _id: "6684dd0c0378ec4fd5affe96",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x79/c1e752f0947b58d7bf9cd82cd2855e0f/photo-1719357101152-32d926e518d4.webp",
+                bytes: 1994,
+                height: 79,
+                width: 140,
+            },
+            {
+                id: "6684dd0c0378ec4fd5affe97",
+                _id: "6684dd0c0378ec4fd5affe97",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x144/c1e752f0947b58d7bf9cd82cd2855e0f/photo-1719357101152-32d926e518d4.webp",
+                bytes: 5474,
+                height: 144,
+                width: 256,
+            },
+            {
+                id: "6684dd0c0378ec4fd5affe98",
+                _id: "6684dd0c0378ec4fd5affe98",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x270/c1e752f0947b58d7bf9cd82cd2855e0f/photo-1719357101152-32d926e518d4.webp",
+                bytes: 17200,
+                height: 270,
+                width: 480,
+            },
+        ],
+        brightness: "light",
+    },
+    {
+        bg: "#f2f2fb",
+        fontColor: "#000",
+        id: "W3Vgbg",
+        photographer: "Eberhard Grossgasteiger",
+        scaledImgs: [
+            {
+                id: "6684dd1343b8a9a9a6298b97",
+                _id: "6684dd1343b8a9a9a6298b97",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/67x100/f09c338fecffe282c5311ee0c4dccd76/photo-1719216324560-523fc4ddb8b9.webp",
+                bytes: 1230,
+                height: 100,
+                width: 67,
+            },
+            {
+                id: "6684dd1343b8a9a9a6298b98",
+                _id: "6684dd1343b8a9a9a6298b98",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/128x192/f09c338fecffe282c5311ee0c4dccd76/photo-1719216324560-523fc4ddb8b9.webp",
+                bytes: 3350,
+                height: 192,
+                width: 128,
+            },
+            {
+                id: "6684dd1343b8a9a9a6298b99",
+                _id: "6684dd1343b8a9a9a6298b99",
+                scaled: true,
+                url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/320x480/f09c338fecffe282c5311ee0c4dccd76/photo-1719216324560-523fc4ddb8b9.webp",
+                bytes: 17352,
+                height: 480,
+                width: 320,
+            },
+        ],
+        brightness: "light",
+    },
+]
+
+export const labels = [
+    {
+        id: utilService.makeId(),
+        color: "green",
+        name: "",
+    },
+    {
+        id: utilService.makeId(),
+        color: "yellow",
+        name: "",
+    },
+    {
+        id: utilService.makeId(),
+        color: "orange",
+        name: "",
+    },
+    {
+        id: utilService.makeId(),
+        color: "red",
+        name: "",
+    },
+    {
+        id: utilService.makeId(),
+        color: "purple",
+        name: "",
+    },
+    {
+        id: utilService.makeId(),
+        color: "blue",
+        name: "",
     },
 ]

@@ -28,7 +28,7 @@ import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal
 import { BoardHeader } from "../cmps/BoardHeader/BoardHeader.jsx"
 import useScrollByGrab from "../customHooks/useScrollByGrab.js"
 import { useParams, useOutletContext } from "react-router-dom"
-import { utilService } from "../services/util.service.js"
+import { utilService } from "../services/util.service"
 import { useDocumentTitle } from "../customHooks/useDocumentTitle"
 
 export function BoardIndex() {
