@@ -1,4 +1,4 @@
-import { Outlet, useSearchParams } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 import { WorkspaceHeader } from "../cmps/Workspace/WorkspaceHeader"
 import { WorkspaceMenu } from "../cmps/Workspace/WorkspaceMenu"
 import { useEffect, useState } from "react"

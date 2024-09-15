@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react"
 
 const useScrollByGrab = () => {
-    const scrollContainerRef = useRef(null)
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null)
     const [isDown, setIsDown] = useState(false)
     const [startX, setStartX] = useState(0)
     const [scrollLeft, setScrollLeft] = useState(0)
@@ -9,20 +9,24 @@ const useScrollByGrab = () => {
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 })
     const [scrollDisabled, setScrollDisabled] = useState(false)
 
-    const scrollSpeed = (distance) => {
+    const scrollSpeed = (distance: number) => {
         return Math.min(Math.abs(distance) / 5, 20) * Math.sign(distance)
     }
 
-    const isInsideContainer = (target) => {
-        return target.closest(".board-group-container") !== null
+    const isInsideContainer = (target: EventTarget) => {
+        return (
+            target instanceof Element &&
+            target.closest(".board-group-container") !== null
+        )
     }
 
-    const isInsideCard = (target) => {
-        return target.closest(".ant-card") !== null
+    const isInsideCard = (target: EventTarget) => {
+        return target instanceof Element && target.closest(".ant-card") !== null
     }
 
-    const handleMouseDown = (e) => {
+    const handleMouseDown = (e: MouseEvent) => {
         const scrollContainer = scrollContainerRef.current
+        if (!scrollContainer || !e.target) return
         const isInsideBoardGroupContainer = isInsideContainer(e.target)
         const isInsideAntCard = isInsideCard(e.target)
 
@@ -47,10 +51,11 @@ const useScrollByGrab = () => {
         setScrollDisabled(false) // Re-enable scrolling
     }
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
         if (!isDown || isDragging || scrollDisabled) return
         e.preventDefault()
         const scrollContainer = scrollContainerRef.current
+        if (!scrollContainer) return
         const x = e.pageX - scrollContainer.offsetLeft
         const walk = x - startX
         scrollContainer.scrollLeft = scrollLeft - walk
@@ -65,7 +70,7 @@ const useScrollByGrab = () => {
         setScrollDisabled(false) // Re-enable scrolling
     }
 
-    const handleDragMove = (e) => {
+    const handleDragMove = (e: DragEvent) => {
         if (!isDragging) return
         setDragPosition({ x: e.clientX, y: e.clientY })
     }
@@ -74,6 +79,7 @@ const useScrollByGrab = () => {
         if (!isDragging || scrollDisabled) return
 
         const scrollContainer = scrollContainerRef.current
+        if(!scrollContainer) return
         const containerRect = scrollContainer.getBoundingClientRect()
 
         let scrollBy = 0

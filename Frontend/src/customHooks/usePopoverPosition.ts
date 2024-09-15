@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from "react"
 
-export function usePopoverPosition(anchorEl, isOpen) {
-    const popoverRef = useRef(null)
-    const [popoverStyle, setPopoverStyle] = useState({})
-    const [initialPosition, setInitialPosition] = useState(null)
+export function usePopoverPosition(anchorEl: HTMLElement | null, isOpen: boolean) {
+    const popoverRef = useRef<HTMLDivElement | null>(null)
+    const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({})
+    const [initialPosition, setInitialPosition] = useState<React.CSSProperties | null>(null)
 
     useEffect(() => {
         if (isOpen && anchorEl && popoverRef.current) {
             const anchorRect = anchorEl.getBoundingClientRect()
-            const initialPopoverStyle = {
-                top: anchorRect.top + anchorRect.height + window.scrollY,
+            const initialPopoverStyle: React.CSSProperties = {
+                top: anchorRect.bottom + window.scrollY,
                 left: anchorRect.left + window.scrollX,
                 position: "absolute",
             }
@@ -22,14 +22,14 @@ export function usePopoverPosition(anchorEl, isOpen) {
                 anchorRect.x,
                 anchorRect.y,
             )
-            console.log("2. Height of child component:", anchorRect.height)
+            console.log("2. Height of anchor element:", anchorRect.height)
             console.log(
-                "3. x and y of child component:",
-                anchorRect.left,
-                anchorRect.top + window.scrollY + anchorRect.height,
+                "3. x and y of popover position:",
+                anchorRect.left + window.scrollX,
+                anchorRect.bottom + window.scrollY,
             )
         }
-    }, [isOpen])
+    }, [isOpen, anchorEl])
 
     useEffect(() => {
         const handleScroll = () => {
@@ -37,13 +37,14 @@ export function usePopoverPosition(anchorEl, isOpen) {
                 const popoverRect = popoverRef.current.getBoundingClientRect()
                 const windowWidth = window.innerWidth
                 const windowHeight = window.innerHeight
-                const newPopoverStyle = { ...initialPosition }
+                const newPopoverStyle: React.CSSProperties = { ...initialPosition }
 
-                if (popoverRect.left + popoverRect.width > windowWidth) {
-                    newPopoverStyle.left = windowWidth - popoverRect.width - 5 // 5px отступ
+                // Adjust popover position if it exceeds viewport boundaries
+                if (popoverRect.right > windowWidth) {
+                    newPopoverStyle.left = windowWidth - popoverRect.width - 5 // 5px margin
                 }
-                if (popoverRect.top + popoverRect.height > windowHeight) {
-                    newPopoverStyle.top = windowHeight - popoverRect.height - 5 // 5px отступ
+                if (popoverRect.bottom > windowHeight) {
+                    newPopoverStyle.top = windowHeight - popoverRect.height - 5 // 5px margin
                 }
                 if (popoverRect.left < 0) {
                     newPopoverStyle.left = 5

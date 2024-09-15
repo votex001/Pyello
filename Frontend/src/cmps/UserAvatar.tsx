@@ -5,7 +5,22 @@ import { utilService } from "../services/util.service"
 import { ReactSVG } from "react-svg"
 import defaultProfile from "/img/defaultProfile.svg"
 import { useSelector } from "react-redux"
+import { RootState } from "../store/store"
+import { User } from "../models/user.model"
+import { ReactElement } from "react"
 
+interface UserAvatarProps {
+    memberId: string
+    memberProp: User
+    user: User
+    size: number
+    src: string
+    img: null | ReactElement
+    style: React.CSSProperties
+    offTitle: boolean
+    extraMarginToImageFlag: boolean
+    [key: string]: any
+}
 export function UserAvatar({
     memberId,
     memberProp,
@@ -17,8 +32,8 @@ export function UserAvatar({
     offTitle = false,
     extraMarginToImageFlag = false,
     ...other
-}) {
-    const users = useSelector((state) => state.userModule.users)
+}: UserAvatarProps) {
+    const users = useSelector((state: RootState) => state.userModule.users)
 
     const member = memberProp
         ? memberProp

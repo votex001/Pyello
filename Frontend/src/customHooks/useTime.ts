@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
-const formatDate = (date) => {
-    const options = {
+const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "short",
         day: "numeric",
@@ -12,33 +12,43 @@ const formatDate = (date) => {
     return date.toLocaleDateString("en", options)
 }
 
-const formatTimeTodayOrTomorrow = (date, isTomorrow = false) => {
-    const options = { hour: "numeric", minute: "numeric", hour12: true }
+const formatTimeTodayOrTomorrow = (date: Date, isTomorrow: boolean = false) => {
+    const options: Intl.DateTimeFormatOptions = {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+    }
     const timeString = date.toLocaleTimeString("en", options)
     return isTomorrow ? `tomorrow at ${timeString}` : `today at ${timeString}`
 }
 
-const getTimeString = (timestamp) => {
+const getTimeString = (timestamp: number) => {
     const now = new Date()
     const time = new Date(timestamp)
-    const diffInSeconds = Math.floor((time - now) / 1000)
+    const diffInSeconds = Math.floor((time.getTime() - now.getTime()) / 1000)
 
     if (diffInSeconds < 0) {
         // Handle past timestamps
         const pastDiffInSeconds = Math.abs(diffInSeconds)
 
         if (pastDiffInSeconds < 60) {
-            return `${pastDiffInSeconds} ${pastDiffInSeconds === 1 ? "second" : "seconds"} ago`
+            return `${pastDiffInSeconds} ${
+                pastDiffInSeconds === 1 ? "second" : "seconds"
+            } ago`
         }
 
         const pastDiffInMinutes = Math.floor(pastDiffInSeconds / 60)
         if (pastDiffInMinutes < 60) {
-            return `${pastDiffInMinutes} ${pastDiffInMinutes === 1 ? "minute" : "minutes"} ago`
+            return `${pastDiffInMinutes} ${
+                pastDiffInMinutes === 1 ? "minute" : "minutes"
+            } ago`
         }
 
         const pastDiffInHours = Math.floor(pastDiffInMinutes / 60)
         if (pastDiffInHours < 24) {
-            return `${pastDiffInHours} ${pastDiffInHours === 1 ? "hour" : "hours"} ago`
+            return `${pastDiffInHours} ${
+                pastDiffInHours === 1 ? "hour" : "hours"
+            } ago`
         }
 
         return formatDate(time)
@@ -57,14 +67,16 @@ const getTimeString = (timestamp) => {
     }
 }
 
-const useTime = (timestamp) => {
+const useTime = (timestamp: number) => {
     const [timeString, setTimeString] = useState(getTimeString(timestamp))
 
     useEffect(() => {
         const updateInterval = () => {
             const now = new Date()
             const time = new Date(timestamp)
-            const diffInSeconds = Math.floor((time - now) / 1000)
+            const diffInSeconds = Math.floor(
+                (time.getTime() - now.getTime()) / 1000
+            )
 
             if (diffInSeconds < 60 && diffInSeconds >= 0) {
                 return 10000 // Refresh every 10 seconds for future times
