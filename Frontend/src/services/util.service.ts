@@ -138,7 +138,7 @@ function createNewTask(task: {
             edgeColor: "",
         },
         checkListTaskIds: [],
-        activities: [],
+        createdAt: Date.now(),
     }
 }
 
@@ -237,6 +237,8 @@ async function createNewBoard(board: {
                 timeStamp: 1722015726446,
             },
         ],
+        updatedAt: Date.now(),
+        viewedAt: Date.now(),
     }
 }
 

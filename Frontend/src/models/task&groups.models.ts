@@ -53,5 +53,5 @@ export interface Task {
     start: Date | null
     cover: Cover
     checkListTaskIds: string[]
-    activities: any[] // You can specify a more precise type if needed
+    createdAt: number
 }

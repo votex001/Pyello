@@ -23,7 +23,7 @@ export enum BoardActionsTypes {
 }
 interface SetBoardAction {
     type: BoardActionsTypes.SET_BOARD
-    board: Board
+    board: Board | null
 }
 interface SetIsExpandedAction {
     type: BoardActionsTypes.SET_IS_EXPANDED

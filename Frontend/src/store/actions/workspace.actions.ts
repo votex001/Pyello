@@ -2,46 +2,63 @@ import { boardService } from "../../services/board.service"
 import { utilService } from "../../services/util.service"
 import { workspaceService } from "../../services/workspace.service"
 import { store } from "../store"
+import { WorkspaceActionTypes } from "../interface/workspace.store"
+import { Board } from "../../models/board.models"
+import { User } from "../../models/user.model"
 import {
-    EDIT_WORKSPACE,
-    SET_BOARDS,
-    ADD_BOARD,
-    VIEW_BOARD,
-} from "../reducers/workspace.reducer"
-import { SET_BOARD } from "../reducers/board.reducer"
+    ReceiveTaskActivity,
+    TransferTaskActivity,
+} from "../../models/activities.models"
+import { BoardActionsTypes } from "../interface/board.store"
 
 export async function setBoards() {
     const boards = await workspaceService.getAllBoards()
-    store.dispatch({ type: SET_BOARDS, boards })
+    store.dispatch({ type: WorkspaceActionTypes.SET_BOARDS, boards })
 }
 
-export async function updateWorkspaceBoard(boardId) {
+export async function updateWorkspaceBoard(boardId: string) {
     const board = await boardService.getById(boardId)
 
-    if (board.id === store.getState().boardModule.board.id) {
-        store.dispatch({ type: SET_BOARD, board: board })
+    if (board.id === store.getState().boardModule.board?.id) {
+        store.dispatch({ type: BoardActionsTypes.SET_BOARD, board: board })
     }
 
     if (
-        !store.getState().workspaceModule.boards.find((b) => b.id === board.id)
+        !store.getState().workspaceModule.boards?.find((b) => b.id === board.id)
     ) {
-        store.dispatch({ type: ADD_BOARD, board: board })
+        store.dispatch({ type: WorkspaceActionTypes.ADD_BOARD, board: board })
     } else {
-        store.dispatch({ type: EDIT_WORKSPACE, board: board })
+        store.dispatch({
+            type: WorkspaceActionTypes.EDIT_WORKSPACE,
+            board: board,
+        })
     }
 }
 
-export async function viewWorkspaceBoard(boardId) {
+export async function viewWorkspaceBoard(boardId: string) {
     const boards = await workspaceService.getAllBoards()
     const board = boards.find((b) => b.id === boardId)
-    store.dispatch({ type: VIEW_BOARD, boardId: board.id })
-}
-export async function editWorkspaceBoard(board) {
-    store.dispatch({ type: EDIT_WORKSPACE, board: board })
-    await boardService.save(board)
+    if (!board) return
+    store.dispatch({
+        type: WorkspaceActionTypes.VIEW_BOARD,
+        boardId: board.id!,
+    })
 }
 
-export async function moveTaskBetweenBoards(moveTaskEvent) {
+export async function editWorkspaceBoard(board: Board) {
+    store.dispatch({ type: WorkspaceActionTypes.EDIT_WORKSPACE, board: board })
+    await boardService.save(board)
+}
+interface MoveTaskEvent {
+    taskId: string
+    sourceBoardId: string
+    sourceGroupId: string
+    destinationBoardId: string
+    destinationGroupId: string
+    destinationIndex: number
+    user: User
+}
+export async function moveTaskBetweenBoards(moveTaskEvent: MoveTaskEvent) {
     const {
         taskId,
         sourceBoardId,
@@ -53,12 +70,13 @@ export async function moveTaskBetweenBoards(moveTaskEvent) {
     } = moveTaskEvent
 
     const boards = await workspaceService.getAllBoards()
+    if (!boards) return
     const sourceBoard = boards.find((b) => b.id === sourceBoardId)
     const destinationBoard = boards.find((b) => b.id === destinationBoardId)
-
+    if (!sourceBoard || !destinationBoard) return
     const task = sourceBoard.groups
         .find((g) => g.id === sourceGroupId)
-        .tasks.find((t) => t.id === taskId)
+        ?.tasks.find((t) => t.id === taskId)
 
     if (!task) {
         console.error(`Task ${taskId} not found in group ${sourceGroupId}`)
@@ -95,14 +113,20 @@ export async function moveTaskBetweenBoards(moveTaskEvent) {
             type: "transferTask",
             targetId: task.id,
             targetName: task.name,
-            boardId: destinationBoard.id,
+            boardId: destinationBoard.id!,
             boardName: destinationBoard.name,
         },
         user
-    )
+    ) as TransferTaskActivity
     updatedSourceBoard.activities.push(sourceActivity)
-    store.dispatch({ type: SET_BOARD, board: updatedSourceBoard })
-    store.dispatch({ type: EDIT_WORKSPACE, board: updatedSourceBoard })
+    store.dispatch({
+        type: BoardActionsTypes.SET_BOARD,
+        board: updatedSourceBoard,
+    })
+    store.dispatch({
+        type: WorkspaceActionTypes.EDIT_WORKSPACE,
+        board: updatedSourceBoard,
+    })
     await boardService.save(updatedSourceBoard)
 
     //Add task to destination board
@@ -127,21 +151,24 @@ export async function moveTaskBetweenBoards(moveTaskEvent) {
             type: "receiveTask",
             targetId: task.id,
             targetName: task.name,
-            boardId: sourceBoard.id,
+            boardId: sourceBoard.id!,
             boardName: sourceBoard.name,
         },
         user
-    )
+    ) as ReceiveTaskActivity
     updatedDestinationBoard.activities.push(destinationActivity)
-    store.dispatch({ type: EDIT_WORKSPACE, board: updatedDestinationBoard })
+    store.dispatch({
+        type: WorkspaceActionTypes.EDIT_WORKSPACE,
+        board: updatedDestinationBoard,
+    })
     await boardService.save(updatedDestinationBoard)
 }
 
-export async function createBoard(board) {
+export async function createBoard(board: Board) {
     const newBoard = await boardService.save({
         ...board,
         updatedAt: Date.now(),
     })
-    store.dispatch({ type: ADD_BOARD, board: newBoard })
+    store.dispatch({ type: WorkspaceActionTypes.ADD_BOARD, board: newBoard })
     return newBoard.id
 }

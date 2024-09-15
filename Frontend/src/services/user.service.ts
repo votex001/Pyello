@@ -11,7 +11,7 @@ export const userService = {
     getByEmail,
 }
 
-async function getWorkspaceUsers(usersIds: string[]): Promise<User[]> {
+async function getWorkspaceUsers(usersIds: object): Promise<User[]> {
     try {
         const users = await httpService.get<User[]>("user/users", usersIds)
         return users

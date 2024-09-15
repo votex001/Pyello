@@ -1,10 +1,6 @@
 import { WorkspaceAction, WorkspaceActionTypes, WorkspaceState } from "../interface/workspace.store"
 
-export const SET_BOARDS = "SET_BOARDS"
-export const EDIT_WORKSPACE = "EDIT_WORKSPACE"
-export const ADD_BOARD = "ADD_BOARD"
-export const VIEW_BOARD = "VIEW_BOARD"
-export const REMOVE_BOARD = "REMOVE_BOARD"
+
 
 const initialState: WorkspaceState = {
     boards: null,

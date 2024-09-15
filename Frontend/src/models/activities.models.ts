@@ -1,4 +1,4 @@
-// Base interface for all activity types
+// Base export interface for all activity types
 interface BaseActivity {
     id: string
     userFullName: string
@@ -7,119 +7,119 @@ interface BaseActivity {
 }
 
 // Specific interfaces for each activity type
-interface MovedTaskActivity extends BaseActivity {
-    type: "movedTask(inBoard)"
+export interface MovedTaskActivity extends BaseActivity {
+    type: "movedTask"
     targetId: string
     targetName: string
     from: string
     to: string
 }
 
-interface TransferTaskActivity extends BaseActivity {
-    type: "transferTask(betweenBoards(to))"
+export interface TransferTaskActivity extends BaseActivity {
+    type: "transferTask"
     targetId: string
     targetName: string
     boardId: string
     boardName: string
 }
 
-interface ReceiveTaskActivity extends BaseActivity {
-    type: "receiveTask(betweenBoards(from))"
+export interface ReceiveTaskActivity extends BaseActivity {
+    type: "receiveTask"
     targetId: string
     targetName: string
     boardId: string
     boardName: string
 }
 
-interface JoinTaskActivity extends BaseActivity {
+export interface JoinTaskActivity extends BaseActivity {
     type: "joinTask"
     targetId: string
     targetName: string
 }
 
-interface AddGroupActivity extends BaseActivity {
+export interface AddGroupActivity extends BaseActivity {
     type: "addGroup"
     targetName: string
 }
 
-interface ArchiveGroupActivity extends BaseActivity {
+export interface ArchiveGroupActivity extends BaseActivity {
     type: "archiveGroup"
     targetName: string
 }
 
-interface AddTaskActivity extends BaseActivity {
+export interface AddTaskActivity extends BaseActivity {
     type: "addTask"
     targetId: string
     targetName: string
     groupName: string
 }
 
-interface CreateBoardActivity extends BaseActivity {
+export interface CreateBoardActivity extends BaseActivity {
     type: "createBoard"
 }
 
-interface UnArchiveActivity extends BaseActivity {
+export interface UnArchiveActivity extends BaseActivity {
     type: "unArchive"
     targetId: string
     targetName: string
 }
 
-interface ArchiveTaskActivity extends BaseActivity {
+export interface ArchiveTaskActivity extends BaseActivity {
     type: "archiveTask"
     targetId: string
     targetName: string
 }
 
-interface DeleteTaskActivity extends BaseActivity {
+export interface DeleteTaskActivity extends BaseActivity {
     type: "deleteTask"
     targetName: string
     groupName: string
 }
 
-interface AddCheckListActivity extends BaseActivity {
+export interface AddCheckListActivity extends BaseActivity {
     type: "addCheckList"
     targetId: string
     targetName: string
     checklistName: string
 }
 
-interface RemoveCheckListActivity extends BaseActivity {
+export interface RemoveCheckListActivity extends BaseActivity {
     type: "removeCheckList"
     targetId: string
     targetName: string
     checklistName: string
 }
 
-interface RenameCheckListActivity extends BaseActivity {
-    type: "renameCheckList(onlyForTask)"
+export interface RenameCheckListActivity extends BaseActivity {
+    type: "renameCheckList"
     targetId: string
     targetName: string
     checklistName: string
     previousName: string
 }
 
-interface CheckedItemInCheckListActivity extends BaseActivity {
+export interface CheckedItemInCheckListActivity extends BaseActivity {
     type: "checkedItemInCheckList"
     targetId: string
     targetName: string
     itemName: string
 }
 
-interface IncompleteItemInCheckListActivity extends BaseActivity {
+export interface IncompleteItemInCheckListActivity extends BaseActivity {
     type: "incompleteItemInCheckList"
     targetId: string
     targetName: string
     itemName: string
 }
 
-interface AddCommentActivity extends BaseActivity {
+export interface AddCommentActivity extends BaseActivity {
     type: "addComment"
     targetId: string
     targetName: string
     comment: string
 }
 
-interface AddAttachmentActivity extends BaseActivity {
+export interface AddAttachmentActivity extends BaseActivity {
     type: "addAttachment"
     targetId: string
     targetName: string
@@ -127,7 +127,7 @@ interface AddAttachmentActivity extends BaseActivity {
     attachmentName: string
 }
 
-interface RemoveAttachmentActivity extends BaseActivity {
+export interface RemoveAttachmentActivity extends BaseActivity {
     type: "removeAttachment"
     targetId: string
     targetName: string
@@ -135,48 +135,48 @@ interface RemoveAttachmentActivity extends BaseActivity {
     attachmentName: string
 }
 
-interface RenameBoardActivity extends BaseActivity {
+export interface RenameBoardActivity extends BaseActivity {
     type: "renameBoard"
     previousName: string
 }
 
-interface CloseBoardActivity extends BaseActivity {
+export interface CloseBoardActivity extends BaseActivity {
     type: "closeBoard"
 }
 
-interface ReopenBoardActivity extends BaseActivity {
+export interface ReopenBoardActivity extends BaseActivity {
     type: "reopenBoard"
 }
 
-interface ChangeBackGroundActivity extends BaseActivity {
+export interface ChangeBackGroundActivity extends BaseActivity {
     type: "changeBackGround"
 }
 
-interface ChangeVisibilityActivity extends BaseActivity {
+export interface ChangeVisibilityActivity extends BaseActivity {
     type: "changeVisibility"
     visibility: string
 }
 
-interface AddDateActivity extends BaseActivity {
+export interface AddDateActivity extends BaseActivity {
     type: "addDate"
     targetId: string
     targetName: string
     doDate: number
 }
 
-interface RemoveDateActivity extends BaseActivity {
+export interface RemoveDateActivity extends BaseActivity {
     type: "removeDate"
     targetId: string
     targetName: string
 }
 
-interface CompleteDateActivity extends BaseActivity {
+export interface CompleteDateActivity extends BaseActivity {
     type: "completeDate"
     targetId: string
     targetName: string
 }
 
-interface IncompleteDateActivity extends BaseActivity {
+export interface IncompleteDateActivity extends BaseActivity {
     type: "incompleteDate"
     targetId: string
     targetName: string

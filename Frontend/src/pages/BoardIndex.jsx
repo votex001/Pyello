@@ -19,9 +19,8 @@ import {
     updateBoard,
     moveTask,
     loadBoard,
-    loadBoardBySocket,
-} from "../store/actions/board.actions.js"
-import { editUser, loadWorkspaceUsers } from "../store/actions/user.actions.js"
+} from "../store/actions/board.actions"
+import { editUser, loadWorkspaceUsers } from "../store/actions/user.actions"
 
 import { AddGroupBtn } from "../cmps/Group/AddGroupBtn"
 import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal.jsx"
@@ -108,7 +107,7 @@ export function BoardIndex() {
         const group = {
             name: name,
         }
-        const res = await addGroup(group, board.id)
+        const res = await addGroup(group, board.id, user)
         // console.log("onAddGroup", res);
     }
 
