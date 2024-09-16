@@ -17,18 +17,25 @@ export interface LabelColorOption {
 }
 export interface Member {
     id: string
-    permissionStatus: string
+    permissionStatus: "admin" | "member"
     fullName: string
 }
 
 export interface Board {
     id?: string
+    permissionLevel: "private" | "org" | "public"
     prefs: {
         background: string
         backgroundColor: string | null
         backgroundImage: string | null
         backgroundBrightness: string
-        backgroundImageScaled: string | null
+        backgroundImageScaled?:
+            | {
+                  width: number
+                  height: number
+                  url: string
+              }[]
+            | null
     }
     members: Member[]
     checkListTaskIds: string[]
@@ -39,4 +46,5 @@ export interface Board {
     activities: Activity[]
     updatedAt: number
     viewedAt: number
+    invLink: string | null
 }
