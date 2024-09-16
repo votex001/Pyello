@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 
 // Custom hook to handle clicking outside a referenced element
-export function useClickOutside(initialIsOpen: boolean) {
+export function useClickOutside(
+    initialIsOpen: boolean
+): [
+    React.MutableRefObject<HTMLDivElement | null>,
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>
+] {
     const [isOpen, setIsOpen] = useState(initialIsOpen)
     const ref = useRef<HTMLDivElement | null>(null)
 
