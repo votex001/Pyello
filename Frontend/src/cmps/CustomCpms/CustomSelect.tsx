@@ -1,8 +1,21 @@
-import { DownOutlined } from "@ant-design/icons"
-import { Popover } from "antd"
 import { useState, useEffect, useRef } from "react"
 import { ReactSVG } from "react-svg"
 import Popup from "@atlaskit/popup"
+
+interface Option {
+    name?: string
+    id: string
+    isCurrent: boolean
+    element?: React.ReactNode
+}
+
+interface CustomSelect {
+    options: Option[]
+    onSelect?: (option: Option | undefined) => void
+    value: string
+    disabled?: boolean
+    optionsClassName?: string
+}
 
 export function CustomSelect({
     options = [],
@@ -10,25 +23,28 @@ export function CustomSelect({
     value,
     disabled = false,
     optionsClassName = "",
-}) {
+}: CustomSelect) {
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedItem, setSelectedItem] = useState(options[0])
+    const [selectedItem, setSelectedItem] = useState<Option | undefined>(
+        options[0]
+    )
     const [searchValue, setSearchValue] = useState("")
-    const [filteredItems, setFilteredItems] = useState(options)
-    const divRef = useRef(null)
-    const inputRef = useRef(null)
-    const triggerRef = useRef(null)
+    const [filteredItems, setFilteredItems] = useState<Option[]>(options)
+    const inputRef = useRef<HTMLInputElement | null>(null)
+    const triggerRef = useRef<HTMLInputElement | null>(null)
 
     useEffect(() => {
-        onSelect(options.find((o) => o.id === value))
+        if (onSelect) {
+            onSelect(options.find((o) => o.id === value))
+        }
     }, [value])
 
     //when opens modal input focus
     useEffect(() => {
-        if (isOpen && !disabled) {
+        if (isOpen && !disabled && inputRef.current) {
             inputRef.current.focus()
         }
-    }, [isOpen])
+    }, [isOpen, inputRef])
 
     useEffect(() => {
         setFilteredItems(options)
@@ -37,15 +53,21 @@ export function CustomSelect({
         }
 
         if (value) {
-            setSelectedItem(options.find((o) => o.id === value))
+            const foundOption = options.find((o) => o.id === value)
+            if (foundOption) {
+                setSelectedItem(foundOption)
+            }
         }
     }, [options])
 
-    function onInput(e) {
+    function onInput(e: React.ChangeEvent<HTMLInputElement>) {
         setSearchValue(e.target.value)
     }
 
-    function onSelectOption(item, e) {
+    function onSelectOption(
+        item: Option,
+        e: React.MouseEvent<HTMLButtonElement>
+    ) {
         e.stopPropagation()
         setSelectedItem(item)
         if (onSelect) {
@@ -73,11 +95,12 @@ export function CustomSelect({
         </div>
     )
 
-    const trigger = () => (
+    const trigger = (triggerProps: React.HTMLProps<HTMLDivElement>) => (
         <div
             className="custom-select-item"
             onClick={() => (disabled ? null : setIsOpen(!isOpen))}
             ref={triggerRef}
+            {...triggerProps}
         >
             <input
                 className="custom-input"
@@ -97,18 +120,6 @@ export function CustomSelect({
     )
 
     return (
-        // <Popover
-        //   trigger="click"
-        //   placement="bottomLeft"
-        //   open={isOpen}
-        //   onOpenChange={disabled ? null : setIsOpen}
-        //   arrow={false}
-        //   content={content}
-        //   zIndex={15000}
-        // >
-        //   {anchor}
-        // </Popover>
-
         <Popup
             id="manage-cover-popover-popup"
             isOpen={isOpen}
@@ -116,9 +127,8 @@ export function CustomSelect({
             placement="bottom-start"
             fallbackPlacements={["top-start", "auto"]}
             content={() => content}
-            trigger={(triggerProps) => <div {...triggerProps}>{trigger()}</div>}
+            trigger={trigger}
             zIndex={10000}
-            triggerRef={triggerRef}
         />
     )
 }

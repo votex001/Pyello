@@ -1,10 +1,20 @@
-import { useCallback, useRef } from "react"
+import React, { useCallback, useRef } from "react"
 import { showInfomationMsg } from "../services/event-bus.service"
-export default function CloudinaryUpload({ onAttachUrl, anchorEl }) {
-    const fileInputRef = useRef(null)
+
+interface CloudinaryUploadProps {
+    onAttachUrl?: (url: string) => void
+    anchorEl: React.ReactNode
+}
+
+export default function CloudinaryUpload({
+    onAttachUrl,
+    anchorEl,
+}: CloudinaryUploadProps) {
+    const fileInputRef = useRef<HTMLInputElement | null>(null)
 
     const handleFileChange = useCallback(
-        async (event) => {
+        async (event: React.ChangeEvent<HTMLInputElement>) => {
+            if (!event.target.files) return
             showInfomationMsg("Uploading file...")
             const file = event.target.files[0]
             if (!file) return
@@ -14,7 +24,7 @@ export default function CloudinaryUpload({ onAttachUrl, anchorEl }) {
                 formData.append("file", file)
                 formData.append(
                     "upload_preset",
-                    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+                    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
                 )
 
                 const response = await fetch(
@@ -24,7 +34,7 @@ export default function CloudinaryUpload({ onAttachUrl, anchorEl }) {
                     {
                         method: "POST",
                         body: formData,
-                    },
+                    }
                 )
 
                 if (!response.ok) {
@@ -33,19 +43,21 @@ export default function CloudinaryUpload({ onAttachUrl, anchorEl }) {
                 }
 
                 const data = await response.json()
-                onAttachUrl(data)
-            } catch (error) {
+                if (onAttachUrl) {
+                    onAttachUrl(data)
+                }
+            } catch (error: any) {
                 console.error("CloudinaryUpload.error: ", error)
                 // Handle error (e.g., show error message to user)
                 alert(`Upload failed: ${error.message}`)
             }
         },
-        [onAttachUrl],
+        [onAttachUrl]
     )
 
     const handleClick = () => {
         // console.log("CloudinaryUpload.handleClick");
-        fileInputRef.current.click()
+        fileInputRef.current?.click()
     }
 
     return (

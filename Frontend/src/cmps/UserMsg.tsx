@@ -1,19 +1,24 @@
-import { eventBus, showSuccessMsg } from "../services/event-bus.service"
+import { eventBus } from "../services/event-bus.service"
 import { useState, useEffect, useRef } from "react"
 
+interface Msg {
+    type: "success" | "info" | "error"
+    txt: string
+}
+
 export function UserMsg() {
-    const [msg, setMsg] = useState(null)
-    const timeoutIdRef = useRef()
+    const [msg, setMsg] = useState<Msg | null>(null)
+    const timeoutIdRef = useRef<NodeJS.Timeout | null>()
 
     useEffect(() => {
-        const unsubscribe = eventBus.on("show-msg", (msg) => {
-            setMsg(msg)
+        const unsubscribe = eventBus.on("show-msg", (newMsg) => {
+            setMsg(newMsg)
             // window.scrollTo({ top: 0, behavior: 'smooth' })
             if (timeoutIdRef.current) {
-                timeoutIdRef.current = null
                 clearTimeout(timeoutIdRef.current)
+                timeoutIdRef.current = null
             }
-            if (msg.type === "success") {
+            if (newMsg.type === "success") {
                 timeoutIdRef.current = setTimeout(closeMsg, 3000)
             }
         })
@@ -24,6 +29,10 @@ export function UserMsg() {
 
         return () => {
             unsubscribe()
+            if (timeoutIdRef.current) {
+                clearTimeout(timeoutIdRef.current)
+                timeoutIdRef.current = null
+            }
             // socketService.off(SOCKET_EVENT_REVIEW_ABOUT_YOU);
         }
     }, [])

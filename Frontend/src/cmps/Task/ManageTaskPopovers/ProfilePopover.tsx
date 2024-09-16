@@ -2,33 +2,38 @@ import { CloseOutlined } from "@ant-design/icons"
 import { UserAvatar } from "../../UserAvatar"
 import { Link } from "react-router-dom"
 import { Popover } from "antd"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useSelector } from "react-redux"
+import { RootState } from "../../../store/store"
+import { TooltipPlacement } from "antd/es/tooltip"
+
+interface ProfilePopover {
+    memberId: string
+    anchorLinks: React.ReactNode
+    anchorEl: React.ReactNode
+    placement: TooltipPlacement
+}
 
 export function ProfilePopover({
     memberId,
     anchorLinks,
     anchorEl,
     placement = "bottomLeft",
-}) {
-    const member = useSelector((state) =>
-        state.userModule.users?.find((u) => u?.id === memberId),
+}: ProfilePopover) {
+    const member = useSelector((state: RootState) =>
+        state.userModule.users?.find((u) => u?.id === memberId)
     )
     const [isOpen, setIsOpen] = useState(false)
-    const user = useSelector((state) => state.userModule.user)
-    const currentMember = useSelector((state) =>
-        state.userModule.users?.find((user) => user?.id === member?.id),
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const currentMember = useSelector((state: RootState) =>
+        state.userModule.users?.find((user) => user?.id === member?.id)
     )
 
-    function onClose() {
-        setIsOpen(false)
-    }
     return (
         <Popover
             trigger="click"
             placement={placement}
             open={isOpen}
-            close={onClose}
             onOpenChange={setIsOpen}
             arrow={false}
             content={

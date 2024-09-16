@@ -115,7 +115,6 @@ export function EditAttachmentPopover({ anchorEl, onEdit, attachment }) {
         return (
             <label
                 {...triggerProps}
-                appearance="primary"
                 // isSelected={isOpen}
                 onClick={onTriggerClick}
             >

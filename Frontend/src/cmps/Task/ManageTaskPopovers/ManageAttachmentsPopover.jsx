@@ -29,7 +29,6 @@ export function ManageAttachmentsPopover({
         return (
             <label
                 {...triggerProps}
-                appearance="primary"
                 // isSelected={isOpen}
                 onClick={onTriggerClick}
             >
@@ -108,7 +107,7 @@ function ManageAttachmentsPopoverContent({
                 attachmentLink: attachment.link,
                 attachmentName: attachment.text,
             },
-            user,
+            user
         )
         await editBoard({
             ...board,
@@ -135,13 +134,13 @@ function ManageAttachmentsPopoverContent({
     async function onAddAttachment(data) {
         const avgBgColor = await utilService.getAverageBorderColor(
             data.secure_url,
-            10,
+            10
         )
 
         const isDark = utilService.isColorDark(
             avgBgColor.r,
             avgBgColor.g,
-            avgBgColor.b,
+            avgBgColor.b
         )
 
         const attachment = {
@@ -166,7 +165,7 @@ function ManageAttachmentsPopoverContent({
                 attachmentLink: attachment.link,
                 attachmentName: attachment.text,
             },
-            user,
+            user
         )
         await editBoard({
             ...board,

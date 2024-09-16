@@ -262,7 +262,6 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
         return (
             <label
                 {...triggerProps}
-                appearance="primary"
                 // isSelected={isOpen}
                 onClick={onTriggerClick}
             >

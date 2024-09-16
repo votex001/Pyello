@@ -209,7 +209,6 @@ export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
         return (
             <label
                 {...triggerProps}
-                appearance="primary"
                 // isSelected={isOpen}
                 onClick={onTriggerClick}
             >

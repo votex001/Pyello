@@ -32,7 +32,6 @@ export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
         return (
             <label
                 {...triggerProps}
-                appearance="primary"
                 // isSelected={isOpen}
                 onClick={onTriggerClick}
             >

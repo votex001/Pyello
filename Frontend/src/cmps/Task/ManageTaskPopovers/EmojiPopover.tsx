@@ -1,15 +1,15 @@
 import Popup from "@atlaskit/popup"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { utilService } from "../../../services/util.service"
 
-export function EmojiPopover({ anchorEl, onAddEmojy }) {
-    const [isOpen, setIsOpen] = useState(false)
-    const [backToList, setBackToList] = useState(null)
+interface EmojiPopoverProps {
+    anchorEl: React.ReactNode
+    onAddEmojy: (emoji: string) => void
+}
 
-    function onClose() {
-        setIsOpen(false)
-    }
+export function EmojiPopover({ anchorEl, onAddEmojy }: EmojiPopoverProps) {
+    const [isOpen, setIsOpen] = useState(false)
 
     const content = (
         <section className="emojy-popover">
@@ -24,16 +24,11 @@ export function EmojiPopover({ anchorEl, onAddEmojy }) {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: React.HTMLProps<HTMLDivElement>) => {
         return (
-            <label
-                {...triggerProps}
-                appearance="primary"
-                // isSelected={isOpen}
-                onClick={onTriggerClick}
-            >
+            <div {...triggerProps} onClick={onTriggerClick}>
                 {anchorEl}
-            </label>
+            </div>
         )
     }
 

@@ -7,7 +7,7 @@ import { WorkspaceSettings } from "./cmps/Workspace/WorkspaceSettings.jsx"
 import { ErrorPage } from "./pages/ErrorPage.jsx"
 import { UserBoards } from "./pages/UserBoards.jsx"
 import { UserSettings } from "./cmps/UserProf/UserSettings.jsx"
-import { UserMsg } from "./cmps/UserMsg.jsx"
+import { UserMsg } from "./cmps/UserMsg"
 import { HomePage } from "./pages/HomePage.jsx"
 import { AuthPage } from "./pages/AuthPage.jsx"
 export function RootCmp() {

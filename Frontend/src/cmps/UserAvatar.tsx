@@ -10,15 +10,15 @@ import { User } from "../models/user.model"
 import { ReactElement } from "react"
 
 interface UserAvatarProps {
-    memberId: string
-    memberProp: User
-    user: User
-    size: number
-    src: string
-    img: null | ReactElement
-    style: React.CSSProperties
-    offTitle: boolean
-    extraMarginToImageFlag: boolean
+    memberId?: string 
+    memberProp?: User 
+    user?: User 
+    size?: number
+    src?: string
+    img?: null | ReactElement
+    style?: React.CSSProperties
+    offTitle?: boolean
+    extraMarginToImageFlag?: boolean
     [key: string]: any
 }
 export function UserAvatar({

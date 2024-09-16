@@ -1,7 +1,12 @@
 import { ReactSVG } from "react-svg"
 import checkedIcon from "/img/board-index/headerImgs/checkedIcon.svg"
 
-export function CheckBox({ className, onChange, ...other }) {
+interface CheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    className?: string
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+export function CheckBox({ className, onChange, ...other }: CheckBoxProps) {
     return (
         <label className={`custom-checkbox ${className ? className : ""}`}>
             <input

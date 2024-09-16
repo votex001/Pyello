@@ -9,7 +9,7 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
     const workspaceUsers = useSelector((state) => state.userModule.users)
     const membersIds = useSelector((state) => state.boardModule.board.members)
     const members = workspaceUsers.filter((user) =>
-        membersIds.some((member) => member.id === user.id),
+        membersIds.some((member) => member.id === user.id)
     )
     const [inputSearch, setInputSearch] = useState("")
     const [isOpen, setIsOpen] = useState(false)
@@ -20,14 +20,12 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
         // TODO: members dont have fullName, add mini user
         if (inputSearch === "") {
             setSelectedMembers(
-                members.filter((member) =>
-                    task?.idMembers.includes(member?.id),
-                ),
+                members.filter((member) => task?.idMembers.includes(member?.id))
             )
             setUnselectedMembers(
                 members.filter(
-                    (member) => !task?.idMembers.includes(member?.id),
-                ),
+                    (member) => !task?.idMembers.includes(member?.id)
+                )
             )
         } else {
             setSelectedMembers(
@@ -36,8 +34,8 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
                     .filter((member) =>
                         member?.fullName
                             .toLowerCase()
-                            .includes(inputSearch.toLowerCase()),
-                    ),
+                            .includes(inputSearch.toLowerCase())
+                    )
             )
             setUnselectedMembers(
                 members
@@ -45,8 +43,8 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
                     .filter((member) =>
                         member?.fullName
                             .toLowerCase()
-                            .includes(inputSearch.toLowerCase()),
-                    ),
+                            .includes(inputSearch.toLowerCase())
+                    )
             )
         }
     }, [task?.idMembers, inputSearch])
@@ -110,7 +108,6 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
         return (
             <label
                 {...triggerProps}
-                appearance="primary"
                 // isSelected={isOpen}
                 onClick={onTriggerClick}
             >

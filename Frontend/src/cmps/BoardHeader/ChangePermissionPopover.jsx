@@ -19,8 +19,7 @@ export function ChangePermissionPopover({
             <button
                 className="permission-button"
                 {...triggerProps}
-                // appearance="primary"
-                // isSelected={isOpen}
+             
                 onClick={onTriggerClick}
             >
                 {anchorEl}
