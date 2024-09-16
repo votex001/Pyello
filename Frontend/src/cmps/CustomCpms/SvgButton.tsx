@@ -3,8 +3,8 @@ import { ReactSVG } from "react-svg"
 
 interface SvgButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     src: string
-    label: React.ReactNode
-    preLabel: React.ReactNode
+    label?: React.ReactNode
+    preLabel?: React.ReactNode
 }
 
 export function SvgButton({ src, label, preLabel, ...other }: SvgButtonProps) {

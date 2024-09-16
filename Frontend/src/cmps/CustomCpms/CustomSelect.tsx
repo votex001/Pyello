@@ -10,9 +10,9 @@ interface Option {
 }
 
 interface CustomSelect {
-    options: Option[]
-    onSelect?: (option: Option | undefined) => void
-    value: string
+    options?: Option[]
+    onSelect?: (option: Option | any) => void
+    value?: string
     disabled?: boolean
     optionsClassName?: string
 }
@@ -76,7 +76,7 @@ export function CustomSelect({
         setIsOpen(false)
     }
 
-    const content = !disabled && (
+    const content = !disabled && options.length > 0 && (
         <div
             className={`custom-select-options ${optionsClassName}`}
             style={{ width: `${triggerRef.current?.clientWidth}px` }}
@@ -108,7 +108,7 @@ export function CustomSelect({
                 placeholder={selectedItem?.name}
                 value={searchValue}
                 onChange={onInput}
-                disabled={disabled}
+                disabled={disabled || options.length < 1}
             />
 
             <ReactSVG
