@@ -1,25 +1,38 @@
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
 import { useState } from "react"
+
+interface ChangePermissionPopoverProps {
+    anchorEl: React.ReactNode
+    onChange: ({
+        option,
+        memberId,
+    }: {
+        option: "admin" | "member" | "kick"
+        memberId: string
+    }) => void
+    memberId: string
+    myOptions: boolean
+    currenOption: "member" | "admin"
+}
 
 export function ChangePermissionPopover({
     anchorEl,
     onChange,
     memberId = "",
     myOptions,
-    currenOption = "",
-}) {
+    currenOption,
+}: ChangePermissionPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     const onTriggerClick = () => {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <button
                 className="permission-button"
                 {...triggerProps}
-             
                 onClick={onTriggerClick}
             >
                 {anchorEl}
@@ -27,9 +40,9 @@ export function ChangePermissionPopover({
         )
     }
 
-    function onChangeState(option, id) {
+    function onChangeState(option: "admin" | "member" | "kick") {
         if (onChange) {
-            onChange({ option, id })
+            onChange({ option, memberId })
         }
         setIsOpen(false)
     }
@@ -49,20 +62,24 @@ export function ChangePermissionPopover({
                         </span>
                     )}
                     <div
-                        className={`option ${currenOption === "admin" ? "current" : ""}`}
-                        onClick={() => onChangeState("admin", memberId)}
+                        className={`option ${
+                            currenOption === "admin" ? "current" : ""
+                        }`}
+                        onClick={() => onChangeState("admin")}
                     >
                         Admin
                     </div>
                     <div
-                        className={`option ${currenOption === "member" ? "current" : ""}`}
-                        onClick={() => onChangeState("member", memberId)}
+                        className={`option ${
+                            currenOption === "member" ? "current" : ""
+                        }`}
+                        onClick={() => onChangeState("member")}
                     >
                         Member
                     </div>
                     <div
                         className={`option `}
-                        onClick={() => onChangeState("kick", memberId)}
+                        onClick={() => onChangeState("kick")}
                     >
                         {myOptions ? "Leave" : "Remove from"} board
                     </div>

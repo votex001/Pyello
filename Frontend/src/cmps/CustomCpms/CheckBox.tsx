@@ -3,7 +3,7 @@ import checkedIcon from "/img/board-index/headerImgs/checkedIcon.svg"
 
 interface CheckBoxProps extends React.InputHTMLAttributes<HTMLInputElement> {
     className?: string
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export function CheckBox({ className, onChange, ...other }: CheckBoxProps) {

@@ -1,9 +1,31 @@
-import TextArea from "antd/es/input/TextArea"
+import TextArea, { TextAreaRef } from "antd/es/input/TextArea"
 import { useEffect, useRef, useState } from "react"
 import { useClickOutside } from "../../customHooks/useClickOutside"
 import { useEffectUpdate } from "../../customHooks/useEffectUpdate"
 import { CloseOutlined } from "@ant-design/icons"
 import { EmojiPopover } from "../Task/ManageTaskPopovers/EmojiPopover"
+
+interface NameInputProps {
+    onPressEnter?: (newName: string) => void
+    value?: string
+    placeholder?: string
+    onSubmit?: (newName: string) => void
+    expandInputWidth?: boolean
+    maxRows?: number
+    minRows?: number
+    className?: string
+    inputStatus?: (isChangeable: boolean) => void
+    onChange?: (value: string) => void
+    inputIsOpen?: boolean
+    autoSelect?: boolean
+    maxLength?: number
+    withButtons?: boolean
+    addButtons?: React.ReactNode[]
+    emojiButton?: boolean
+    onCloseInput?: () => void
+    cancelBtnName?: string
+    [key: string]: any // to handle any additional props
+}
 
 export function NameInput({
     onPressEnter,
@@ -11,26 +33,26 @@ export function NameInput({
     placeholder = "",
     onSubmit,
     expandInputWidth = true,
-    maxRows = null,
-    minRows = null,
+    maxRows,
+    minRows,
     className,
     inputStatus,
     onChange,
     inputIsOpen = false,
     autoSelect = true,
-    maxLength = null,
+    maxLength,
     withButtons = false,
     addButtons = [],
     emojiButton = false,
-    onCloseInput = null,
-    cancelBtnName = null,
+    onCloseInput,
+    cancelBtnName,
     ...other
-}) {
+}: NameInputProps) {
     const [sectionRef, isChangeable, setIsChangeable] = useClickOutside(false)
-    const [newName, setNewName] = useState(value)
-    const [customWidth, setCustomWidth] = useState(null)
-    const textAreaRef = useRef(null)
-    const spanRef = useRef(null)
+    const [newName, setNewName] = useState<string>(value)
+    const [customWidth, setCustomWidth] = useState<number | null>(null)
+    const textAreaRef = useRef<TextAreaRef>(null)
+    const spanRef = useRef<HTMLSpanElement>(null)
 
     useEffect(() => {
         if (inputIsOpen) {
@@ -52,25 +74,24 @@ export function NameInput({
     useEffect(() => {
         setNewName(value)
 
-        if (textAreaRef.current) {
+        if (textAreaRef.current && textAreaRef.current.resizableTextArea) {
             const textAreaElement =
                 textAreaRef.current.resizableTextArea.textArea
             textAreaElement.focus()
             if (autoSelect) {
                 textAreaElement.setSelectionRange(
                     0,
-                    textAreaElement.value.length,
+                    textAreaElement.value.length
                 ) // Select all text
             } else {
                 textAreaElement.setSelectionRange(
                     textAreaElement.value.length,
-                    textAreaElement.value.length,
+                    textAreaElement.value.length
                 )
             }
         }
     }, [isChangeable, value])
 
-    //sutom width
     useEffect(() => {
         if (spanRef.current && expandInputWidth) {
             const currentWidth = spanRef.current.offsetWidth
@@ -78,7 +99,7 @@ export function NameInput({
         }
     }, [value, newName, isChangeable])
 
-    async function onKeyDown(e) {
+    async function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         if (e.key === "Enter" && !onPressEnter) {
             e.preventDefault()
             onRename()
@@ -101,15 +122,18 @@ export function NameInput({
             onSubmit(newName)
         }
     }
-    function onChangeName(value) {
+
+    function onChangeName(value: string) {
         setNewName(value)
         if (onChange) {
             onChange(value)
         }
     }
-    function addEmojy(emojy) {
+
+    function addEmojy(emojy: string) {
         setNewName((prev) => prev + emojy)
     }
+
     function closeInput() {
         if (onCloseInput) {
             onCloseInput()
@@ -151,12 +175,14 @@ export function NameInput({
                                 <span className="right-buttons">
                                     <button
                                         className="btn btn-action"
+                                        type="button"
                                         onClick={onRename}
                                     >
                                         Save
                                     </button>
                                     <button
                                         className="btn btn-secondary"
+                                        type="button"
                                         onClick={closeInput}
                                     >
                                         {cancelBtnName ? (
@@ -167,7 +193,6 @@ export function NameInput({
                                     </button>
                                 </span>
                             )}
-
                             {(addButtons.length > 0 || emojiButton) && (
                                 <span className="left-buttons">
                                     {emojiButton && (

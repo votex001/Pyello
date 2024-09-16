@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import { UserAddOutlined, EllipsisOutlined } from "@ant-design/icons"
 import { UserAvatar } from "../UserAvatar"
-import { VisibilityButton } from ".//VisibilityButton"
+import { VisibilityButton } from "./VisibilityButton"
 import { ViewsButton } from "./ViewsButton"
 import { ProfilePopover } from "../Task/ManageTaskPopovers/ProfilePopover"
 import { StarBoardBtn } from "../CustomCpms/StarBoardBtn"
@@ -11,6 +11,17 @@ import { utilService } from "../../services/util.service"
 import { useState } from "react"
 import { AddModule } from "./AddModule"
 import adminPng from "/img/admin.png"
+import { RootState } from "../../store/store"
+import { RenameBoardActivity } from "../../models/activities.models"
+
+interface BoardHeaderProps {
+    starredBoardIds?: string[]
+    starToggle?: (value: string[]) => void
+    openBoardMenu?: boolean
+    setOpenBoardMenu?: React.Dispatch<React.SetStateAction<boolean>>
+    showBtn?: boolean
+    setShowBtn?: React.Dispatch<React.SetStateAction<boolean>>
+}
 
 export function BoardHeader({
     starredBoardIds,
@@ -19,36 +30,46 @@ export function BoardHeader({
     setOpenBoardMenu,
     showBtn,
     setShowBtn,
-}) {
-    const members = useSelector((state) => state.boardModule.board.members)
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+}: BoardHeaderProps) {
+    const members = useSelector(
+        (state: RootState) => state.boardModule.board?.members
+    )
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const [openAdd, setOpenAdd] = useState(false)
-    function onToggleStar(boardId) {
-        const starredIds = starredBoardIds.includes(boardId)
+    function onToggleStar(boardId: string) {
+        const starredIds = starredBoardIds?.includes(boardId)
             ? starredBoardIds.filter((id) => id !== boardId)
-            : [...starredBoardIds, boardId]
-        starToggle(starredIds)
+            : [...(starredBoardIds || []), boardId]
+        if (starToggle) {
+            starToggle(starredIds)
+        }
     }
 
-    function onBoardNameChange(name) {
-        const newActivity = utilService.createActivity(
-            {
-                type: "renameBoard",
-                previousName: board.name,
-            },
-            user
-        )
+    function onBoardNameChange(name: string) {
+        if (board && user) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "renameBoard",
+                    previousName: board.name,
+                },
+                user
+            ) as RenameBoardActivity
 
-        updateBoard({
-            ...board,
-            name,
-            activities: [...board?.activities, newActivity],
-        })
+            updateBoard({
+                ...board,
+                name,
+                activities: [...board?.activities, newActivity],
+            })
+        }
     }
     function openMenu() {
-        setOpenBoardMenu(true)
-        setShowBtn(false)
+        if (setOpenBoardMenu) {
+            setOpenBoardMenu(true)
+        }
+        if (setShowBtn) {
+            setShowBtn(false)
+        }
     }
 
     return (
@@ -58,22 +79,22 @@ export function BoardHeader({
                     board?.prefs?.backgroundBrightness === "dark" ? "" : "dark"
                 }`}
             >
-                {board.members.some(
+                {board?.members.some(
                     (m) => m.id === user?.id && m.permissionStatus === "admin"
                 ) || user?.isAdmin ? (
                     <NameInput
-                        value={board.name}
+                        value={board?.name}
                         className="board-name"
                         onSubmit={onBoardNameChange}
                     />
                 ) : (
                     <section className="name-input board-name ">
-                        <span className="cursor">{board.name}</span>
+                        <span className="cursor">{board?.name}</span>
                     </section>
                 )}
                 <StarBoardBtn
                     starredBoardIds={starredBoardIds}
-                    boardId={board.id}
+                    boardId={board?.id}
                     starClick={onToggleStar}
                 />
                 <VisibilityButton />
@@ -114,7 +135,7 @@ export function BoardHeader({
                 <button
                     className="add-btn"
                     disabled={
-                        !board.members.some((m) => m.id === user?.id) &&
+                        !board?.members.some((m) => m.id === user?.id) &&
                         !user?.isAdmin
                     }
                     onClick={() => setOpenAdd(true)}

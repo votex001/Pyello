@@ -1,21 +1,31 @@
 import { StarOutlined, StarFilled } from "@ant-design/icons"
-import { useState, useEffect } from "react"
-import { useSelector } from "react-redux"
+import React, { useState, useEffect } from "react"
 
-export function StarBoardBtn({ starredBoardIds, boardId, starClick }) {
+interface StarBoardBtnProps {
+    starredBoardIds?: string[]
+    boardId?: string
+    starClick?: (id: string) => void
+}
+
+export function StarBoardBtn({
+    starredBoardIds,
+    boardId,
+    starClick,
+}: StarBoardBtnProps) {
     const [hover, setHover] = useState(false)
     const [isStarredBoard, setIsStarredBoard] = useState(false)
-    const user = useSelector((state) => state.userModule.user)
 
     useEffect(() => {
-        if (starredBoardIds) {
+        if (boardId && starredBoardIds) {
             setIsStarredBoard(starredBoardIds.includes(boardId))
         }
     }, [starredBoardIds, boardId])
 
-    function onStarClick(e) {
+    function onStarClick(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
-        starClick(boardId)
+        if (starClick && boardId) {
+            starClick(boardId)
+        }
     }
     return (
         <button

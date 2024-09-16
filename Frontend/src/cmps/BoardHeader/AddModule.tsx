@@ -5,62 +5,75 @@ import { updateBoard } from "../../store/actions/board.actions"
 import { utilService } from "../../services/util.service"
 import { UserAvatar } from "../UserAvatar"
 import { useState } from "react"
-import { CustomSelect } from "../CustomCpms/CustomSelect"
 import { ChangePermissionPopover } from "./ChangePermissionPopover"
+import { RootState } from "../../store/store"
 
-export function AddModule({ onClose }) {
-    const board = useSelector((state) => state.boardModule.board)
-    const users = useSelector((state) => state.userModule.users)
-    const me = useSelector((state) => state.userModule.user)
-    const [disableButtons, setDisableButtons] = useState(false)
-    const myStatus = useSelector((state) =>
-        state.boardModule.board.members.find((m) => m.id === me.id)
+interface AddModuleProps {
+    onClose: () => void
+}
+
+export function AddModule({ onClose }: AddModuleProps) {
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const users = useSelector((state: RootState) => state.userModule.users)
+    const me = useSelector((state: RootState) => state.userModule.user)
+    const [disableButtons, setDisableButtons] = useState<boolean>(false)
+    const myStatus = useSelector((state: RootState) =>
+        state.boardModule.board?.members.find((m) => m.id === me?.id)
     )
     async function createLink() {
         setDisableButtons(true)
-        await updateBoard({ ...board, invLink: utilService.makeId() })
+        if (board) {
+            await updateBoard({ ...board, invLink: utilService.makeId() })
+        }
         setDisableButtons(false)
     }
     async function deleteLink() {
-        await updateBoard({ ...board, invLink: "" })
+        if (board) {
+            await updateBoard({ ...board, invLink: null })
+        }
     }
     function copyLink() {
         navigator.clipboard.writeText(
-            `${window.location.origin}/b/${board.id}/${board.invLink}`
+            `${window.location.origin}/b/${board?.id}/${board?.invLink}`
         )
     }
-    async function onChangePermission(action) {
-        const user = board.members.find((u) => u.id === action.id)
-        switch (action.option) {
-            case "admin":
-                await updateBoard({
-                    ...board,
-                    members: board.members.map((m) =>
-                        m.id === user.id
-                            ? { ...m, permissionStatus: "admin" }
-                            : m
-                    ),
-                })
-                break
-            case "member":
-                await updateBoard({
-                    ...board,
-                    members: board.members.map((m) =>
-                        m.id === user.id
-                            ? { ...m, permissionStatus: "member" }
-                            : m
-                    ),
-                })
-                break
-            case "kick":
-                updateBoard({
-                    ...board,
-                    members: board.members.filter((m) => m.id !== user.id),
-                })
-                if (user.id === me.id) {
-                    onClose()
-                }
-                break
+    async function onChangePermission(action: {
+        option: "admin" | "member" | "kick"
+        memberId: string
+    }) {
+        const user = board?.members.find((u) => u.id === action.memberId)
+        if (board && user) {
+            switch (action.option) {
+                case "admin":
+                    await updateBoard({
+                        ...board,
+                        members: board.members.map((m) =>
+                            m.id === user.id
+                                ? { ...m, permissionStatus: "admin" }
+                                : m
+                        ),
+                    })
+                    break
+                case "member":
+                    await updateBoard({
+                        ...board,
+                        members: board.members.map((m) =>
+                            m.id === user.id
+                                ? { ...m, permissionStatus: "member" }
+                                : m
+                        ),
+                    })
+                    break
+                case "kick":
+                    updateBoard({
+                        ...board,
+                        members: board.members.filter((m) => m.id !== user.id),
+                    })
+                    if (user.id === me?.id) {
+                        onClose()
+                    }
+                    break
+            }
         }
     }
     return (
@@ -76,11 +89,11 @@ export function AddModule({ onClose }) {
                         </span>
                         <section className="btns">
                             <p className="title">
-                                {board.invLink
+                                {board?.invLink
                                     ? "Anyone with the link can join as a member"
                                     : "Share this board with a link"}
                             </p>
-                            {board.invLink && !disableButtons ? (
+                            {board?.invLink && !disableButtons ? (
                                 <>
                                     <button onClick={copyLink}>
                                         Copy link
@@ -110,7 +123,7 @@ export function AddModule({ onClose }) {
                         </header>
                         <main className="main-add-members">
                             {board?.members?.map((m) => {
-                                const user = users.find((u) => u.id === m.id)
+                                const user = users?.find((u) => u.id === m.id)
                                 return (
                                     <section
                                         className="member-wraper"
@@ -143,7 +156,7 @@ export function AddModule({ onClose }) {
                                         </section>
                                         {(myStatus?.permissionStatus ===
                                             "admin" ||
-                                            me.isAdmin) && (
+                                            me?.isAdmin) && (
                                             <ChangePermissionPopover
                                                 myOptions={user?.id === me?.id}
                                                 currenOption={

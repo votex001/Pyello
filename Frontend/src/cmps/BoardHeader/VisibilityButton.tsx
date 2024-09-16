@@ -9,15 +9,16 @@ import peopleIcon from "/img/board-index/headerImgs/peopleIcon.svg"
 import privateIcon from "/img/board-index/headerImgs/privateIcon.svg"
 import publicIcon from "/img/board-index/headerImgs/publicIcon.svg"
 import { VisibilityOptions } from "./VisibilityOptions"
+import { RootState } from "../../store/store"
 
 export function VisibilityButton() {
-    const [openListMenu, setOpenListMenu] = useState(false)
-    const [svg, setSvg] = useState(privateIcon)
+    const [openListMenu, setOpenListMenu] = useState<boolean>(false)
+    const [svg, setSvg] = useState<string>(privateIcon)
     const permissionLevel = useSelector(
-        (state) => state.boardModule.board.prefs?.permissionLevel,
+        (state: RootState) => state.boardModule.board?.permissionLevel
     )
 
-    const icon = [
+    const icon: { permission: "private" | "org" | "public"; svg: string }[] = [
         { permission: "private", svg: privateIcon },
         { permission: "org", svg: peopleIcon },
         { permission: "public", svg: publicIcon },
@@ -56,7 +57,7 @@ export function VisibilityButton() {
                 className="visibility-btn"
                 onClick={() => setOpenListMenu(!openListMenu)}
             >
-                <ReactSVG src={svg || null} wrapper="span" />
+                <ReactSVG src={svg} wrapper="span" />
             </button>
         </Popover>
     )

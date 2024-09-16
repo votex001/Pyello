@@ -7,14 +7,22 @@ import peopleIcon from "/img/board-index/headerImgs/peopleIcon.svg"
 import permissionIcon from "/img/board-index/headerImgs/permissionIcon.svg"
 import { updateBoard } from "../../store/actions/board.actions"
 import { utilService } from "../../services/util.service"
+import { ChangeVisibilityActivity } from "../../models/activities.models"
+import { RootState } from "../../store/store"
 
-export function VisibilityOptions({ setOpenListMenu, setPermission }) {
+interface VisibilityOptionsProps {
+    setOpenListMenu: (value: boolean) => void
+}
+
+export function VisibilityOptions({ setOpenListMenu }: VisibilityOptionsProps) {
     const [hasAcces, setHasAcces] = useState(false)
-    const user = useSelector((state) => state.userModule.user)
-    const currentMember = useSelector((state) =>
-        state.boardModule.board.members.find((member) => member.id === user.id)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const currentMember = useSelector((state: RootState) =>
+        state.boardModule.board?.members.find(
+            (member) => member.id === user?.id
+        )
     )
-    const board = useSelector((state) => state.boardModule.board)
+    const board = useSelector((state: RootState) => state.boardModule.board)
     useEffect(() => {
         if (currentMember?.permissionStatus === "admin" || user?.isAdmin) {
             setHasAcces(true)
@@ -23,8 +31,8 @@ export function VisibilityOptions({ setOpenListMenu, setPermission }) {
         }
     }, [currentMember])
 
-    function permissionCheck(permission) {
-        if (permission === board.prefs?.permissionLevel) {
+    function permissionCheck(permission: "private" | "org" | "public") {
+        if (permission === board?.permissionLevel) {
             return (
                 <ReactSVG
                     src={permissionIcon}
@@ -36,21 +44,28 @@ export function VisibilityOptions({ setOpenListMenu, setPermission }) {
         return ""
     }
 
-    function onPermissionClick(value) {
-        const newActivity = utilService.createActivity(
-            {
-                type: "changeVisibility",
-                visibility: value,
-            },
-            user
-        )
-        board.prefs.permissionLevel = value
-        board.activities.push(newActivity)
-        const newBoard = board
-        updateBoard(newBoard)
+    function onPermissionClick(value: "private" | "org" | "public") {
+        if (board && user) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "changeVisibility",
+                    visibility: value,
+                },
+                user
+            ) as ChangeVisibilityActivity
+            board.permissionLevel = value
+            board.activities.push(newActivity)
+            const newBoard = board
+            updateBoard(newBoard)
+        }
         setOpenListMenu(false)
     }
-
+    interface Option {
+        value: "private" | "org" | "public"
+        label: string
+        txt: string
+        svg: string
+    }
     const options = [
         {
             value: "private",
@@ -70,7 +85,7 @@ export function VisibilityOptions({ setOpenListMenu, setPermission }) {
             txt: "Anyone on the internet can see this board. Only board members can edit.",
             svg: publicIcon,
         },
-    ]
+    ] as Option[]
 
     return (
         <nav className="popover-nav">

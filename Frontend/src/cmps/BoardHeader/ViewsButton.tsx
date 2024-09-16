@@ -14,6 +14,11 @@ import { CloseOutlined } from "@ant-design/icons"
 import { GoGrabber } from "react-icons/go"
 import more from "/img/workspace/more.svg"
 import { CheckBox } from "../CustomCpms/CheckBox"
+
+
+
+
+
 export function ViewsButton() {
     const [openListMenu, setOpenListMenu] = useState(false)
 
