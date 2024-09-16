@@ -6,6 +6,6 @@ export interface User {
     username: string
     email: string
     starredBoardIds: []
-    isAdmin: boolean | null
-    imgUrl: string | null
+    isAdmin: boolean | undefined
+    imgUrl: string | undefined
 }
