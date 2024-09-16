@@ -11,7 +11,7 @@ import { httpService } from "./http.service"
 import { User } from "../models/user.model"
 import { Activity } from "../models/activities.models"
 import { CheckItem, CheckList, Group, Task } from "../models/task&groups.models"
-import { Board, Label } from "../models/board.models"
+import { Board, Label, Member } from "../models/board.models"
 
 export const utilService = {
     makeId,
@@ -200,18 +200,25 @@ async function createNewBoard(board: {
         backgroundColor?: string | null
         backgroundImage?: string | null
         backgroundBrightness: string
-        backgroundImageScaled?: string | null
+        backgroundImageScaled?:
+            | {
+                  width: number
+                  height: number
+                  url: string
+              }[]
+            | null
     }
     name: string
 }): Promise<Board> {
     const user: User = await httpService.post("user/checkToken")
 
-    const member = {
+    const member: Member = {
         id: user.id,
         permissionStatus: "admin",
         fullName: user.fullName,
     }
     return {
+        permissionLevel: "org",
         prefs: {
             background: board.backgroundData.background,
             backgroundColor: board.backgroundData?.backgroundColor || null,
@@ -239,6 +246,7 @@ async function createNewBoard(board: {
         ],
         updatedAt: Date.now(),
         viewedAt: Date.now(),
+        invLink: null,
     }
 }
 
