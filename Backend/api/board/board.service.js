@@ -113,7 +113,7 @@ async function remove(boardId, user) {
       },
     });
     if (!board && !user.isAdmin) {
-      throw `Couldn't remove board with id ${boardId}`;
+      throw `Couldn't remove board with id ${boardId} or User has no admin access`;
     } else {
       cursor.deleteOne({
         _id: ObjectId.createFromHexString(boardId),
