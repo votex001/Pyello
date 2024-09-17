@@ -1,50 +1,40 @@
 import { useSelector } from "react-redux"
 import { utilService } from "../../../services/util.service"
 import { updateBoard } from "../../../store/actions/board.actions"
+import { RootState } from "../../../store/store"
 
 export function ColorsBackgrounds() {
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
 
-    function onPickGradient(bg) {
-        const newActivity = utilService.createActivity(
-            {
-                type: "changeBackGround",
-            },
-            user
-        )
-        const prefs = {
-            background: bg.background,
-            backgroundColor: bg.backgroundColor,
-            backgroundImage: bg.backgroundImage,
-            backgroundBrightness: bg.backgroundBrightness,
-        }
-
-        updateBoard({
-            ...board,
-            prefs,
-            activities: [...board?.activities, newActivity],
-        })
+    interface bg {
+        background: string
+        backgroundColor: string
+        backgroundImage: string
+        backgroundBrightness: string
     }
 
-    function onPickColor(bg) {
-        const newActivity = utilService.createActivity(
-            {
-                type: "changeBackGround",
-            },
-            user
-        )
-        const prefs = {
-            background: bg.background,
-            backgroundColor: bg.backgroundColor,
-            backgroundImage: bg.backgroundImage,
-            backgroundBrightness: bg.backgroundBrightness,
+    function onPickColor(bg: bg) {
+        if (board && user) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "changeBackGround",
+                },
+                user
+            )
+            const prefs = {
+                background: bg.background,
+                backgroundColor: bg.backgroundColor,
+                backgroundImage: bg.backgroundImage,
+                backgroundBrightness: bg.backgroundBrightness,
+            }
+
+            updateBoard({
+                ...board,
+                prefs,
+                activities: [...board?.activities, newActivity],
+            })
         }
-        updateBoard({
-            ...board,
-            prefs,
-            activities: [...board?.activities, newActivity],
-        })
     }
 
     return (
@@ -52,7 +42,7 @@ export function ColorsBackgrounds() {
             <section className="photos-bg">
                 {utilService.getBgGradientColors().map((bg) => (
                     <section
-                        onClick={() => onPickGradient(bg)}
+                        onClick={() => onPickColor(bg)}
                         className="container"
                         key={bg.background}
                         style={{

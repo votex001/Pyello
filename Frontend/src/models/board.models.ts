@@ -23,6 +23,7 @@ export interface Member {
 }
 
 export interface Board {
+    desc: string
     closed: boolean
     id?: string
     permissionLevel: "private" | "org" | "public"

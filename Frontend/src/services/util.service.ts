@@ -219,6 +219,7 @@ async function createNewBoard(board: {
         fullName: user.fullName,
     }
     return {
+        desc: "",
         closed: false,
         permissionLevel: "org",
         prefs: {

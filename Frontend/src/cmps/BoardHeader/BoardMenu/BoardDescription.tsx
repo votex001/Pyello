@@ -1,38 +1,45 @@
 import { useSelector } from "react-redux"
 import { UserAvatar } from "../../UserAvatar"
 import { useEffect, useRef, useState } from "react"
-import { userService } from "../../../services/user.service"
-import TextArea from "antd/es/input/TextArea"
+import TextArea, { TextAreaRef } from "antd/es/input/TextArea"
 import { useClickOutside } from "../../../customHooks/useClickOutside"
 import { updateBoard } from "../../../store/actions/board.actions"
 import { ProfilePopover } from "../../Task/ManageTaskPopovers/ProfilePopover"
+import { RootState } from "../../../store/store"
+import { User } from "../../../models/user.model"
 
-export function BoardDescription({ onSetPreventLoad }) {
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
-    const users = useSelector((state) => state.userModule.users)
-    const members = useSelector((state) => state.boardModule.board.members)
-    const admins = members.filter((m) => m.permissionStatus === "admin")
-    const [admin, setAdmin] = useState(null)
+interface BoardDescriptionProps {
+    onSetPreventLoad: (b: boolean) => void
+}
+
+export function BoardDescription({ onSetPreventLoad }: BoardDescriptionProps) {
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const users = useSelector((state: RootState) => state.userModule.users)
+    const members = useSelector(
+        (state: RootState) => state.boardModule.board?.members
+    )
+    const admins = members?.filter((m) => m.permissionStatus === "admin")
+    const [admin, setAdmin] = useState<User | null>(null)
     const [areaDivRef, isOpen, setIsOpen] = useClickOutside(false)
-    const areaRef = useRef(null)
+    const areaRef = useRef<TextAreaRef>(null)
     const [areaValue, setAreaValue] = useState(
-        board.desc ||
+        board?.desc ||
             "Add a description to let your teammates know what this board is used for." +
                 " You’ll get bonus points if you add instructions for how to collaborate!"
     )
     const minRows = isOpen ? 5 : 0
     useEffect(() => {
         if (isOpen) {
-            setAreaValue(board.desc || "")
-            if (areaRef) {
+            setAreaValue(board?.desc || "")
+            if (areaRef && areaRef.current) {
                 const textAreaElement =
-                    areaRef.current.resizableTextArea.textArea
-                textAreaElement.focus()
+                    areaRef.current.resizableTextArea?.textArea
+                textAreaElement?.focus()
             }
         } else {
             setAreaValue(
-                board.desc ||
+                board?.desc ||
                     "Add a description to let your teammates know what this board is used for." +
                         " You’ll get bonus points if you add instructions for how to collaborate!"
             )
@@ -40,21 +47,26 @@ export function BoardDescription({ onSetPreventLoad }) {
     }, [isOpen])
 
     useEffect(() => {
-        if (admins.length === 1) {
+        if (admins?.length === 1) {
             getAdmin()
         }
     }, [admins])
     async function getAdmin() {
+        if (!users || !admins) return
         const user = users.find((u) => u.id === admins[0].id)
-        setAdmin(user)
+        if (user) {
+            setAdmin(user)
+        }
     }
-    function onChangeDescription(e) {
+    function onChangeDescription(e: React.ChangeEvent<HTMLTextAreaElement>) {
         setAreaValue(e.target.value)
     }
     async function onSaveDescription() {
         onSetPreventLoad(true)
         setIsOpen(false)
-        await updateBoard({ ...board, desc: areaValue })
+        if (board) {
+            await updateBoard({ ...board, desc: areaValue })
+        }
         onSetPreventLoad(false)
     }
     return (
@@ -64,7 +76,7 @@ export function BoardDescription({ onSetPreventLoad }) {
                     <span className="pyello-icon icon-member" />
                     <h3>Board admins</h3>
                 </header>
-                {!!admins.length && (
+                {!!admins?.length && (
                     <main className="admins-main">
                         {admins.length > 1 ? (
                             <section className="admins-avatars">
@@ -103,7 +115,7 @@ export function BoardDescription({ onSetPreventLoad }) {
             </div>
             <div
                 className={`description ${
-                    !board.members.some((m) => m.id === user.id) &&
+                    !board?.members.some((m) => m.id === user?.id) &&
                     !user?.isAdmin
                         ? "disable"
                         : ""
@@ -113,7 +125,7 @@ export function BoardDescription({ onSetPreventLoad }) {
                     <span className="pyello-icon icon-description" />
                     <h3>Description</h3>
                     {!isOpen &&
-                        (board.members.some((m) => m.id === user.id) ||
+                        (board?.members.some((m) => m.id === user?.id) ||
                             user?.isAdmin) && (
                             <button
                                 className="edit-btn"
@@ -125,7 +137,7 @@ export function BoardDescription({ onSetPreventLoad }) {
                 </header>
                 <main
                     className={`description-main ${isOpen ? "open" : ""} ${
-                        !board.desc ? "add-desc" : ""
+                        !board?.desc ? "add-desc" : ""
                     } `}
                     ref={areaDivRef}
                 >

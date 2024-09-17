@@ -1,19 +1,27 @@
 import { useSelector } from "react-redux"
 import { TaskPreview } from "../../Task/TaskPreview"
 import { ActionPopover } from "./ActionPopover"
-import { editTask, updateBoard } from "../../../store/actions/board.actions"
+import { updateBoard } from "../../../store/actions/board.actions"
 import { utilService } from "../../../services/util.service"
+import { RootState } from "../../../store/store"
+import { Task } from "../../../models/task&groups.models"
+import {
+    DeleteTaskActivity,
+    UnArchiveActivity,
+} from "../../../models/activities.models"
 
 export function ArchivedItems() {
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const closedTasks = board?.groups.flatMap((group) =>
         group.tasks.filter((task) => task.closed)
     )
 
-    function onDeleteTask(task) {
-        const groupName = board.groups.find((g) => g.id === task.idGroup).name
-
+    function onDeleteTask(task?: Task) {
+        const groupName = board?.groups.find(
+            (g) => g.id === task?.idGroup
+        )?.name
+        if (!task || !groupName || !user) return
         const newActivity = utilService.createActivity(
             {
                 type: "deleteTask",
@@ -21,7 +29,7 @@ export function ArchivedItems() {
                 groupName: groupName,
             },
             user
-        )
+        ) as DeleteTaskActivity
 
         updateBoard({
             ...board,
@@ -34,7 +42,9 @@ export function ArchivedItems() {
         })
     }
 
-    async function onSendToBoard(task) {
+    async function onSendToBoard(task?: Task) {
+        if (!task || !user || !board) return
+
         const newActivity = utilService.createActivity(
             {
                 type: "unArchive",
@@ -42,7 +52,7 @@ export function ArchivedItems() {
                 targetName: task.name,
             },
             user
-        )
+        ) as UnArchiveActivity
         task.closed = false
         await updateBoard({
             ...board,
@@ -62,7 +72,7 @@ export function ArchivedItems() {
 
     return (
         <section className="archived-items">
-            {closedTasks.map((task) => (
+            {closedTasks?.map((task) => (
                 <section className="task" key={task.id}>
                     <TaskPreview task={task} noHover />
                     <section className="buttons">

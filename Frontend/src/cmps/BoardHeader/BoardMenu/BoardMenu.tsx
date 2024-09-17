@@ -5,22 +5,26 @@ import { BoardDescription } from "./BoardDescription"
 import { useSelector } from "react-redux"
 import { ActionPopover } from "./ActionPopover"
 import { removeBoard, updateBoard } from "../../../store/actions/board.actions"
-import { editUser } from "../../../store/actions/user.actions"
-import { utilService } from "../../../services/util.service"
 import { useNavigate } from "react-router"
 import { ArchivedItems } from "./ArchivedItems"
 import { Link } from "react-router-dom"
 import { PhotosBackgrounds } from "./PhotosBackgrounds"
 import { ColorsBackgrounds } from "./ColorsBackgrounds"
+import { RootState } from "../../../store/store"
 
-export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+interface BoardMenuProps {
+    setOpenBoarMenu: (b: boolean) => void
+    setShowBtn: (b: boolean) => void
+}
+
+export function BoardMenu({ setOpenBoarMenu, setShowBtn }: BoardMenuProps) {
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const [isGoToBackground, setIsGoToBackground] = useState(false)
 
     const [preventLoad, setPreventLoad] = useState(false)
     const [animation, setAnimation] = useState("")
-    const [navigation, setNavigation] = useState("Menu")
+    const [navigation, setNavigation] = useState<React.ReactNode>("Menu")
 
     const navigate = useNavigate()
     function onClose() {
@@ -37,13 +41,17 @@ export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
         }
     }, [])
 
-    function onSetPreventLoad(boolean) {
+    function onSetPreventLoad(boolean: boolean) {
         setPreventLoad(boolean)
     }
     async function deleteBoard() {
         if (board) {
-            await removeBoard(board.id)
+            await removeBoard(board.id!)
+        }
+        if (user) {
             navigate(`/u/${user.username}/boards`)
+        } else {
+            navigate("/home")
         }
     }
 
@@ -51,7 +59,7 @@ export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
         if (board) {
             updateBoard({
                 ...board,
-                members: board.members.filter((m) => m.id !== user.id),
+                members: board.members.filter((m) => m.id !== user?.id),
             })
         }
     }
@@ -111,8 +119,8 @@ export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
                         <span className="pyello-icon icon-activity btn-menu" />
                         Activity
                     </button>
-                    {(board.members.some((m) => m.id === user.id) ||
-                        user.isAdmin) && (
+                    {(board?.members.some((m) => m.id === user?.id) ||
+                        user?.isAdmin) && (
                         <>
                             <button
                                 className="btn"
@@ -130,18 +138,18 @@ export function BoardMenu({ setOpenBoarMenu, setShowBtn }) {
                                 <span
                                     className="bg"
                                     style={{
-                                        backgroundImage: `url(${board.prefs.backgroundImage})`,
+                                        backgroundImage: `url(${board?.prefs.backgroundImage})`,
                                     }}
                                 />
                                 Change background
                             </button>
                             <hr className="border_bottom" />
-                            {(board.members.some(
+                            {(board?.members.some(
                                 (m) =>
-                                    m.id === user.id &&
+                                    m.id === user?.id &&
                                     m.permissionStatus === "admin"
                             ) ||
-                                user.isAdmin) && (
+                                user?.isAdmin) && (
                                 <ActionPopover
                                     action={"Delete board?"}
                                     deleteBoard={deleteBoard}

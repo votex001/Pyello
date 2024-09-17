@@ -1,6 +1,16 @@
 import { Popover, Button } from "antd"
 import { useState } from "react"
 import { ManageTaskPopoverHeader } from "../../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
+import { TooltipPlacement } from "antd/es/tooltip"
+
+interface ActionPopoverProps {
+    deleteBoard?: () => void
+    leaveBoard?: () => void
+    anchorEl: React.ReactNode
+    action: "Delete board?" | "Leave board?" | "Delete card?"
+    deleteTask?: () => void
+    position?: TooltipPlacement
+}
 
 export function ActionPopover({
     deleteBoard,
@@ -8,53 +18,42 @@ export function ActionPopover({
     anchorEl,
     action,
     deleteTask,
-    position = null,
-}) {
+    position = "bottomRight",
+}: ActionPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
 
-    const [backToList, setBackToList] = useState(null)
-
-    function onClose(e) {
+    function onClose(e: React.MouseEvent<HTMLElement>) {
         e.stopPropagation()
         setIsOpen(false)
     }
 
-    function onBackToList() {
-        setBackToList(null)
-    }
-
-    function onDeleteBoard(e) {
+    function onDeleteBoard(e: React.MouseEvent<HTMLElement>) {
         e.stopPropagation()
-        deleteBoard()
+        if (deleteBoard) deleteBoard()
         setIsOpen(false)
     }
-    function onDeleteTask(e) {
+    function onDeleteTask(e: React.MouseEvent<HTMLElement>) {
         e.stopPropagation()
-        deleteTask()
+        if (deleteTask) deleteTask()
         setIsOpen(false)
     }
 
-    function onLeaveBoard(e) {
+    function onLeaveBoard(e: React.MouseEvent<HTMLElement>) {
         e.stopPropagation()
-        leaveBoard()
+        if (leaveBoard) leaveBoard()
         setIsOpen(false)
     }
     return (
         <Popover
             className="close-board-popover"
             trigger="click"
-            placement={position ? position : "bottomRight"}
-            close={onClose}
+            placement={position}
             open={isOpen}
             onOpenChange={setIsOpen}
             arrow={false}
             content={
                 <section className="close-board-popover-content">
-                    <ManageTaskPopoverHeader
-                        title={action}
-                        close={onClose}
-                        back={backToList}
-                    />
+                    <ManageTaskPopoverHeader title={action} close={onClose} />
 
                     {action === "Delete board?" && (
                         <section className="close-board-popover-body">

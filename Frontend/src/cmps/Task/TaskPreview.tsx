@@ -11,9 +11,9 @@ import { Label } from "../../models/board.models"
 
 interface TaskPreviewProps {
     task?: Task
-    isDragging: boolean
+    isDragging?: boolean
     noHover: boolean
-    disableDnD: (b: boolean) => void
+    disableDnD?: (b: boolean) => void
 }
 
 export function TaskPreview({
@@ -61,7 +61,9 @@ export function TaskPreview({
 
     function onOpenPreviewModal(value: boolean) {
         setIsOpenPreviewModal(value)
-        disableDnD(value)
+        if (disableDnD) {
+            disableDnD(value)
+        }
     }
 
     function onClickTask() {
@@ -71,7 +73,9 @@ export function TaskPreview({
     function onClosePreviewModal() {
         setIsHovered(false)
         setIsOpenPreviewModal(false)
-        disableDnD(false)
+        if (disableDnD) {
+            disableDnD(false)
+        }
     }
     const covorCardClass =
         coverSize === "full"
