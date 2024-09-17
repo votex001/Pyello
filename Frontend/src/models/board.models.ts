@@ -5,6 +5,7 @@ export interface Label {
     id: string
     color: string
     name: string
+    isTask: boolean
 }
 export interface LabelColorOption {
     color: string
@@ -22,6 +23,7 @@ export interface Member {
 }
 
 export interface Board {
+    closed: boolean
     id?: string
     permissionLevel: "private" | "org" | "public"
     prefs: {

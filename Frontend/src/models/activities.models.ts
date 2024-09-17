@@ -212,8 +212,3 @@ export type Activity =
     | RemoveDateActivity
     | CompleteDateActivity
     | IncompleteDateActivity
-
-// Interface for the main object
-export interface ActivitiesResponse {
-    activities: Activity[]
-}

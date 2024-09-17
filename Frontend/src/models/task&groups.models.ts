@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs"
+
 export interface Group {
     id: string
     idBoard: string
@@ -24,16 +26,28 @@ export interface CheckList {
 }
 
 export interface Cover {
-    attachment: string | null
+    attachment: {
+        link: string
+        text: string
+        avgBgColor: { color: string; isDark: boolean }
+    } | null
     color: string | null
-    size: "small" | "normal" | "large"
+    size: "small" | "normal" | "full"
     brightness: "light" | "dark"
     edgeColor: string
+    scaled: string | null
+}
+export interface attachment {
+    id: string
+    link: string
+    text: string
+    createdAt: string
+    type: string
 }
 
 export interface Task {
     id: string
-    attachments: string[]
+    attachments: attachment[]
     updatedAt: string
     members: string[]
     checkLists: CheckList[]
@@ -42,15 +56,15 @@ export interface Task {
     dueComplete: boolean
     dateLastActivity: string
     desc: string
-    due: Date | null
-    dueReminder: Date | null
+    due: Dayjs | null
+    dueReminder: string | null
     idBoard: string
     idGroup: string
     idMembers: string[]
     idLabels: string[]
     name: string
     pos: number
-    start: Date | null
+    start: Dayjs | null
     cover: Cover
     checkListTaskIds: string[]
     createdAt: number
