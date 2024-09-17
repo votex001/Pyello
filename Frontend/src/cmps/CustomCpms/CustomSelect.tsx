@@ -12,7 +12,7 @@ interface Option {
 interface CustomSelect {
     options?: Option[]
     onSelect?: (option: Option | any) => void
-    value?: string
+    value?: string | null
     disabled?: boolean
     optionsClassName?: string
 }
