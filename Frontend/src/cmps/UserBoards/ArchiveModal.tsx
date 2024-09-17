@@ -3,33 +3,42 @@ import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { utilService } from "../../services/util.service"
 import { removeBoard, updateBoard } from "../../store/actions/board.actions"
+import { RootState } from "../../store/store"
+import { ReopenBoardActivity } from "../../models/activities.models"
 
-export function ArchiveModal({ onClose }) {
-    const boards = useSelector((state) => state.workspaceModule.boards)
-    const user = useSelector((state) => state.userModule.user)
+interface ArchiveModalProps {
+    onClose: () => void
+}
+
+export function ArchiveModal({ onClose }: ArchiveModalProps) {
+    const boards = useSelector(
+        (state: RootState) => state.workspaceModule.boards
+    )
+    const user = useSelector((state: RootState) => state.userModule.user)
     useEffect(() => {
         if (boards) {
-            if (!boards.filter((b) => b.closed).length > 0) {
-                if (onClose) {
-                    onClose()
-                }
+            const closedBoardsCount = boards.filter((b) => b.closed).length
+            if (closedBoardsCount === 0 && onClose) {
+                onClose()
             }
         }
     }, [boards])
 
-    function onDelete(boardId) {
-        removeBoard(boardId)
+    function onDelete(boardId?: string) {
+        if (boardId) {
+            removeBoard(boardId)
+        }
     }
 
-    function onReopen(boardId) {
-        const board = boards.find((b) => b.id === boardId)
-        const newActivity = utilService.createActivity(
-            {
-                type: "reopenBoard",
-            },
-            user
-        )
-        if (board) {
+    function onReopen(boardId?: string) {
+        const board = boards?.find((b) => b.id === boardId)
+        if (board && user) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "reopenBoard",
+                },
+                user
+            ) as ReopenBoardActivity
             updateBoard({
                 ...board,
                 closed: false,
@@ -49,7 +58,7 @@ export function ArchiveModal({ onClose }) {
                 </header>
                 <main className="module-main">
                     {boards
-                        .filter((b) => b.closed)
+                        ?.filter((b) => b.closed)
                         .map((b) => {
                             return (
                                 <section className="board" key={b.id}>
@@ -69,7 +78,7 @@ export function ArchiveModal({ onClose }) {
                                             className="btn reopen"
                                             disabled={
                                                 !b.members.some(
-                                                    (m) => m.id === user.id
+                                                    (m) => m.id === user?.id
                                                 ) && !user?.isAdmin
                                             }
                                             onClick={() => onReopen(b.id)}
@@ -80,7 +89,7 @@ export function ArchiveModal({ onClose }) {
                                             className="btn delete"
                                             disabled={
                                                 !b.members.some(
-                                                    (m) => m.id === user.id
+                                                    (m) => m.id === user?.id
                                                 ) && !user?.isAdmin
                                             }
                                             onClick={() => onDelete(b.id)}
