@@ -10,9 +10,14 @@ import { User } from "../models/user.model"
 import { ReactElement } from "react"
 
 interface UserAvatarProps {
-    memberId?: string 
-    memberProp?: User 
-    user?: User 
+    memberId?: string
+    memberProp?: {
+        id: string
+        permissionStatus: "admin" | "member"
+        fullName: string
+        imgUrl?: string
+    }
+    user?: User
     size?: number
     src?: string
     img?: null | ReactElement
