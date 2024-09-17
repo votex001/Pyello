@@ -70,7 +70,6 @@ export function UserAvatar({
                             ...style,
                         }}
                         {...other}
-                        // src={member?.imgUrl}
                     />
                 ) : (
                     <Avatar

@@ -2,11 +2,15 @@ import { Link } from "react-router-dom"
 import { UserAvatar } from "./UserAvatar"
 import useTime from "../customHooks/useTime"
 import { ProfilePopover } from "./Task/ManageTaskPopovers/ProfilePopover"
-import { useEffect } from "react"
+import { Activity } from "../models/activities.models"
 
-export function ActivityMsg({ activity, task = false }) {
+interface ActivityMsgProps {
+    activity: Activity
+    task: boolean
+}
+
+export function ActivityMsg({ activity, task = false }: ActivityMsgProps) {
     const timeString = useTime(activity.timeStamp)
-    const doDate = useTime(activity?.doDate)
 
     switch (activity.type) {
         case "movedTask":
@@ -18,7 +22,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -56,7 +60,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -97,7 +101,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -138,7 +142,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -175,7 +179,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -200,7 +204,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -225,7 +229,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -263,7 +267,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -301,7 +305,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -338,7 +342,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -365,7 +369,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -402,7 +406,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -439,7 +443,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -465,7 +469,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -506,7 +510,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -550,7 +554,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -594,7 +598,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -639,7 +643,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -650,7 +654,7 @@ export function ActivityMsg({ activity, task = false }) {
                                 {activity.userFullName}
                             </span>{" "}
                             deleted the
-                            <Link to={activity.attachmentLink}>
+                            <Link to={activity.attachment}>
                                 {activity.attachmentName}
                             </Link>{" "}
                             attachment from{" "}
@@ -684,7 +688,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -710,7 +714,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -735,7 +739,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -760,7 +764,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -797,7 +801,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -814,6 +818,8 @@ export function ActivityMsg({ activity, task = false }) {
                 </section>
             )
         case "addDate":
+            const doDate = useTime(activity.doDate)
+
             return (
                 <section className="activity">
                     <ProfilePopover
@@ -822,7 +828,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -864,7 +870,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -905,7 +911,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -950,7 +956,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
@@ -995,7 +1001,7 @@ export function ActivityMsg({ activity, task = false }) {
                             <UserAvatar
                                 size={32}
                                 memberId={activity.userId}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 className="activity-avatar"
                             />
                         }
