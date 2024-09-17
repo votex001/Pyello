@@ -1,17 +1,20 @@
 import { useState, useRef, useEffect } from "react"
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons"
-import { Input } from "antd"
+import { Input, InputRef } from "antd"
 import { Card } from "antd"
-import { utilService } from "../../services/util.service"
-import { updateBoard } from "../../store/actions/board.actions"
 import { useSelector } from "react-redux"
+import { RootState } from "../../store/store"
 
-export function AddGroupBtn({ addGroup }) {
+interface AddGroupBtn {
+    addGroup?: (name: string) => void
+}
+
+export function AddGroupBtn({ addGroup }: AddGroupBtn) {
     const [isAddGroupOpen, setIsAddGroupOpen] = useState(false)
     const [groupName, setGroupName] = useState("")
-    const inputRef = useRef(null)
-    const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
+    const inputRef = useRef<InputRef>(null)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const board = useSelector((state: RootState) => state.boardModule.board)
 
     useEffect(() => {
         if (inputRef.current) {
@@ -24,12 +27,14 @@ export function AddGroupBtn({ addGroup }) {
         if (groupName.trim() === "") {
             setIsAddGroupOpen(false)
         } else {
-            addGroup(groupName)
+            if (addGroup) {
+                addGroup(groupName)
+            }
         }
         setGroupName("")
     }
 
-    function onKeyDown(e) {
+    function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter") {
             onAddGroup()
         } else if (e.key === "Escape") {
@@ -39,12 +44,12 @@ export function AddGroupBtn({ addGroup }) {
     }
 
     const addListBtnTitle =
-        board.groups.filter((g) => !g.closed).length === 0
+        board?.groups.filter((g) => !g.closed).length === 0
             ? "Add a list"
             : "Add another list"
     return (
         <>
-            {(board.members.some((m) => m.id === user?.id) ||
+            {(board?.members.some((m) => m.id === user?.id) ||
                 user?.isAdmin) && (
                 <div className="add-group-btn-wrapper">
                     {!isAddGroupOpen && (
@@ -70,14 +75,12 @@ export function AddGroupBtn({ addGroup }) {
                             />
                             <article className="footer-actions">
                                 <button
-                                    type="primary"
                                     onClick={() => onAddGroup()}
                                     className="add-card-btn"
                                 >
                                     Add list
                                 </button>
                                 <button
-                                    type="secondary"
                                     onClick={() => setIsAddGroupOpen(false)}
                                     className="close-add-card-btn"
                                 >

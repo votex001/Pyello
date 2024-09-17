@@ -1,6 +1,6 @@
 import { Card } from "antd"
 import { GroupFooter } from "./GroupFooter"
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useRef } from "react"
 import { AddTaskInGroup } from "./AddTaskInGroup"
 import { BoardGroupHeader } from "./BoardGroupHeader"
 import { TaskPreview } from "../Task/TaskPreview"
@@ -8,37 +8,44 @@ import { useClickOutside } from "../../customHooks/useClickOutside"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import useScrollPercentage from "../../customHooks/useScrollPercentage"
 import { useSelector } from "react-redux"
+import { Group, Task } from "../../models/task&groups.models"
+import { RootState } from "../../store/store"
+import { addTask } from "../../store/actions/board.actions"
 
-//TODO put add new task in array of sorted tasks based on position
+interface BoardGroupProps {
+    group?: Group
+    archiveGroup: () => void
+    copyGroup: () => void
+    moveAllCards: () => void
+    archiveAllCards: () => void
+    isDraggingOverId: string | null
+}
+
 export function BoardGroup({
     group,
-    addTask,
     archiveGroup,
-    editGroup,
-    editTask,
     copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
-    labelActions,
     isDraggingOverId,
-}) {
-    const [newTasksAboveInput, setNewTasksAboveInput] = useState([])
-    const [sortedTasks, setSortedTasks] = useState([])
-    const [isTopAddTaskOpen, setIsTopAddTaskOpen] = useState(false)
-    const [isBottomAddTaskOpen, setIsBottomAddTaskOpen] = useState(false)
+}: BoardGroupProps) {
+    const [newTasksAboveInput, setNewTasksAboveInput] = useState<Task[]>([])
+    const [sortedTasks, setSortedTasks] = useState<Task[]>([])
+    const [isTopAddTaskOpen, setIsTopAddTaskOpen] = useState<boolean>(false)
+    const [isBottomAddTaskOpen, setIsBottomAddTaskOpen] =
+        useState<boolean>(false)
     const [containerRef, isAnyAddTaskOpen, setIsAnyAddTaskOpen] =
         useClickOutside(false)
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
-    const groupRef = useRef()
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const groupRef = useRef<HTMLElement | null>(null)
     const [_, setScrollToPercentage] = useScrollPercentage(groupRef)
 
-    const [showPlaceholder, setShowPlaceholder] = useState(false)
-    const [isOpenPreviewModal, setIsOpenPreviewModal] = useState(false)
+    const [showPlaceholder, setShowPlaceholder] = useState<boolean>(false)
+    const [isOpenPreviewModal, setIsOpenPreviewModal] = useState<boolean>(false)
 
     useEffect(() => {
-        if (isDraggingOverId === group.id || isDraggingOverId === null) {
+        if (isDraggingOverId === group?.id || isDraggingOverId === null) {
             setShowPlaceholder(true)
         } else {
             const timer = setTimeout(() => {
@@ -46,7 +53,7 @@ export function BoardGroup({
             }, 300)
             return () => clearTimeout(timer)
         }
-    }, [isDraggingOverId, group.id])
+    }, [isDraggingOverId, group?.id])
 
     useEffect(() => {
         if (!isAnyAddTaskOpen) {
@@ -57,9 +64,9 @@ export function BoardGroup({
 
     //TODO cleanup
     useEffect(() => {
-        const filteredTasks = group.tasks?.filter((task) => !task.closed) || []
+        const filteredTasks = group?.tasks?.filter((task) => !task.closed) || []
         const updatedTaskIds = filteredTasks.map((task) => task.id)
-        const currentTaskIds = sortedTasks.map((task) => task.id)
+        const currentTaskIds = sortedTasks.map((task) => task?.id)
         const newTaskIds = updatedTaskIds.filter(
             (taskId) => !currentTaskIds.includes(taskId)
         )
@@ -73,10 +80,23 @@ export function BoardGroup({
             setSortedTasks(filteredTasks || [])
             setNewTasksAboveInput([])
         }
-    }, [group.tasks?.length, group.updatedAt, isAnyAddTaskOpen])
+    }, [group?.tasks.length, group?.updatedAt, isAnyAddTaskOpen])
 
-    function addTaskToTop(task, group) {
-        addTask(task, group, newTasksAboveInput.length)
+    function addNewTask(
+        task: {
+            addToTop: boolean
+            name: string
+            groupId: string
+        },
+        group: Group
+    ) {
+        if (board && user) {
+            const newTask = {
+                ...task,
+                idBoard: board.id!,
+            }
+            addTask(newTask, user, group, newTasksAboveInput.length, board)
+        }
     }
 
     const openTopAddTask = () => {
@@ -107,9 +127,10 @@ export function BoardGroup({
         }, 0)
     }
 
-    function disableDnD(value) {
+    function disableDnD(value: boolean) {
         setIsOpenPreviewModal(value)
     }
+    if (!group) return <></>
     return (
         <Draggable draggableId={group.id} index={group.pos}>
             {(draggableProvided, snapshot) => (
@@ -117,7 +138,7 @@ export function BoardGroup({
                     {...draggableProvided.draggableProps}
                     ref={draggableProvided.innerRef}
                     className={`${
-                        !board.members.some((m) => m.id === user?.id) &&
+                        !board?.members.some((m) => m.id === user?.id) &&
                         !user?.isAdmin
                             ? "disable"
                             : ""
@@ -137,13 +158,11 @@ export function BoardGroup({
                             <BoardGroupHeader
                                 draggableProvided={draggableProvided}
                                 group={group}
-                                editGroup={editGroup}
                                 openAddTask={openTopAddTask}
                                 archiveGroup={archiveGroup}
                                 copyGroup={copyGroup}
                                 moveAllCards={moveAllCards}
                                 archiveAllCards={archiveAllCards}
-                                sortGroup={sortGroup}
                             />
                             <Droppable droppableId={group.id} type="task">
                                 {(droppableProvided, snapshot) => (
@@ -163,8 +182,6 @@ export function BoardGroup({
                                             <TaskPreview
                                                 key={task.id}
                                                 task={task}
-                                                editTask={editTask}
-                                                labelActions={labelActions}
                                                 disableDnD={disableDnD}
                                             />
                                         ))}
@@ -172,18 +189,18 @@ export function BoardGroup({
                                             <AddTaskInGroup
                                                 groupId={group.id}
                                                 closeAddTask={onCloseTopAddTask}
-                                                addTask={addTaskToTop}
+                                                addTask={addNewTask}
                                                 addToTop={true}
                                             />
                                         )}
                                         {group.tasks
                                             .sort((a, b) => a.pos - b.pos)
-                                            .filter(
-                                                (task) =>
-                                                    !newTasksAboveInput.includes(
-                                                        task.id
-                                                    )
-                                            )
+                                            .filter((task: Task) => {
+                                                return !newTasksAboveInput.some(
+                                                    (newTask) =>
+                                                        newTask.id === task.id
+                                                )
+                                            })
                                             .filter((task) => !task.closed)
                                             .map((task, index) => (
                                                 <Draggable
@@ -213,12 +230,6 @@ export function BoardGroup({
                                                             <TaskPreview
                                                                 key={task.id}
                                                                 task={task}
-                                                                editTask={
-                                                                    editTask
-                                                                }
-                                                                labelActions={
-                                                                    labelActions
-                                                                }
                                                                 isDragging={
                                                                     dragSnapshot.isDragging
                                                                 }
@@ -236,7 +247,7 @@ export function BoardGroup({
                                                 closeAddTask={
                                                     onCloseBottomAddTask
                                                 }
-                                                addTask={addTask}
+                                                addTask={addNewTask}
                                                 addToTop={false}
                                                 onBtnClick={onAddTaskBtnClick}
                                                 groupRef={groupRef}
@@ -249,8 +260,6 @@ export function BoardGroup({
                             </Droppable>
                             {!isTopAddTaskOpen && !isBottomAddTaskOpen && (
                                 <GroupFooter
-                                    groupId={group.id}
-                                    addTask={addTask}
                                     groupRef={groupRef}
                                     openBottomAddTask={openBottomAddTask}
                                 />

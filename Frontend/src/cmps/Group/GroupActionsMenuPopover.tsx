@@ -1,9 +1,32 @@
-import { Popover, Button } from "antd"
+import { Popover } from "antd"
 import { useState, useRef, useEffect } from "react"
 import { EllipsisOutlined } from "@ant-design/icons"
 import { ManageTaskPopoverHeader } from "../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
-import TextArea from "antd/es/input/TextArea"
+import TextArea, { TextAreaRef } from "antd/es/input/TextArea"
 import { useSelector } from "react-redux"
+import { Group } from "../../models/task&groups.models"
+import { RootState } from "../../store/store"
+import { User } from "../../models/user.model"
+import { sortGroup } from "../../store/actions/board.actions"
+
+interface GroupActionsMenuPopoverProps {
+    group?: Group
+    openAddTask: () => void
+    archiveGroup: () => void
+    copyGroup: (group: Group) => void
+    moveAllCards: (
+        boardId: string,
+        groupId: string,
+        targetGroupId: string,
+        user: User
+    ) => void
+    archiveAllCards: (boardId: string, groupId: string, user: User) => void
+}
+type ActionOptions =
+    | "Copy list"
+    | "Move all cards in list"
+    | "Archive all cards in list"
+    | "Sort by..."
 
 export function GroupActionsMenuPopover({
     group,
@@ -12,18 +35,21 @@ export function GroupActionsMenuPopover({
     copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
-}) {
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
-    const [openGroupMenu, setOpenGroupMenu] = useState(false)
-    const [backToList, setBackToList] = useState(null)
-    const [action, setAction] = useState(null)
-    const [copyListName, setCopyListName] = useState(group.name)
-    const textAreaRef = useRef(null)
+}: GroupActionsMenuPopoverProps) {
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const [openGroupMenu, setOpenGroupMenu] = useState<boolean>(false)
+    const [backToList, setBackToList] = useState<(() => void) | null>(null)
+    const [action, setAction] = useState<ActionOptions | null>(null)
+    const [copyListName, setCopyListName] = useState(group?.name)
+    const textAreaRef = useRef<TextAreaRef>(null)
 
     useEffect(() => {
-        if (action === "Copy list" && textAreaRef.current) {
+        if (
+            action === "Copy list" &&
+            textAreaRef.current &&
+            textAreaRef.current.resizableTextArea
+        ) {
             const textAreaElement =
                 textAreaRef.current.resizableTextArea.textArea
             textAreaElement.focus()
@@ -41,11 +67,6 @@ export function GroupActionsMenuPopover({
         setOpenGroupMenu(false)
     }
 
-    function onNextPage(_) {
-        //
-        setBackToList(() => onBackToList)
-    }
-
     function onBackToList() {
         setBackToList(null)
         setAction(null)
@@ -59,14 +80,18 @@ export function GroupActionsMenuPopover({
     function onSelectCopyList() {
         setAction("Copy list")
         setBackToList(() => onBackToList)
-        setCopyListName(group.name)
+        if (group) {
+            setCopyListName(group.name)
+        }
     }
 
     function onCopyGroup() {
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
-        copyGroup({ ...group, name: copyListName })
+        if (group && copyListName) {
+            copyGroup({ ...group, name: copyListName })
+        }
     }
 
     function onSelectMoveAllCards() {
@@ -74,11 +99,13 @@ export function GroupActionsMenuPopover({
         setBackToList(() => onBackToList)
     }
 
-    function onMoveAllCards(targetGroupId) {
+    function onMoveAllCards(targetGroupId: string) {
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
-        moveAllCards(board.id, group.id, targetGroupId, user)
+        if (board && group && user) {
+            moveAllCards(board.id!, group.id, targetGroupId, user)
+        }
     }
 
     function onSelectArchiveAllCards() {
@@ -89,7 +116,9 @@ export function GroupActionsMenuPopover({
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
-        archiveAllCards(board.id, group.id, user)
+        if (board && group && user) {
+            archiveAllCards(board.id!, group.id, user)
+        }
     }
 
     function onSelectSortBy() {
@@ -97,11 +126,13 @@ export function GroupActionsMenuPopover({
         setBackToList(() => onBackToList)
     }
 
-    function onSortBy(sortBy, sortOrder) {
+    function onSortBy(sortBy: "name" | "createdAt", sortOrder: "desc" | null) {
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
-        sortGroup(group.id, sortBy, sortOrder)
+        if (group && board) {
+            sortGroup(board.id!, group.id, sortBy, sortOrder)
+        }
     }
     return (
         <Popover
@@ -147,15 +178,16 @@ export function GroupActionsMenuPopover({
                             <p className="menu-action" onClick={onArchiveGroup}>
                                 Archive this list
                             </p>
-                            {group.tasks?.filter((t) => !t.closed).length >
-                                0 && (
-                                <p
-                                    className="menu-action"
-                                    onClick={onSelectArchiveAllCards}
-                                >
-                                    Archive all cards in the list
-                                </p>
-                            )}
+                            {group &&
+                                group.tasks?.filter((t) => !t.closed)?.length >
+                                    0 && (
+                                    <p
+                                        className="menu-action"
+                                        onClick={onSelectArchiveAllCards}
+                                    >
+                                        Archive all cards in the list
+                                    </p>
+                                )}
                         </article>
                     )}
                     {action === "Copy list" && (
@@ -180,10 +212,10 @@ export function GroupActionsMenuPopover({
                     )}
                     {action === "Move all cards in list" && (
                         <article className="group-actions-menu-actions">
-                            {board.groups
+                            {board?.groups
                                 .sort((a, b) => a.pos - b.pos)
                                 .map((g) => {
-                                    if (g.id === group.id) {
+                                    if (g.id === group?.id) {
                                         return (
                                             <p
                                                 className="menu-action disabled"
@@ -229,13 +261,13 @@ export function GroupActionsMenuPopover({
                             </p>
                             <p
                                 className="menu-action"
-                                onClick={() => onSortBy("createdAt", "asc")}
+                                onClick={() => onSortBy("createdAt", null)}
                             >
                                 Date created (oldest first)
                             </p>
                             <p
                                 className="menu-action"
-                                onClick={() => onSortBy("name", "asc")}
+                                onClick={() => onSortBy("name", null)}
                             >
                                 Card name (alphabeticlly)
                             </p>
@@ -247,7 +279,6 @@ export function GroupActionsMenuPopover({
         >
             <button
                 className="group-more-btn"
-                size="small"
                 onClick={() => setOpenGroupMenu(!openGroupMenu)}
             >
                 <EllipsisOutlined />

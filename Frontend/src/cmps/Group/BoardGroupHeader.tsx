@@ -1,33 +1,43 @@
 import { useState, useRef, useEffect } from "react"
 import { GroupActionsMenuPopover } from "./GroupActionsMenuPopover"
-import { Input } from "antd"
-const { TextArea } = Input
-
+import { Input, InputRef } from "antd"
+import { Group } from "../../models/task&groups.models"
+import { User } from "../../models/user.model"
+import { editGroup } from "../../store/actions/board.actions"
+interface BoardGroupHeaderProps {
+    draggableProvided: {
+        dragHandleProps?: React.HTMLProps<HTMLDivElement> | null
+    }
+    group: Group
+    openAddTask: () => void
+    archiveGroup: () => void
+    copyGroup: (group: Group) => void
+    moveAllCards: () => void
+    archiveAllCards: (boardId: string, groupId: string, user: User) => void
+}
 export function BoardGroupHeader({
     draggableProvided,
     group,
-    editGroup,
     openAddTask,
     archiveGroup,
     copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
-}) {
-    const [isEditGroupName, setIsEditGroupName] = useState(false)
-    const [newGroupName, setNewGroupName] = useState(group.name)
-    const textAreaRef = useRef(null)
+}: BoardGroupHeaderProps) {
+    const [isEditGroupName, setIsEditGroupName] = useState<boolean>(false)
+    const [newGroupName, setNewGroupName] = useState<string>(group.name)
+    const inputRef = useRef<InputRef>(null)
 
     useEffect(() => {
-        if (textAreaRef.current) {
-            const textAreaElement =
-                textAreaRef.current.resizableTextArea.textArea
-            textAreaElement.focus()
-            textAreaElement.setSelectionRange(0, textAreaElement.value.length) // Select all text
+        if (inputRef.current) {
+            inputRef.current.focus()
+            // Ensure text is selected
+            const inputElement = inputRef.current.input as HTMLInputElement
+            inputElement.setSelectionRange(0, inputElement.value.length) // Select all text
         }
     }, [isEditGroupName])
 
-    async function onKeyDown(e) {
+    async function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
         if (e.key === "Enter" || e.key === "Escape") {
             e.preventDefault()
             onRenameGroup()
@@ -39,7 +49,7 @@ export function BoardGroupHeader({
         if (newGroupName === group.name || newGroupName.trim() === "") {
             return
         }
-        editGroup({ ...group, name: newGroupName })
+        editGroup(group.idBoard, { ...group, name: newGroupName })
     }
 
     return (
@@ -48,10 +58,9 @@ export function BoardGroupHeader({
             {...draggableProvided.dragHandleProps}
         >
             {isEditGroupName ? (
-                <TextArea
-                    ref={textAreaRef}
+                <Input
+                    ref={inputRef}
                     className="group-title-input"
-                    autoSize={{ minRows: 1 }}
                     value={newGroupName}
                     onChange={(e) => setNewGroupName(e.target.value)}
                     onKeyDown={onKeyDown}
@@ -72,7 +81,6 @@ export function BoardGroupHeader({
                 copyGroup={copyGroup}
                 moveAllCards={moveAllCards}
                 archiveAllCards={archiveAllCards}
-                sortGroup={sortGroup}
             />
         </header>
     )

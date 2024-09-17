@@ -3,15 +3,20 @@ import templateCard from "../../assets/svgs/template-card.svg"
 import { ReactSVG } from "react-svg"
 import { useClickOutside } from "../../customHooks/useClickOutside"
 import useScrollPercentage from "../../customHooks/useScrollPercentage"
+import { RefObject } from "react"
 
-//TODO clean up
-export function GroupFooter({ groupRef, openBottomAddTask }) {
-    const [footerRef, isAddTaskOpen, setIsAddTaskOpen] = useClickOutside(false)
+interface GroupFooterProps {
+    groupRef: RefObject<HTMLElement>
+    openBottomAddTask?: () => void
+}
+
+export function GroupFooter({ groupRef, openBottomAddTask }: GroupFooterProps) {
+    const [footerRef, isAddTaskOpen] = useClickOutside(false)
     const [_, setScrollToPercentage] = useScrollPercentage(groupRef)
 
     function onBtnClick() {
         // setIsAddTaskOpen(true);
-        openBottomAddTask()
+        if (openBottomAddTask) openBottomAddTask()
         setTimeout(() => {
             setScrollToPercentage(200)
         }, 0)
@@ -28,7 +33,6 @@ export function GroupFooter({ groupRef, openBottomAddTask }) {
                     <button className="use-template-btn">
                         <ReactSVG
                             src={templateCard}
-                            alt="template card"
                             className="template-card"
                             wrapper="span"
                         />
