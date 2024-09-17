@@ -12,7 +12,7 @@ import { Label } from "../../models/board.models"
 interface TaskPreviewProps {
     task?: Task
     isDragging?: boolean
-    noHover: boolean
+    noHover?: boolean
     disableDnD?: (b: boolean) => void
 }
 
