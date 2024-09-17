@@ -470,7 +470,7 @@ export async function sortGroup(
     await boardService.save(newBoard)
 }
 
-export async function editTask(task: Task, activity: Activity) {
+export async function editTask(task: Task, activity?: Activity) {
     store.dispatch({
         type: BoardActionsTypes.EDIT_TASK,
         task: task,
@@ -487,7 +487,9 @@ export async function editTask(task: Task, activity: Activity) {
                   }
                 : g
         ),
-        activities: [...board?.activities, activity],
+        activities: activity
+            ? [...board?.activities, activity]
+            : [...board.activities],
         updatedAt: new Date().getTime(),
     }
     await boardService.save(newBoard)
