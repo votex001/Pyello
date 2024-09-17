@@ -1,23 +1,29 @@
 import TextArea from "antd/es/input/TextArea"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router"
 import { editUser } from "../../store/actions/user.actions"
+import { RootState } from "../../store/store"
+import { User } from "../../models/user.model"
 
 export function UserSettings() {
     const params = useParams()
-    const logginedUser = useSelector((state) => state.userModule.user)
+    const logginedUser = useSelector(
+        (state: RootState) => state.userModule.user
+    )
 
-    const [user, setUser] = useState({})
-    const [inputs, setInputs] = useState({
+    const [user, setUser] = useState<User | null>(null)
+    const [inputs, setInputs] = useState<{ username: string; bio: string }>({
         username: "",
         bio: "",
     })
     const navigate = useNavigate()
 
-    async function onSubmitForm(e) {
+    async function onSubmitForm(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        const ans = await editUser({ ...user, ...inputs })
+        if (user) {
+            await editUser({ ...user, ...inputs })
+        }
         navigate(`/u/${inputs.username}`)
         // history.replaceState(null, "", `/u/${inputs.username}`)
     }
@@ -27,10 +33,12 @@ export function UserSettings() {
             if (isCurrentUser) {
                 setUser(logginedUser)
             }
-            setInputs({
-                username: user.username,
-                bio: user.bio,
-            })
+            if (user) {
+                setInputs({
+                    username: user?.username,
+                    bio: user?.bio,
+                })
+            }
         }
     }, [logginedUser, params.userName])
 
@@ -45,7 +53,7 @@ export function UserSettings() {
 
     return (
         <section className="user-settings">
-            {logginedUser.id === user?.id && (
+            {logginedUser?.id === user?.id && (
                 <>
                     <h3 className="about-label">About</h3>
                     <hr></hr>
