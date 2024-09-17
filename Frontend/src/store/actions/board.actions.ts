@@ -130,7 +130,7 @@ export async function addTask(
     task: { addToTop: boolean; idBoard: string; groupId: string; name: string },
     user: User,
     group: Group,
-    tasksToSkip: number,
+    tasksToSkip = 0,
     board: Board
 ) {
     try {
