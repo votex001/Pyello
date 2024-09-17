@@ -64,7 +64,7 @@ function isValidUrl(string: string) {
     }
 }
 
-function getColorHashByName(colorName: string) {
+function getColorHashByName(colorName?: string | null) {
     const color = boardLabelColorOptions.find(
         (color) => color.color === colorName
     )
@@ -136,6 +136,7 @@ function createNewTask(task: {
             size: "normal",
             brightness: "light",
             edgeColor: "",
+            scaled: null,
         },
         checkListTaskIds: [],
         createdAt: Date.now(),
@@ -218,6 +219,7 @@ async function createNewBoard(board: {
         fullName: user.fullName,
     }
     return {
+        closed: false,
         permissionLevel: "org",
         prefs: {
             background: board.backgroundData.background,
@@ -255,6 +257,7 @@ function createNewLabel(name: string, color: string): Label {
         id: makeId(),
         name: name,
         color: color,
+        isTask: false,
     }
 }
 
