@@ -619,11 +619,11 @@ export async function dragGroup(
     return newBoard
 }
 interface MoveTaskEvent {
-    sourceGroupId: string
-    destinationGroupId: string
-    taskId: string
-    sourceIndex: number
-    destinationIndex: number
+    sourceGroupId?: string
+    destinationGroupId?: string
+    taskId?: string
+    sourceIndex?: number
+    destinationIndex?: number
 }
 export async function moveTask(
     moveTaskEvent: MoveTaskEvent,
@@ -637,7 +637,14 @@ export async function moveTask(
         sourceIndex,
         destinationIndex,
     } = moveTaskEvent
-
+    if (
+        !sourceGroupId ||
+        !destinationGroupId ||
+        !taskId ||
+        !sourceIndex ||
+        !destinationIndex
+    )
+        return
     const sourceGroup = board.groups.find((g) => g.id === sourceGroupId)
     if (!sourceGroup) {
         console.error(`Source group ${sourceGroupId} not found`)

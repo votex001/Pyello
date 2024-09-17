@@ -50,13 +50,13 @@ export async function editWorkspaceBoard(board: Board) {
     await boardService.save(board)
 }
 interface MoveTaskEvent {
-    taskId: string
-    sourceBoardId: string
-    sourceGroupId: string
-    destinationBoardId: string
-    destinationGroupId: string
-    destinationIndex: number
-    user: User
+    taskId?: string
+    sourceBoardId?: string
+    sourceGroupId?: string
+    destinationBoardId?: string
+    destinationGroupId?: string
+    destinationIndex?: number
+    user?: User
 }
 export async function moveTaskBetweenBoards(moveTaskEvent: MoveTaskEvent) {
     const {
@@ -68,6 +68,16 @@ export async function moveTaskBetweenBoards(moveTaskEvent: MoveTaskEvent) {
         destinationIndex,
         user,
     } = moveTaskEvent
+    if (
+        !taskId ||
+        !sourceBoardId ||
+        !sourceGroupId ||
+        !destinationBoardId ||
+        !destinationGroupId ||
+        !destinationIndex ||
+        !user
+    )
+        return
 
     const boards = await workspaceService.getAllBoards()
     if (!boards) return
