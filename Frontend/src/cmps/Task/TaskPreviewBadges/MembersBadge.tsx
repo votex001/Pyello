@@ -1,10 +1,18 @@
 import { useSelector } from "react-redux"
 import { UserAvatar } from "../../UserAvatar"
 import { ProfilePopover } from "../ManageTaskPopovers/ProfilePopover"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
 
-export function MembersBadge({ task }) {
-    const members = useSelector((state) => state.boardModule.board.members)
-    const users = useSelector((state) => state.userModule.users)
+interface MembersBadgeProps {
+    task?: Task
+}
+
+export function MembersBadge({ task }: MembersBadgeProps) {
+    const members = useSelector(
+        (state: RootState) => state.boardModule.board?.members
+    )
+    const users = useSelector((state: RootState) => state.userModule.users)
     const taskMembers =
         members?.filter((member) => task?.idMembers.includes(member?.id)) || []
 
@@ -19,7 +27,7 @@ export function MembersBadge({ task }) {
                         anchorEl={
                             <UserAvatar
                                 memberId={member.id}
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e: MouseEvent) => e.stopPropagation()}
                                 memberProp={{
                                     ...member,
                                     imgUrl: currentUser?.imgUrl,

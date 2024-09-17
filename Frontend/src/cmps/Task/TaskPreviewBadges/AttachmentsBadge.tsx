@@ -1,7 +1,14 @@
 import { Tooltip } from "antd"
 import { ReactSVG } from "react-svg"
 import { utilService } from "../../../services/util.service"
-export function AttachmentsBadge({ numOfAttachments = 0 }) {
+
+interface AttachmentsBadgeProps {
+    numOfAttachments?: number
+}
+
+export function AttachmentsBadge({
+    numOfAttachments = 0,
+}: AttachmentsBadgeProps) {
     return numOfAttachments > 0 ? (
         <Tooltip
             placement="bottom"
@@ -13,7 +20,6 @@ export function AttachmentsBadge({ numOfAttachments = 0 }) {
             <span className="task-icon-wrapper">
                 <ReactSVG
                     src="/img/taskBadges/file.svg"
-                    alt="file"
                     className="task-icon"
                     wrapper="span"
                 />

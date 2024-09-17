@@ -2,16 +2,23 @@ import { Tooltip } from "antd"
 import { ReactSVG } from "react-svg"
 import { utilService } from "../../../services/util.service"
 import { useState, useEffect } from "react"
+import { CheckList } from "../../../models/task&groups.models"
 
-export function ChecklistBadge({ checklists }) {
-    const [countState, setCountState] = useState(0)
+interface ChecklistBadgeProps {
+    checklists?: CheckList[]
+}
+
+export function ChecklistBadge({ checklists }: ChecklistBadgeProps) {
+    const [countState, setCountState] = useState<string>("0")
     const [allCheckedState, setAllCheckedState] = useState(false)
 
     useEffect(() => {
         if (checklists) {
             const { count, allChecked } =
                 utilService.getChecklistBadge(checklists)
-            setCountState(count)
+            if (count) {
+                setCountState(count)
+            }
             setAllCheckedState(allChecked)
         }
     }, [JSON.stringify(checklists)])
@@ -31,7 +38,6 @@ export function ChecklistBadge({ checklists }) {
             >
                 <ReactSVG
                     src={"/img/board-index/detailsImgs/checkListIcon.svg"}
-                    alt="check"
                     className="task-icon checklist-icon"
                     wrapper="span"
                 />

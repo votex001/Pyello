@@ -1,33 +1,43 @@
 import { utilService } from "../../../services/util.service"
 import { Tooltip } from "antd"
-import { useMemo } from "react"
+import React, { useMemo } from "react"
 import dayjs from "dayjs"
+import { Task } from "../../../models/task&groups.models"
+import { editTask } from "../../../store/actions/board.actions"
+import {
+    CompleteDateActivity,
+    IncompleteDateActivity,
+} from "../../../models/activities.models"
 
-export function DateBadge({ task, editTask }) {
+interface DateBadgeProps {
+    task?: Task
+}
+
+export function DateBadge({ task }: DateBadgeProps) {
     //useMemo is used to deal with the re-mount after drag and drop between lists that lead to a flicker of the component
     const dateLabel = useMemo(() => {
-        if (!dayjs(task.start).isValid() && !dayjs(task.due).isValid()) {
+        if (!dayjs(task?.start).isValid() && !dayjs(task?.due).isValid()) {
             return null
-        } else {
+        } else if (task) {
             return utilService.datePreviewTitle(task.start, task.due)
         }
-    }, [task.start, task.due])
-
+    }, [task?.start, task?.due])
+    if (!task) return
     const [dueStatus, dueTooltip] = utilService.taskDueStatus(task)
 
-    async function onDateClick(e) {
+    async function onDateClick(e: React.MouseEvent<HTMLSpanElement>) {
         e.stopPropagation()
-
-        const activityType = !task.dueComplete
+        if (!task) return
+        const activityType = !task?.dueComplete
             ? "completeDate"
             : "incompleteDate"
         const activity = {
-            targetId: task.id,
-            targetName: task.name,
+            targetId: task?.id,
+            targetName: task?.name,
             type: activityType,
-        }
+        } as CompleteDateActivity | IncompleteDateActivity
 
-        editTask({ ...task, dueComplete: !task.dueComplete }, activity)
+        editTask({ ...task, dueComplete: !task?.dueComplete }, activity)
     }
 
     return (
