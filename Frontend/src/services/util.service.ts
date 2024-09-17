@@ -6,7 +6,7 @@ import {
     labels,
     taskCoverImgs,
 } from "./Data"
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { httpService } from "./http.service"
 import { User } from "../models/user.model"
 import { Activity } from "../models/activities.models"
@@ -432,12 +432,12 @@ function isNotEmpty(value: any): boolean {
 }
 
 function taskDueStatus(task: {
-    due: string
+    due: Dayjs | null
     dueComplete: boolean
 }): [string, string] {
     if (task.dueComplete) return ["completed", "This card is completed"]
 
-    const dueDate = dayjs(task.due)
+    const dueDate = dayjs(task?.due)
     const now = dayjs()
     const diff = dueDate.diff(now, "hours")
 
@@ -461,9 +461,10 @@ function getDateLabel(date?: string | dayjs.Dayjs): string {
 }
 
 function datePreviewTitle(
-    start?: string | dayjs.Dayjs,
-    due?: string | dayjs.Dayjs
-): string {
+    start?: string | dayjs.Dayjs | null,
+    due?: string | dayjs.Dayjs | null
+): string | undefined {
+    if (!start || !due) return
     // Check if both start and due are not empty
     if (!isNotEmpty(start) && !isNotEmpty(due)) return ""
 
