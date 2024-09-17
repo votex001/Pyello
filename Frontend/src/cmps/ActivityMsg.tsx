@@ -6,7 +6,7 @@ import { Activity } from "../models/activities.models"
 
 interface ActivityMsgProps {
     activity: Activity
-    task: boolean
+    task?: boolean
 }
 
 export function ActivityMsg({ activity, task = false }: ActivityMsgProps) {
