@@ -1060,30 +1060,36 @@ export const labels = [
         id: makeId(),
         color: "green",
         name: "",
+        isTask: false,
     },
     {
         id: makeId(),
         color: "yellow",
         name: "",
+        isTask: false,
     },
     {
         id: makeId(),
         color: "orange",
         name: "",
+        isTask: false,
     },
     {
         id: makeId(),
         color: "red",
         name: "",
+        isTask: false,
     },
     {
         id: makeId(),
         color: "purple",
         name: "",
+        isTask: false,
     },
     {
         id: makeId(),
         color: "blue",
         name: "",
+        isTask: false,
     },
 ]
