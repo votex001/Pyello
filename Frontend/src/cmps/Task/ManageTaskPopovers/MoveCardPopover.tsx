@@ -1,24 +1,37 @@
 import { CloseOutlined } from "@ant-design/icons"
-import { Popover } from "antd"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { CustomSelect } from "../../CustomCpms/CustomSelect"
 import { moveTaskBetweenBoards } from "../../../store/actions/workspace.actions"
 import { useNavigate } from "react-router"
 import { moveTask } from "../../../store/actions/board.actions"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
 
-export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
-    const boards = useSelector((state) => state.workspaceModule.boards)
-    const user = useSelector((state) => state.userModule.user)
+interface MoveCardPopoverProps {
+    anchorEl: React.ReactNode
+    task: Task
+    onUpdateTask?: () => void
+}
 
-    const board = useSelector((state) =>
+export function MoveCardPopover({
+    anchorEl,
+    task,
+    onUpdateTask,
+}: MoveCardPopoverProps) {
+    const boards = useSelector(
+        (state: RootState) => state.workspaceModule.boards
+    )
+    const user = useSelector((state: RootState) => state.userModule.user)
+
+    const board = useSelector((state: RootState) =>
         state.workspaceModule.boards
-            .filter((b) => !b.closed)
+            ?.filter((b) => !b.closed)
             .find((b) => b.id === task?.idBoard)
     )
 
-    const group = useSelector((state) =>
+    const group = useSelector((state: RootState) =>
         state.workspaceModule.boards
             ?.find((b) => b.id === task?.idBoard)
             ?.groups?.find((g) =>
@@ -54,7 +67,7 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
 
     // useEffect position
     useEffect(() => {
-        if (!boards.length) return
+        if (!boards?.length) return
         const newPositions =
             boards
                 .find((b) => b.id === selectedBoardId)
@@ -99,7 +112,7 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
 
     // use effect board & groups
     useEffect(() => {
-        if (!boards.length) return
+        if (!boards?.length) return
 
         const selectedBoard = boards
             .filter((b) => !b.closed)
@@ -133,31 +146,50 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
         }
     }, [selectedBoardId, boards, group])
 
-    function generatePositionOptions(array) {
+    function generatePositionOptions(array: number[] | undefined) {
         if (!array) return
         return array?.map((item, i) => ({
-            name: i + 1,
-            id: item,
+            name: `${i + 1}`,
+            id: `${item}`,
             isCurrent: item === task.pos,
         }))
     }
 
-    function onSelectBoard(board) {
+    function onSelectBoard(board: {
+        name: string
+        id: string
+        isCurrent: boolean
+    }) {
         board && setSelectedBoardId(board?.id)
     }
 
-    function onSelectGroup(group) {
+    function onSelectGroup(group: { id: string }) {
         group && setSelectedGroupId(group.id)
     }
 
-    function onSelectPosition(pos) {
-        pos && setSelectedPosition(pos.id)
+    function onSelectPosition(pos: {
+        name?: string
+        id: string
+        isCurrent: boolean
+        element?: React.ReactNode
+    }) {
+        if (pos && pos.id) {
+            const idNumber = Number(pos.id)
+            if (!isNaN(idNumber)) {
+                setSelectedPosition(idNumber)
+            }
+        }
     }
 
     async function onMoveTask() {
         setIsOpen(false)
 
-        if (selectedBoardId === task.idBoard) {
+        if (
+            selectedBoardId === task.idBoard &&
+            board &&
+            selectedGroupId &&
+            user
+        ) {
             const moveTaskEvent = {
                 boardId: board.id,
                 sourceGroupId: task.idGroup,
@@ -169,17 +201,19 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
             await moveTask(moveTaskEvent, board, user)
             return
         }
-        const moveTaskEvent = {
-            taskId: task.id,
-            sourceBoardId: task.idBoard,
-            sourceGroupId: task.idGroup,
-            destinationBoardId: selectedBoardId,
-            destinationGroupId: selectedGroupId,
-            destinationIndex: selectedPosition,
-            user,
-        }
+        if (task && selectedGroupId && selectedBoardId && user) {
+            const moveTaskEvent = {
+                taskId: task.id,
+                sourceBoardId: task.idBoard,
+                sourceGroupId: task.idGroup,
+                destinationBoardId: selectedBoardId,
+                destinationGroupId: selectedGroupId,
+                destinationIndex: selectedPosition,
+                user,
+            }
 
-        await moveTaskBetweenBoards(moveTaskEvent)
+            await moveTaskBetweenBoards(moveTaskEvent)
+        }
 
         if (selectedBoardId !== task.idBoard) {
             navigate(`/b/${task.idBoard}`)
@@ -188,7 +222,6 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
             onUpdateTask()
         }
     }
-
     const content = (
         <div className="move-card-popover" onClick={(e) => e.stopPropagation()}>
             <header>
@@ -201,18 +234,19 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
                 <p>Select destination</p>
                 <section className="board-select">
                     <p className="move-card-popover-title">Board</p>
+
                     <CustomSelect
                         options={boards
-                            .filter((b) => !b.closed)
+                            ?.filter((b) => !b.closed)
                             .sort((a, b) => {
                                 return a.name?.localeCompare(b.name)
                             })
                             .map((b) => ({
                                 name: b.name,
-                                id: b.id,
+                                id: b.id!,
                                 isCurrent: board?.id === b.id,
                             }))}
-                        disabled={boards.length < 2}
+                        disabled={!boards || boards.length < 2}
                         onSelect={onSelectBoard}
                         value={selectedBoardId}
                     />
@@ -220,14 +254,16 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
                 <section className="list-select">
                     <span>
                         <p className="move-card-popover-title">List</p>
-                        <CustomSelect
-                            options={boardGroupOptions}
-                            onSelect={onSelectGroup}
-                            value={selectedGroupId}
-                            disabled={
-                                isDisabled || boardGroupOptions?.length < 2
-                            }
-                        />
+                        {boardGroupOptions && selectedGroupId && (
+                            <CustomSelect
+                                options={boardGroupOptions}
+                                onSelect={onSelectGroup}
+                                value={selectedGroupId}
+                                disabled={
+                                    isDisabled || boardGroupOptions?.length < 2
+                                }
+                            />
+                        )}
                     </span>
                     <span>
                         <p className="move-card-popover-title">Position</p>
@@ -235,10 +271,11 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
                             options={generatePositionOptions(
                                 selectedGroupTaskPositions
                             )}
-                            value={selectedPosition}
+                            value={`${selectedPosition}`}
                             onSelect={onSelectPosition}
                             disabled={
                                 isDisabled ||
+                                !selectedGroupTaskPositions ||
                                 selectedGroupTaskPositions?.length < 2
                             }
                         />
@@ -258,7 +295,7 @@ export function MoveCardPopover({ anchorEl, task, onUpdateTask }) {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}

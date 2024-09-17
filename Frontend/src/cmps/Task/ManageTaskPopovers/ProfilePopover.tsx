@@ -8,10 +8,10 @@ import { RootState } from "../../../store/store"
 import { TooltipPlacement } from "antd/es/tooltip"
 
 interface ProfilePopover {
-    memberId: string
-    anchorLinks: React.ReactNode
+    memberId?: string
+    anchorLinks?: React.ReactNode
     anchorEl: React.ReactNode
-    placement: TooltipPlacement
+    placement?: TooltipPlacement
 }
 
 export function ProfilePopover({

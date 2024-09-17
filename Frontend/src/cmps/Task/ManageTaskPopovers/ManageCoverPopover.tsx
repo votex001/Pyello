@@ -1,32 +1,43 @@
 import { Image, Tooltip } from "antd"
-import { useState, useRef } from "react"
-import { ManageTaskPopoverHeader } from "../ManageTaskPopovers/ManageTaskPopoverHeader"
+import React, { useState } from "react"
+import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import { editTask } from "../../../store/actions/board.actions"
 
-export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
+interface ManageCoverPopoverProps {
+    anchorEl: React.ReactNode
+    task?: Task
+    isFullWidth: boolean
+}
+
+export function ManageCoverPopover({
+    anchorEl,
+    task,
+    isFullWidth,
+}: ManageCoverPopoverProps) {
     const boardCoverImgs = useSelector(
-        (state) => state.boardModule.board.coverImgs,
+        (state: RootState) => state.boardModule.board?.coverImgs
     )
     const [isOpen, setIsOpen] = useState(false)
-    const triggerRef = useRef(null)
 
-    function onClose(e) {
+    function onClose(e: MouseEvent) {
         e.stopPropagation()
         setIsOpen(false)
     }
 
-    function onSelectColor(e, color) {
+    function onSelectColor(e: React.MouseEvent<HTMLDivElement>, color: string) {
         e.stopPropagation()
+        if (!task) return
         const coverSize = task.cover.size === "full" ? "full" : "normal"
         editTask({
             ...task,
             cover: {
                 ...task.cover,
                 color,
-                idUploadedBackground: null,
-                scaled: null,
                 brightness: "light",
                 size: coverSize,
                 attachment: null,
@@ -34,15 +45,19 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
         })
     }
 
-    function onChangeSize(e, size) {
+    function onChangeSize(
+        e: React.MouseEvent<HTMLDivElement>,
+        size: "small" | "normal" | "full"
+    ) {
         e.stopPropagation()
-        if (task.cover.color || task.cover.attachment) {
+        if (task?.cover.color || task?.cover.attachment) {
             editTask({ ...task, cover: { ...task.cover, size: size } })
         }
     }
 
-    function onRemoveCover(e) {
+    function onRemoveCover(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
+        if (!task) return
         editTask({
             ...task,
             cover: {
@@ -55,10 +70,10 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
         })
     }
 
-    function onSelectPhoto(e, id) {
+    function onSelectPhoto(e: React.MouseEvent<HTMLDivElement>, id: string) {
         e.stopPropagation()
-        const img = boardCoverImgs.find((img) => img.id === id)
-
+        const img = boardCoverImgs?.find((img) => img.id === id)
+        if (!task || !img) return
         const attachment = {
             link: img.scaledImgs[2].url,
             text: img.photographer,
@@ -68,7 +83,7 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
             },
         }
 
-        const newTask = {
+        const newTask: Task = {
             ...task,
             cover: {
                 ...task.cover,
@@ -89,11 +104,13 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
         <section
             className="manage-cover-content"
             style={
-                backgroundColor && {
-                    "--dynamic-bg-color": backgroundColor,
-                    "--active-bg-color": backgroundColor,
-                    "--non-active-bg-color": "#dcdfe4",
-                }
+                (backgroundColor &&
+                    ({
+                        "--dynamic-bg-color": backgroundColor,
+                        "--active-bg-color": backgroundColor,
+                        "--non-active-bg-color": "#dcdfe4",
+                    } as React.CSSProperties)) ||
+                undefined // Ensure it's undefined if backgroundColor is falsy
             }
         >
             <ManageTaskPopoverHeader title="Cover" close={onClose} />
@@ -188,7 +205,7 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
                 </article>
                 <h3 className="cover-sub-title">Photos from Unsplash</h3>
                 <article className="photo-btns">
-                    {boardCoverImgs.map((img) => (
+                    {boardCoverImgs?.map((img) => (
                         <div
                             className="photo-btn"
                             key={img.id}
@@ -209,10 +226,9 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
         </section>
     )
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <div
-                ref={triggerRef}
                 {...triggerProps}
                 onClick={(e) => {
                     e.stopPropagation()
@@ -238,7 +254,6 @@ export function ManageCoverPopover({ anchorEl, editTask, task, isFullWidth }) {
             content={() => content}
             trigger={trigger}
             zIndex={10000}
-            triggerRef={triggerRef}
         />
     )
 }

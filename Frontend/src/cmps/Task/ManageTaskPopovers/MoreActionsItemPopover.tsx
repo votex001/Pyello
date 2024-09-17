@@ -1,24 +1,25 @@
 import { CloseOutlined } from "@ant-design/icons"
 import { Popover } from "antd"
-import { useState } from "react"
+import React, { useState } from "react"
+
+interface MoreActionsItemPopoverProps {
+    anchorEl: React.ReactNode
+    onDeleteItem?: () => void
+    onConvertToTask?: () => void
+}
 
 export function MoreActionsItemPopover({
     anchorEl,
     onDeleteItem,
     onConvertToTask,
-}) {
+}: MoreActionsItemPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
-
-    function onClose() {
-        setIsOpen(false)
-    }
 
     return (
         <Popover
             trigger="click"
             placement="bottomLeft"
             open={isOpen}
-            close={onClose}
             onOpenChange={setIsOpen}
             arrow={false}
             content={

@@ -1,36 +1,49 @@
-import { Popover, Input } from "antd"
+import { Input } from "antd"
 import { useState, useEffect, useRef } from "react"
-import { ManageTaskPopoverHeader } from "../ManageTaskPopovers/ManageTaskPopoverHeader"
+import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
 import { SvgButton } from "../../CustomCpms/SvgButton"
 import { Tooltip } from "antd"
 import { CheckBox } from "../../CustomCpms/CheckBox"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
 import { boardLabelColorOptions } from "../../../services/Data"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import {
+    createLabel,
+    deleteLabel,
+    editLabel,
+    editTask,
+} from "../../../store/actions/board.actions"
+import { Label } from "../../../models/board.models"
+
+interface ManageLabelsPopoverProps {
+    anchorEl: React.ReactNode
+    task?: Task
+}
+
 export function ManageLabelsPopover({
     anchorEl,
-    editTask,
     task,
-    labelActions,
-}) {
+}: ManageLabelsPopoverProps) {
+    const board = useSelector((state: RootState) => state.boardModule.board)
     const boardLabels =
-        useSelector((state) => state.boardModule.board.labels) || []
-    const [boardTaskLabels, setBoardTaskLabels] = useState([])
+        useSelector((state: RootState) => state.boardModule.board?.labels) || []
+    const [boardTaskLabels, setBoardTaskLabels] = useState<Label[]>([])
     const [inputSearch, setInputSearch] = useState("")
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedLabel, setSelectedLabel] = useState(null)
+    const [selectedLabel, setSelectedLabel] = useState<Label | null>(null)
     const [editTitle, setEditTitle] = useState("")
     const [editColor, setEditColor] = useState("")
-    const [filteredLabels, setFilteredLabels] = useState([])
-    const [backToList, setBackToList] = useState(null)
+    const [filteredLabels, setFilteredLabels] = useState<Label[]>([])
+    const [backToList, setBackToList] = useState<(() => void) | null>(null)
     const [isCreateLabel, setIsCreateLabel] = useState(false)
     const [isDeleteLabel, setIsDeleteLabel] = useState(false)
     const [popoverTitle, setPopoverTitle] = useState("Labels")
-    const [popoverPlacement, setPopoverPlacement] = useState("bottomLeft")
-    const [hoveredColor, setHoveredColor] = useState(null)
+    const [hoveredColor, setHoveredColor] = useState<string>("")
 
-    const popoverRef = useRef(null)
+    const popoverRef = useRef<HTMLDivElement | null>(null)
 
     useEffect(() => {
         if (task?.idLabels) {
@@ -63,10 +76,10 @@ export function ManageLabelsPopover({
         setIsOpen(false)
     }
 
-    function onSelectLabel(label, isTask) {
-        if (isTask) {
+    function onSelectLabel(label: Label, isTask: boolean) {
+        if (isTask && task) {
             editTask({ ...task, idLabels: [...task.idLabels, label.id] })
-        } else {
+        } else if (task) {
             editTask({
                 ...task,
                 idLabels: task.idLabels.filter(
@@ -76,7 +89,7 @@ export function ManageLabelsPopover({
         }
     }
 
-    function openEditLabel(label) {
+    function openEditLabel(label: Label) {
         setPopoverTitle("Edit label")
         setSelectedLabel(label)
         setEditTitle(label.name)
@@ -111,18 +124,26 @@ export function ManageLabelsPopover({
     }
 
     function onSaveLabel() {
-        labelActions("edit", {
-            ...selectedLabel,
-            name: editTitle,
-            color: editColor,
-        })
+        if (board && selectedLabel) {
+            editLabel(board.id!, {
+                ...selectedLabel,
+                name: editTitle,
+                color: editColor,
+            })
+        }
         setSelectedLabel(null)
         setEditTitle("")
         setBackToList(null)
     }
 
     function onCreateLabel() {
-        labelActions("create", { name: editTitle, color: editColor }, task)
+        if (board && task) {
+            createLabel(board.id!, task, {
+                name: editTitle,
+                color: editColor,
+                isTask: false,
+            })
+        }
         setSelectedLabel(null)
         setEditTitle("")
         setBackToList(null)
@@ -130,7 +151,9 @@ export function ManageLabelsPopover({
     }
 
     function onDeleteLabel() {
-        labelActions("delete", selectedLabel)
+        if (board && selectedLabel) {
+            deleteLabel(board.id!, selectedLabel.id)
+        }
         setSelectedLabel(null)
         setEditTitle("")
         setBackToList(null)
@@ -183,7 +206,7 @@ export function ManageLabelsPopover({
                             style={{
                                 backgroundColor:
                                     utilService.getColorHashByName(editColor)
-                                        .bgColor,
+                                        ?.bgColor,
                             }}
                         >
                             <span
@@ -191,7 +214,7 @@ export function ManageLabelsPopover({
                                 style={{
                                     color: utilService.getColorHashByName(
                                         editColor
-                                    ).lightFontColor,
+                                    )?.lightFontColor,
                                 }}
                             >
                                 {editTitle}
@@ -227,7 +250,7 @@ export function ManageLabelsPopover({
                                     onMouseEnter={() =>
                                         setHoveredColor(color.color)
                                     }
-                                    onMouseLeave={() => setHoveredColor(null)}
+                                    onMouseLeave={() => setHoveredColor("")}
                                 ></div>
                             ))}
                     </article>
@@ -286,7 +309,7 @@ export function ManageLabelsPopover({
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}
@@ -311,9 +334,18 @@ export function ManageLabelsPopover({
         />
     )
 }
+interface LabelsOptionProps {
+    taskLabel: Label
+    selectLabel: (label: Label, isTask: boolean) => void
+    editColor: (label: Label) => void
+}
 
-function LabelsOption({ taskLabel, selectLabel, editColor }) {
-    const [hoveredLabelId, setHoveredLabelId] = useState(null)
+function LabelsOption({
+    taskLabel,
+    selectLabel,
+    editColor,
+}: LabelsOptionProps) {
+    const [hoveredLabelId, setHoveredLabelId] = useState<string>("")
 
     return (
         <div className="popover-labels-option">
@@ -327,7 +359,7 @@ function LabelsOption({ taskLabel, selectLabel, editColor }) {
             />
             <Tooltip
                 title={`Color: ${taskLabel.color}, title: ${
-                    taskLabel.label ? taskLabel.label : "none"
+                    taskLabel.name ? taskLabel.name : "none"
                 }`}
                 arrow={false}
                 overlayInnerStyle={utilService.tooltipOuterStyle()}
@@ -339,21 +371,21 @@ function LabelsOption({ taskLabel, selectLabel, editColor }) {
                             hoveredLabelId === taskLabel.id
                                 ? utilService.getColorHashByName(
                                       taskLabel.color
-                                  ).hoveredBgColor
+                                  )?.hoveredBgColor || "#B8ACF6"
                                 : utilService.getColorHashByName(
                                       taskLabel.color
-                                  ).bgColor,
+                                  )?.bgColor || "#dfd8fd",
                     }}
                     onClick={() => selectLabel(taskLabel, !taskLabel.isTask)}
                     onMouseEnter={() => setHoveredLabelId(taskLabel.id)}
-                    onMouseLeave={() => setHoveredLabelId(null)}
+                    onMouseLeave={() => setHoveredLabelId("")}
                 >
                     <span
                         className="label-color-name manage-labels-color-name"
                         style={{
                             color: utilService.getColorHashByName(
                                 taskLabel.color
-                            ).lightFontColor,
+                            )?.lightFontColor,
                         }}
                     >
                         {taskLabel.name}

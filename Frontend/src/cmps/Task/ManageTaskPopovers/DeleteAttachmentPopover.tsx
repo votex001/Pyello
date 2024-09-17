@@ -1,19 +1,21 @@
 import React, { useState } from "react"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
 import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
+
+interface DeleteAttachmentPopoverProps {
+    anchorEl: React.ReactNode
+    popoverTitle: string
+    onDelete: () => void
+    isDelete: boolean
+}
 
 export function DeleteAttachmentPopover({
     anchorEl,
     popoverTitle,
     onDelete,
-    onClose,
     isDelete,
-}) {
+}: DeleteAttachmentPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
-
-    const handleOpenChange = (newOpen) => {
-        setIsOpen(newOpen)
-    }
 
     const handleDelete = () => {
         onDelete()
@@ -49,7 +51,7 @@ export function DeleteAttachmentPopover({
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}

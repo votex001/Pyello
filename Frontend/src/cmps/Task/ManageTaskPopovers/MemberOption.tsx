@@ -1,10 +1,20 @@
 import { UserAvatar } from "../../UserAvatar"
 import { SvgButton } from "../../CustomCpms/SvgButton"
 import { useSelector } from "react-redux"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import { editTask } from "../../../store/actions/board.actions"
+import { User } from "../../../models/user.model"
 
-export function MemberOption({ task, member, isSelected, editTask }) {
-    const user = useSelector((state) =>
-        state.userModule.users.find((user) => member.id === user.id)
+interface MemberOptionProps {
+    task: Task
+    member: User
+    isSelected: boolean
+}
+
+export function MemberOption({ task, member, isSelected }: MemberOptionProps) {
+    const user = useSelector((state: RootState) =>
+        state.userModule.users?.find((user) => member.id === user.id)
     )
 
     function onEditTask() {
@@ -20,7 +30,7 @@ export function MemberOption({ task, member, isSelected, editTask }) {
         <div className="change-members-option" onClick={onEditTask}>
             {/* //TODO: last minute fix for demo*/}
             <UserAvatar memberId={member?.id} extraMarginToImageFlag={true} />
-            <p className="member-option-member-name">{user.fullName}</p>
+            <p className="member-option-member-name">{user?.fullName}</p>
             {isSelected && (
                 <SvgButton
                     src="/img/xIcon.svg"

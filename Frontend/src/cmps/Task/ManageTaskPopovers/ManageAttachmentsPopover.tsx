@@ -1,20 +1,27 @@
-import { Input } from "antd"
+import { Input, InputRef } from "antd"
 import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
 import { useState, useRef } from "react"
 import { Tooltip } from "antd"
-import CloudinaryUpload from "../../CloudinaryUpload"
+import CloudinaryUpload, { cloudinaryAttachment } from "../../CloudinaryUpload"
 import { utilService } from "../../../services/util.service"
 import dayjs from "dayjs"
 import { showSuccessMsg } from "../../../services/event-bus.service"
 import { useSelector } from "react-redux"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import { AddAttachmentActivity } from "../../../models/activities.models"
+import { editTask } from "../../../store/actions/board.actions"
+
+interface ManageAttachmentsPopoverProps {
+    anchorEl: React.ReactNode
+    task?: Task
+}
 
 export function ManageAttachmentsPopover({
     anchorEl,
     task,
-    editTask,
-    editBoard,
-}) {
+}: ManageAttachmentsPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     function onClose() {
@@ -25,7 +32,7 @@ export function ManageAttachmentsPopover({
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}
@@ -47,9 +54,7 @@ export function ManageAttachmentsPopover({
             content={() => (
                 <ManageAttachmentsPopoverContent
                     task={task}
-                    editTask={editTask}
                     onClose={onClose}
-                    editBoard={editBoard}
                 />
             )}
             trigger={trigger}
@@ -57,29 +62,30 @@ export function ManageAttachmentsPopover({
         />
     )
 }
+interface ManageAttachmentsPopoverContentProps {
+    task?: Task
+    onClose: () => void
+}
 
 function ManageAttachmentsPopoverContent({
     task,
-    editTask,
     onClose,
-    editBoard,
-}) {
+}: ManageAttachmentsPopoverContentProps) {
     const [link, setLink] = useState("")
     const [text, setText] = useState("")
     const [invalidLink, setInvalidLink] = useState(false)
     const [focusedLink, setFocusedLink] = useState(false)
     const [focusedText, setFocusedText] = useState(false)
-    const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
-    const linkRef = useRef(null)
-    const textRef = useRef(null)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const linkRef = useRef<InputRef | null>(null)
+    const textRef = useRef<InputRef>(null)
 
     // ... rest
 
     const makeCover =
-        !task.cover.attachment &&
-        !task.cover.color &&
-        task.attachments.length === 0
+        !task?.cover.attachment &&
+        !task?.cover.color &&
+        task?.attachments.length === 0
 
     async function onAddLink() {
         if (link === "" || !utilService.isValidUrl(link)) {
@@ -96,52 +102,50 @@ function ManageAttachmentsPopoverContent({
             type: "link",
         }
 
-        if (!Array.isArray(task.attachments)) {
+        if (task && !Array.isArray(task.attachments)) {
             task.attachments = []
         }
-        const newActivity = utilService.createActivity(
-            {
-                type: "addAttachment",
-                targetId: task.id,
-                targetName: task.name,
-                attachmentLink: attachment.link,
-                attachmentName: attachment.text,
-            },
-            user
-        )
-        await editBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
-        editTask({
-            ...task,
-            attachments: [...task.attachments, attachment],
-        })
+        if (user && task) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "addAttachment",
+                    targetId: task.id,
+                    targetName: task.name,
+                    attachmentLink: attachment.link,
+                    attachmentName: attachment.text,
+                },
+                user
+            ) as AddAttachmentActivity
+
+            editTask(
+                {
+                    ...task,
+                    attachments: [...task.attachments, attachment],
+                },
+                newActivity
+            )
+        }
         setLink("")
         setText("")
         onClose()
     }
     function onClearLink() {
         setLink("")
-        linkRef.current.focus()
+        linkRef.current?.focus()
     }
 
     function onClearText() {
         setText("")
-        textRef.current.focus()
+        textRef.current?.focus()
     }
 
-    async function onAddAttachment(data) {
+    async function onAddAttachment(data: cloudinaryAttachment) {
         const avgBgColor = await utilService.getAverageBorderColor(
             data.secure_url,
             10
         )
 
-        const isDark = utilService.isColorDark(
-            avgBgColor.r,
-            avgBgColor.g,
-            avgBgColor.b
-        )
+        const isDark = avgBgColor.isDark
 
         const attachment = {
             id: utilService.makeId(),
@@ -154,37 +158,35 @@ function ManageAttachmentsPopoverContent({
             isDark,
         }
 
-        if (!Array.isArray(task.attachments)) {
+        if (task && !Array.isArray(task.attachments)) {
             task.attachments = []
         }
-        const newActivity = utilService.createActivity(
-            {
-                type: "addAttachment",
-                targetId: task.id,
-                targetName: task.name,
-                attachmentLink: attachment.link,
-                attachmentName: attachment.text,
-            },
-            user
-        )
-        await editBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
+        if (task && user) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "addAttachment",
+                    targetId: task.id,
+                    targetName: task.name,
+                    attachmentLink: attachment.link,
+                    attachmentName: attachment.text,
+                },
+                user
+            ) as AddAttachmentActivity
 
-        const newTask = {
-            ...task,
-            attachments: [...task.attachments, attachment],
-        }
-        if (makeCover) {
-            newTask.cover = {
-                ...task.cover,
-                attachment: attachment,
-                color: null,
-                size: "normal",
+            const newTask = {
+                ...task,
+                attachments: [...task.attachments, attachment],
             }
+            if (makeCover) {
+                newTask.cover = {
+                    ...task.cover,
+                    attachment: attachment,
+                    color: null,
+                    size: "normal",
+                }
+            }
+            editTask(newTask, newActivity)
         }
-        editTask(newTask)
         onClose()
         showSuccessMsg("Success")
     }
@@ -273,8 +275,12 @@ function ManageAttachmentsPopoverContent({
         </section>
     )
 }
+interface ClearLinkIconProps {
+    display: boolean
+    onClick: (e: React.MouseEvent<HTMLDivElement>) => void
+}
 
-const ClearLinkIcon = ({ display, onClick }) => {
+const ClearLinkIcon = ({ display, onClick }: ClearLinkIconProps) => {
     return (
         <Tooltip
             title="Clear link"

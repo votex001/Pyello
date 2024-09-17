@@ -1,23 +1,65 @@
 import { Calendar, Input } from "antd"
 import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
-import dayjs from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import { useState, useRef, useEffect } from "react"
 import { SvgButton } from "../../CustomCpms/SvgButton"
 import { CustomSelect } from "../../CustomCpms/CustomSelect"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
-import { updateBoard } from "../../../store/actions/board.actions"
+import { editTask, updateBoard } from "../../../store/actions/board.actions"
 import { CheckBox } from "../../CustomCpms/CheckBox"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import { CellRenderInfo } from "rc-picker/lib/interface"
+import {
+    AddDateActivity,
+    RemoveDateActivity,
+} from "../../../models/activities.models"
+import { PickerLocale } from "antd/es/date-picker/generatePicker"
+import { TimePickerLocale } from "antd/es/time-picker"
 
-const customLocale = {
+const customLocale: PickerLocale = {
     lang: {
         locale: "en",
         shortWeekDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        today: "Today",
+        now: "Now",
+        backToToday: "Back to today",
+        ok: "OK",
+        clear: "Clear",
+        month: "Month",
+        year: "Year",
+        timeSelect: "Select time",
+        dateSelect: "Select date",
+        monthSelect: "Select month",
+        yearSelect: "Select year",
+        decadeSelect: "Select decade",
+        previousMonth: "Previous month",
+        nextMonth: "Next month",
+        previousYear: "Previous year",
+        nextYear: "Next year",
+        previousDecade: "Previous decade",
+        nextDecade: "Next decade",
+        previousCentury: "Previous century",
+        nextCentury: "Next century",
+        placeholder: "Select date", // Added placeholder property
     },
+    timePickerLocale: {
+        placeholder: "Select time",
+        // Additional properties for TimePickerLocale if needed
+    } as TimePickerLocale,
 }
 
-export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
+interface ManageDatesPopoverProps {
+    anchorEl: React.ReactNode
+    task?: Task
+}
+
+export function ManageDatesPopover({
+    anchorEl,
+    task,
+}: ManageDatesPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
 
     function onClose() {
@@ -28,7 +70,7 @@ export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}
@@ -48,64 +90,76 @@ export function ManageDatesPopover({ anchorEl, task, editTask, editBoard }) {
             placement="bottom-start"
             fallbackPlacements={["top-start", "auto"]}
             content={() => (
-                <ManageDatesPopoverContent
-                    editBoard={editBoard}
-                    task={task}
-                    editTask={editTask}
-                    onClose={onClose}
-                />
+                <ManageDatesPopoverContent task={task} onClose={onClose} />
             )}
             trigger={trigger}
             zIndex={10000}
         />
     )
 }
+interface ManageDatesPopoverContentProps {
+    task?: Task
+    onClose: () => void
+}
 
-function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
+function ManageDatesPopoverContent({
+    task,
+    onClose,
+}: ManageDatesPopoverContentProps) {
     const [value, setValue] = useState(dayjs())
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
 
-    const [startDate, setStartDate] = useState(null)
-    const [startDateInputValue, setStartDateInputValue] = useState("")
-    const [selectedStartDate, setSelectedStartDate] = useState(null)
-    const [lastSelectedStartDate, setLastSelectedStartDate] = useState(null)
+    const [startDate, setStartDate] = useState<Dayjs | null>(null)
+    const [startDateInputValue, setStartDateInputValue] = useState<
+        string | undefined
+    >("")
+    const [selectedStartDate, setSelectedStartDate] = useState<Dayjs | null>(
+        null
+    )
+    const [lastSelectedStartDate, setLastSelectedStartDate] =
+        useState<Dayjs | null>(null)
 
-    const [endDate, setEndDate] = useState(null)
-    const [endDateInputValue, setEndDateInputValue] = useState("")
+    const [endDate, setEndDate] = useState<Dayjs | null>(null)
+    const [endDateInputValue, setEndDateInputValue] = useState<
+        string | undefined
+    >("")
     const [endTimeInputValue, setEndTimeInputValue] = useState("")
-    const [selectedEndDate, setSelectedEndDate] = useState(null)
-    const [lastSelectedEndDate, setLastSelectedEndDate] = useState(null)
+    const [selectedEndDate, setSelectedEndDate] = useState<Dayjs | null>(null)
+    const [lastSelectedEndDate, setLastSelectedEndDate] =
+        useState<Dayjs | null>(null)
 
     const [focusedInput, setFocusedInput] = useState("end") //end endTime or start or "none"
 
-    const [reminder, setReminder] = useState(task.dueReminder || "none")
+    const [reminder, setReminder] = useState<string | null | undefined>(
+        task?.dueReminder || null
+    )
 
     const startDateRef = useRef(null)
     const endDateRef = useRef(null)
     const endTimeRef = useRef(null)
 
     useEffect(() => {
-        if (task.start && !task.due) {
+        if (task?.start && !task.due) {
             setStartDate(dayjs(task.start))
             setValue(dayjs(task.start))
             setSelectedStartDate(dayjs(task.start))
             setFocusedInput("start")
         }
-        if (task.due && !task.start) {
+        if (task?.due && !task.start) {
             setEndDate(dayjs(task.due))
             setValue(dayjs(task.due))
             setSelectedEndDate(dayjs(task.due))
             setFocusedInput("end")
         }
-        if (task.start && task.due) {
+        if (task?.start && task.due) {
             setStartDate(dayjs(task.start))
             setEndDate(dayjs(task.due))
             setSelectedStartDate(dayjs(task.start))
             setSelectedEndDate(dayjs(task.due))
             setFocusedInput("end")
         }
-        if (!task.start && !task.due) {
+        if (!task?.start && !task?.due) {
             setEndDate(dayjs().add(1, "day"))
             setSelectedEndDate(dayjs().add(1, "day"))
             setFocusedInput("end")
@@ -181,7 +235,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
         }
     }, [endDate])
 
-    function onSelect(value) {
+    function onSelect(value: dayjs.Dayjs) {
         if (focusedInput === "start") {
             setSelectedStartDate(value)
         } else {
@@ -200,7 +254,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
         setValue(newValue)
     }
 
-    function dateCellRender(current) {
+    function dateCellRender(current: dayjs.Dayjs) {
         const isToday = current.isSame(dayjs(), "day")
         const isSelected =
             current.isSame(selectedStartDate, "day") ||
@@ -225,12 +279,12 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
         )
     }
 
-    function cellRender(day, info) {
+    function cellRender(day: dayjs.Dayjs, info: CellRenderInfo<dayjs.Dayjs>) {
         if (info.type === "date") return dateCellRender(day)
         return info.originNode
     }
 
-    function onStartDateCheck(e) {
+    function onStartDateCheck(e: React.ChangeEvent<HTMLInputElement>) {
         e.preventDefault()
         if (e.target.checked) {
             setFocusedInput("start")
@@ -255,7 +309,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
         }
     }
 
-    function onEndDateCheck(e) {
+    function onEndDateCheck(e: React.ChangeEvent<HTMLInputElement>) {
         e.preventDefault()
         if (e.target.checked) {
             setFocusedInput("end")
@@ -307,85 +361,89 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
     function onEndTimeBlur() {
         const time = endTimeInputValue.trim().toUpperCase()
         if (isValidTime(time)) {
-            const [hour, minute, period] = time
-                .match(/(\d{1,2}):(\d{1,2})(?:\s)?([AP]M)/)
-                .slice(1)
+            const match = time.match(/(\d{1,2}):(\d{1,2})(?:\s)?([AP]M)/)
+            if (match) {
+                const [hour, minute, period] = match.slice(1)
 
-            let hour24 = parseInt(hour, 10)
-            if (period === "PM" && hour24 !== 12) {
-                hour24 += 12
-            } else if (period === "AM" && hour24 === 12) {
-                hour24 = 0
-            }
+                let hour24 = parseInt(hour, 10)
+                if (period === "PM" && hour24 !== 12) {
+                    hour24 += 12
+                } else if (period === "AM" && hour24 === 12) {
+                    hour24 = 0
+                }
 
-            const endTime = dayjs(endDate)
-                .set("hour", hour24)
-                .set("minute", parseInt(minute, 10))
+                const endTime = dayjs(endDate)
+                    .set("hour", hour24)
+                    .set("minute", parseInt(minute, 10))
 
-            if (!endTime.isSame(endDate)) {
-                const currentHour = endTime?.hour() || 0
-                const currentMinute = endTime?.minute() || 0
-                const newEndDate = endDate
-                    .set("hour", currentHour)
-                    .set("minute", currentMinute)
-                setEndDate(newEndDate)
+                if (!endTime.isSame(endDate)) {
+                    const currentHour = endTime?.hour() || 0
+                    const currentMinute = endTime?.minute() || 0
+                    if (endDate) {
+                        const newEndDate = endDate
+                            .set("hour", currentHour)
+                            .set("minute", currentMinute)
+                        setEndDate(newEndDate)
+                    }
+                }
             }
         } else {
             setEndTimeInputValue(formatTime(endDate))
         }
     }
 
-    function onSelectReminder(e) {
-        // setReminder(e.id);
-    }
-
     async function onSave() {
-        if (endDate) {
+        if (endDate && user && task && board) {
             const newActivity = utilService.createActivity(
                 {
                     type: "addDate",
                     targetId: task.id,
                     targetName: task.name,
-                    doDate: new Date(endDate["$d"]).getTime(),
+                    doDate: endDate.toDate().getTime(),
                 },
                 user
-            )
+            ) as AddDateActivity
 
             await updateBoard({
                 ...board,
                 activities: [...board?.activities, newActivity],
             })
+            editTask({
+                ...task,
+                due: endDate,
+                start: startDate,
+                dueReminder: reminder || null,
+            })
         }
-        editTask({
-            ...task,
-            due: endDate,
-            start: startDate,
-            dueReminder: reminder,
-        })
         onClose()
     }
 
     async function onRemove() {
-        const newActivity = utilService.createActivity(
-            {
-                type: "removeDate",
-                targetId: task.id,
-                targetName: task.name,
-            },
-            user
-        )
-        await updateBoard({
-            ...board,
-            activities: [...board?.activities, newActivity],
-        })
-        editTask({
-            ...task,
-            due: null,
-            start: null,
-            dueReminder: null,
-            dueComplete: false,
-        })
+        if (user && task && board) {
+            const newActivity = utilService.createActivity(
+                {
+                    type: "removeDate",
+                    targetId: task.id,
+                    targetName: task.name,
+                },
+                user
+            ) as RemoveDateActivity
+            await updateBoard({
+                ...board,
+                activities: [...board?.activities, newActivity],
+            })
+            editTask({
+                ...task,
+                due: null,
+                start: null,
+                dueReminder: null,
+                dueComplete: false,
+            })
+        }
         onClose()
+    }
+    function onSelectReminder(e: { id: string }) {
+        setReminder(e.id)
     }
 
     return (
@@ -508,7 +566,7 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
                         Set due date reminder
                     </label>
                     <CustomSelect
-                        options={getReminderOptions()}
+                        options={getReminderOptions(task, reminder)}
                         value={reminder}
                         onSelect={onSelectReminder}
                         optionsClassName="custom-reminder-options"
@@ -531,35 +589,67 @@ function ManageDatesPopoverContent({ task, editTask, onClose, editBoard }) {
     )
 }
 
-function formatDate(date) {
-    return date.format("M/D/YYYY")
+function formatDate(date: Dayjs | null) {
+    return date?.format("M/D/YYYY")
 }
-function formatTime(date) {
-    return date.format("hh:mm") + " " + date.format("A")
+function formatTime(date?: Dayjs | null) {
+    return date?.format("hh:mm") + " " + date?.format("A")
 }
-function isValidDate(date) {
+function isValidDate(date?: string) {
     return dayjs(date).isValid()
 }
-function isValidTime(time) {
+function isValidTime(time: string) {
     return /^\d{1,2}:\d{1,2} [AP]M$/.test(time)
 }
-function isSameDay(date1, date2) {
+function isSameDay(date1: Dayjs | null, date2: Dayjs | null) {
     return (
-        date1.isSame(date2, "day") &&
-        date1.isSame(date2, "month") &&
-        date1.isSame(date2, "year")
+        date1?.isSame(date2, "day") &&
+        date1?.isSame(date2, "month") &&
+        date1?.isSame(date2, "year")
     )
 }
-function getReminderOptions() {
+function getReminderOptions(task?: Task, reminder?: string | null) {
     return [
-        { name: "None", id: "none" },
-        { name: "At time due date", id: "at_time_due_date" },
-        { name: "5 Minutes before", id: "5_minutes_before" },
-        { name: "10 Minutes before", id: "10_minutes_before" },
-        { name: "15 Minutes before", id: "15_minutes_before" },
-        { name: "1 Hour before", id: "1_hour_before" },
-        { name: "2 Hours before", id: "2_hours_before" },
-        { name: "1 Day before", id: "1_day_before" },
-        { name: "2 Days before", id: "2_days_before" },
+        { name: "None", id: "none", isCurrent: task?.dueReminder === reminder },
+        {
+            name: "At time due date",
+            id: "at_time_due_date",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "5 Minutes before",
+            id: "5_minutes_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "10 Minutes before",
+            id: "10_minutes_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "15 Minutes before",
+            id: "15_minutes_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "1 Hour before",
+            id: "1_hour_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "2 Hours before",
+            id: "2_hours_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "1 Day before",
+            id: "1_day_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
+        {
+            name: "2 Days before",
+            id: "2_days_before",
+            isCurrent: task?.dueReminder === reminder,
+        },
     ]
 }

@@ -1,21 +1,28 @@
 import React, { useState, useRef, useEffect } from "react"
-import { Input } from "antd"
+import { Input, InputRef } from "antd"
 import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
 import { utilService } from "../../../services/util.service"
-import { useSelector } from "react-redux"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { attachment } from "../../../models/task&groups.models"
 
-export function EditAttachmentPopover({ anchorEl, onEdit, attachment }) {
+interface EditAttachmentPopoverProps {
+    anchorEl: React.ReactNode
+    onEdit: (newAttachment: attachment) => void
+    attachment: attachment
+}
+
+export function EditAttachmentPopover({
+    anchorEl,
+    onEdit,
+    attachment,
+}: EditAttachmentPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [link, setLink] = useState(attachment.link)
     const [focusedLink, setFocusedLink] = useState(false)
     const [text, setText] = useState(attachment.text || "")
     const [focusedText, setFocusedText] = useState(false)
 
-    const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
-
-    const textRef = useRef(null)
+    const textRef = useRef<InputRef>(null)
     const linkRef = useRef(null)
 
     const isLink = attachment.type === "link"
@@ -28,10 +35,6 @@ export function EditAttachmentPopover({ anchorEl, onEdit, attachment }) {
             }, 0)
         }
     }, [isOpen])
-
-    function onOpenChange(newOpen) {
-        setIsOpen(newOpen)
-    }
 
     function onUpdate() {
         if (isLink) {
@@ -111,7 +114,7 @@ export function EditAttachmentPopover({ anchorEl, onEdit, attachment }) {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}

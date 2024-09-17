@@ -1,6 +1,16 @@
 import { SvgButton } from "../../CustomCpms/SvgButton"
 
-export function ManageTaskPopoverHeader({ title, close, back }) {
+interface ManageTaskPopoverHeaderProps {
+    title: string
+    close: (e: any) => void
+    back?: (() => void) | null
+}
+
+export function ManageTaskPopoverHeader({
+    title,
+    close,
+    back,
+}: ManageTaskPopoverHeaderProps) {
     return (
         <header className="manage-task-popover-header">
             {back && (

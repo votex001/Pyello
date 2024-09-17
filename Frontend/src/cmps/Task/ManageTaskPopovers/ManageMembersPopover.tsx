@@ -1,24 +1,38 @@
-import { Popover, Input } from "antd"
+import { Input } from "antd"
 import { useState, useEffect } from "react"
 import { useSelector } from "react-redux"
 import { MemberOption } from "./MemberOption"
 import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { RootState } from "../../../store/store"
+import { Task } from "../../../models/task&groups.models"
+import { User } from "../../../models/user.model"
 
-export function ManageMembersPopover({ anchorEl, editTask, task }) {
-    const workspaceUsers = useSelector((state) => state.userModule.users)
-    const membersIds = useSelector((state) => state.boardModule.board.members)
-    const members = workspaceUsers.filter((user) =>
-        membersIds.some((member) => member.id === user.id)
+interface ManageMembersPopoverProps {
+    anchorEl: React.ReactNode
+    task: Task
+}
+
+export function ManageMembersPopover({
+    anchorEl,
+    task,
+}: ManageMembersPopoverProps) {
+    const workspaceUsers = useSelector(
+        (state: RootState) => state.userModule.users
+    )
+    const membersIds = useSelector(
+        (state: RootState) => state.boardModule.board?.members
+    )
+    const members = workspaceUsers?.filter((user) =>
+        membersIds?.some((member) => member.id === user.id)
     )
     const [inputSearch, setInputSearch] = useState("")
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedMembers, setSelectedMembers] = useState([])
-    const [unselectedMembers, setUnselectedMembers] = useState([])
+    const [selectedMembers, setSelectedMembers] = useState<User[]>([])
+    const [unselectedMembers, setUnselectedMembers] = useState<User[]>([])
 
     useEffect(() => {
-        // TODO: members dont have fullName, add mini user
-        if (inputSearch === "") {
+        if (inputSearch === "" && members && task) {
             setSelectedMembers(
                 members.filter((member) => task?.idMembers.includes(member?.id))
             )
@@ -27,10 +41,10 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
                     (member) => !task?.idMembers.includes(member?.id)
                 )
             )
-        } else {
+        } else if (members) {
             setSelectedMembers(
                 members
-                    .filter((member) => task?.idMembers.includes(member?.id))
+                    ?.filter((member) => task?.idMembers.includes(member?.id))
                     .filter((member) =>
                         member?.fullName
                             .toLowerCase()
@@ -72,7 +86,6 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
                                 task={task}
                                 member={member}
                                 isSelected={true}
-                                editTask={editTask}
                             />
                         ))}
                     </article>
@@ -86,7 +99,6 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
                                 task={task}
                                 member={member}
                                 isSelected={false}
-                                editTask={editTask}
                             />
                         ))}
                     </article>
@@ -104,7 +116,7 @@ export function ManageMembersPopover({ anchorEl, editTask, task }) {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}

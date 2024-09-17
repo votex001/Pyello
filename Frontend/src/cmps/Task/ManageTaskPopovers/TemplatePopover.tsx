@@ -1,10 +1,14 @@
-import { Popover, Input } from "antd"
-import { useState, useEffect } from "react"
-import { ManageTaskPopoverHeader } from "../ManageTaskPopovers/ManageTaskPopoverHeader"
+import { Popover } from "antd"
+import { useState } from "react"
+import { ManageTaskPopoverHeader } from "./ManageTaskPopoverHeader"
 
-export function TNAME({ anchorEl, editTask, task }) {
+interface TNAMEProps {
+    anchorEl: React.ReactNode
+}
+
+export function TNAME({ anchorEl }: TNAMEProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [backToList, setBackToList] = useState(null)
+    const [backToList, setBackToList] = useState<(() => void) | null>(null)
 
     const cardTitle = "ADD TITLE"
 
@@ -12,7 +16,7 @@ export function TNAME({ anchorEl, editTask, task }) {
         setIsOpen(false)
     }
 
-    function onNextPage(_) {
+    function onNextPage() {
         //
         setBackToList(() => onBackToList)
     }
@@ -28,7 +32,6 @@ export function TNAME({ anchorEl, editTask, task }) {
             trigger="click"
             placement="bottomRight"
             open={isOpen}
-            close={() => {}}
             onOpenChange={setIsOpen}
             arrow={false}
             content={
