@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect, forwardRef } from "react"
-import { Modal, Input, ConfigProvider } from "antd"
-import editSvg from "../../assets/svgs/edit.svg"
+import React, { useRef, useState, useEffect } from "react"
+import { Modal, Input, ConfigProvider, InputRef } from "antd"
 import cardIcon from "/img/taskActionBtns/cardIcon.svg"
 import { TaskPreviewBadges } from "./TaskPreviewBadges"
 import { TaskPreviewLabel } from "./TaskPreviewLabel"
@@ -19,36 +18,47 @@ import { useSelector } from "react-redux"
 import { MoveCardPopover } from "./ManageTaskPopovers/MoveCardPopover"
 import { ManageDatesPopover } from "./ManageTaskPopovers/ManageDatesPopover"
 import { useNavigate } from "react-router-dom"
-const { TextArea } = Input
 import Popup from "@atlaskit/popup"
+import { Task } from "../../models/task&groups.models"
+import { RootState } from "../../store/store"
+import { editTask } from "../../store/actions/board.actions"
+import { Label } from "../../models/board.models"
+
+interface TaskPreviewEditModalProps {
+    task?: Task
+    isHovered: boolean
+    isOpen: boolean
+    openPreviewModal: (b: boolean) => void
+    taskWidth: number
+    closePreviewModal: () => void
+}
 
 export function TaskPreviewEditModal({
     task,
     isHovered,
-    editTask,
     isOpen,
     openPreviewModal,
     taskWidth,
-    labelActions,
     closePreviewModal,
-}) {
-    const boardLabels = useSelector((state) => state.boardModule.board.labels)
-    const [taskLabels, setTaskLabels] = useState([])
+}: TaskPreviewEditModalProps) {
+    const boardLabels = useSelector(
+        (state: RootState) => state.boardModule.board?.labels
+    )
+    const [taskLabels, setTaskLabels] = useState<Label[]>([])
     const [modalStyle, setModalStyle] = useState({})
     const [taskName, setTaskName] = useState(task?.name || "")
     const [removePopupButtons, setRemovePopupButtons] = useState(false)
     const [showEditModalBtn, setShowEditModalBtn] = useState(false)
 
-    const containerRef = useRef(null)
-    const triggerRef = useRef(null)
-    const popupRef = useRef(null)
-    const textareaRef = useRef(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const triggerRef = useRef<HTMLDivElement>(null)
+    const textareaRef = useRef<InputRef>(null)
     const navigate = useNavigate()
 
     useEffect(() => {
         if (isOpen && textareaRef.current) {
             setTimeout(() => {
-                textareaRef.current.focus({
+                textareaRef.current?.focus({
                     cursor: "all",
                 })
             }, 300)
@@ -71,27 +81,29 @@ export function TaskPreviewEditModal({
         setTaskName(task?.name || "")
     }, [task?.name])
 
-    function showModal(e) {
+    function showModal(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
-        const rect = containerRef.current.getBoundingClientRect()
-        setModalStyle({
-            position: "absolute",
-            top: `${rect.top}px`,
-            left: `${rect.right - taskWidth}px`,
-            width: `${taskWidth}px`,
-        })
+        const rect = containerRef.current?.getBoundingClientRect()
+        if (rect) {
+            setModalStyle({
+                position: "absolute",
+                top: `${rect.top}px`,
+                left: `${rect.right - taskWidth}px`,
+                width: `${taskWidth}px`,
+            })
+        }
         openPreviewModal(true)
     }
 
-    function handleOk(e) {
+    function handleOk(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
-        if (taskName !== task?.name) {
+        if (task && taskName !== task?.name) {
             editTask({ ...task, name: taskName })
         }
         openPreviewModal(false)
     }
 
-    function handleCancel(e) {
+    function handleCancel() {
         openPreviewModal(false)
     }
 
@@ -122,9 +134,7 @@ export function TaskPreviewEditModal({
                             label="Edit labels"
                         />
                     }
-                    editTask={editTask}
                     task={task}
-                    labelActions={labelActions}
                 />
             ),
         },
@@ -139,7 +149,6 @@ export function TaskPreviewEditModal({
                             label="Change members"
                         />
                     }
-                    editTask={editTask}
                     task={task}
                 />
             ),
@@ -155,7 +164,6 @@ export function TaskPreviewEditModal({
                             label="Change cover"
                         />
                     }
-                    editTask={editTask}
                     task={task}
                 />
             ),
@@ -165,7 +173,6 @@ export function TaskPreviewEditModal({
             popover: (
                 <ManageDatesPopover
                     task={task}
-                    editTask={editTask}
                     anchorEl={
                         <SvgButton
                             src={timeIcon}
@@ -176,14 +183,11 @@ export function TaskPreviewEditModal({
                 />
             ),
         },
-        // TODO fix dropdonw menu select options issue
         {
             cover: true,
             popover: (
                 <MoveCardPopover
                     task={task}
-                    onCloseTask={handleCancel}
-                    closeAfter={true}
                     anchorEl={
                         <SvgButton
                             src={moveIcon}
@@ -194,24 +198,20 @@ export function TaskPreviewEditModal({
                 />
             ),
         },
-        // { label: 'Copy', icon: copyIcon, onClick: () => console.log('Add to Y'), cover: true },
         {
             popover: (
                 <SvgButton
                     src={archiveIcon}
                     className="floating-button"
                     label="Archive"
-                    onClick={() => editTask({ ...task, closed: true })}
+                    onClick={() =>
+                        task ? editTask({ ...task, closed: true }) : null
+                    }
                 />
             ),
             cover: true,
         },
     ]
-
-    // const modalActionButtons =
-    //   task.cover.size === "full"
-    //     ? allModalActionButtons.filter((btn) => btn.cover)
-    //     : allModalActionButtons;
 
     const content = () => {
         if (!isOpen) return null
@@ -247,7 +247,7 @@ export function TaskPreviewEditModal({
                         style={{
                             backgroundColor: utilService.getColorHashByName(
                                 task?.cover.color
-                            ).bgColor,
+                            )?.bgColor,
                         }}
                     ></div>
                 )}
@@ -262,21 +262,16 @@ export function TaskPreviewEditModal({
                 <main className="task-preview-edit-modal-content">
                     <article className="preview-labels">
                         {taskLabels?.map((label) => (
-                            <TaskPreviewLabel
-                                key={label.id}
-                                label={label}
-                                isExpanded={true}
-                            />
+                            <TaskPreviewLabel key={label.id} label={label} />
                         ))}
                     </article>
-                    <TextArea
+                    <Input
                         ref={textareaRef}
                         className="task-name-input"
-                        autoSize={{ minRows: 3, maxRows: 6 }}
                         value={taskName}
                         onChange={(e) => setTaskName(e.target.value)}
                     />
-                    <TaskPreviewBadges task={task} editTask={editTask} />
+                    <TaskPreviewBadges task={task} />
                 </main>
                 <button
                     className="floating-button save-button"
@@ -313,7 +308,9 @@ export function TaskPreviewEditModal({
                     open={isOpen}
                     onOk={handleOk}
                     onCancel={handleCancel}
-                    getContainer={() => containerRef?.current}
+                    getContainer={() => {
+                        return containerRef.current ?? document.body
+                    }}
                     style={modalStyle}
                     width={taskWidth}
                     closable={false}
@@ -332,9 +329,6 @@ export function TaskPreviewEditModal({
                             <div {...triggerProps}>{trigger()}</div>
                         )}
                         zIndex={9000}
-                        triggerRef={triggerRef}
-                        ref={popupRef}
-                        closeOnClickOutside={true}
                     />
                 </Modal>
             </ConfigProvider>

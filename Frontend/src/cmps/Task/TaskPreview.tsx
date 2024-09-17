@@ -5,22 +5,32 @@ import { TaskPreviewBadges } from "./TaskPreviewBadges"
 import { TaskPreviewEditModal } from "./TaskPreviewEditModal"
 import { useNavigate } from "react-router"
 import { useSelector } from "react-redux"
+import { Task } from "../../models/task&groups.models"
+import { RootState } from "../../store/store"
+import { Label } from "../../models/board.models"
+
+interface TaskPreviewProps {
+    task?: Task
+    isDragging: boolean
+    noHover: boolean
+    disableDnD: (b: boolean) => void
+}
 
 export function TaskPreview({
     task,
-    editTask,
-    labelActions,
     isDragging,
     noHover = false,
     disableDnD,
-}) {
-    const boardLabels = useSelector((state) => state.boardModule.board.labels)
+}: TaskPreviewProps) {
+    const boardLabels = useSelector(
+        (state: RootState) => state.boardModule.board?.labels
+    )
     const [isHovered, setIsHovered] = useState(false)
     const [isOpenPreviewModal, setIsOpenPreviewModal] = useState(false)
     const [taskLabels, setTaskLabels] = useState(
-        skelotonPreviewLables(task.idLabels.length)
+        skelotonPreviewLables(task?.idLabels.length)
     )
-    const taskRef = useRef(null)
+    const taskRef = useRef<HTMLDivElement>(null)
     const [taskWidth, setTaskWidth] = useState(0)
     const navigate = useNavigate()
 
@@ -28,12 +38,12 @@ export function TaskPreview({
     const coverSize = taskCover?.size
 
     const isBadges =
-        task.attachments?.length > 0 ||
-        utilService.isNotEmpty(task.desc) ||
-        task.checkLists?.length > 0 ||
-        utilService.isNotEmpty(task.due) ||
-        utilService.isNotEmpty(task.start) ||
-        task.idMembers?.length > 0
+        (task && task.attachments?.length > 0) ||
+        utilService.isNotEmpty(task?.desc) ||
+        (task && task.checkLists?.length > 0) ||
+        utilService.isNotEmpty(task?.due) ||
+        utilService.isNotEmpty(task?.start) ||
+        (task && task.idMembers?.length > 0)
 
     useEffect(() => {
         const taskLabels =
@@ -49,7 +59,7 @@ export function TaskPreview({
         }
     }, [taskRef?.current])
 
-    function onOpenPreviewModal(value) {
+    function onOpenPreviewModal(value: boolean) {
         setIsOpenPreviewModal(value)
         disableDnD(value)
     }
@@ -65,9 +75,9 @@ export function TaskPreview({
     }
     const covorCardClass =
         coverSize === "full"
-            ? taskCover.color
+            ? taskCover?.color
                 ? "task-bg-cover"
-                : taskCover.attachment
+                : taskCover?.attachment
                 ? "task-img-full-cover"
                 : ""
             : ""
@@ -77,7 +87,7 @@ export function TaskPreview({
             ? {
                   backgroundColor: utilService.getColorHashByName(
                       taskCover?.color
-                  ).bgColor,
+                  )?.bgColor,
               }
             : {}
 
@@ -105,15 +115,12 @@ export function TaskPreview({
             <TaskPreviewEditModal
                 task={task}
                 isHovered={isHovered}
-                editTask={editTask}
                 isOpen={isOpenPreviewModal}
                 openPreviewModal={onOpenPreviewModal}
-                taskLabels={taskLabels}
                 taskWidth={taskWidth}
-                labelActions={labelActions}
                 closePreviewModal={onClosePreviewModal}
             />
-            {taskCover.color && (
+            {taskCover?.color && (
                 <div
                     className={`group-task-header ${
                         coverSize === "normal" ? "normal-cover" : "full-cover"
@@ -121,11 +128,11 @@ export function TaskPreview({
                     style={{
                         backgroundColor: utilService.getColorHashByName(
                             task?.cover.color
-                        ).bgColor,
+                        )?.bgColor,
                     }}
                 ></div>
             )}
-            {coverSize === "normal" && taskCover.attachment && (
+            {coverSize === "normal" && taskCover?.attachment && (
                 <div
                     className="group-task-header img-cover"
                     style={{
@@ -147,7 +154,6 @@ export function TaskPreview({
                                 <TaskPreviewLabel
                                     key={label?.id}
                                     label={label}
-                                    isExpanded={true}
                                 />
                             ))}
                         </article>
@@ -155,9 +161,7 @@ export function TaskPreview({
                     <span className="group-task-content-title">
                         {task?.name}
                     </span>
-                    {isBadges && (
-                        <TaskPreviewBadges task={task} editTask={editTask} />
-                    )}
+                    {isBadges && <TaskPreviewBadges task={task} />}
                 </section>
             )}
             {coverSize === "full" && (
@@ -175,9 +179,13 @@ export function TaskPreview({
     )
 }
 
-function skelotonPreviewLables(numOfLabels) {
+function skelotonPreviewLables(
+    numOfLabels = Math.floor(Math.random() * 3) + 1
+): Label[] {
     return Array.from({ length: numOfLabels }).map((_, index) => ({
         id: `skeleton-${index}`,
         color: "skeleton",
+        name: "",
+        isTask: false,
     }))
 }

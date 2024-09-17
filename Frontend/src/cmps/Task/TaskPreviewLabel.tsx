@@ -3,11 +3,19 @@ import { useSelector } from "react-redux"
 import { useState } from "react"
 import { toggleIsExpanded } from "../../store/actions/board.actions"
 import { Tooltip } from "antd"
+import { Label } from "../../models/board.models"
+import { RootState } from "../../store/store"
 
-export function TaskPreviewLabel({ label }) {
-    const [hoveredLabelId, setHoveredLabelId] = useState(null)
-    const isExpanded = useSelector((state) => state.boardModule.isExpanded)
-    function onClick(e) {
+interface TaskPreviewLabelProps {
+    label: Label
+}
+
+export function TaskPreviewLabel({ label }: TaskPreviewLabelProps) {
+    const [hoveredLabelId, setHoveredLabelId] = useState<string | null>(null)
+    const isExpanded = useSelector(
+        (state: RootState) => state.boardModule.isExpanded
+    )
+    function onClick(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         toggleIsExpanded()
     }
@@ -28,11 +36,11 @@ export function TaskPreviewLabel({ label }) {
                     backgroundColor:
                         hoveredLabelId === label.id
                             ? utilService.getColorHashByName(label.color)
-                                  .hoveredBgColor
+                                  ?.hoveredBgColor
                             : utilService.getColorHashByName(label.color)
-                                  .bgColor,
+                                  ?.bgColor,
                     color: utilService.getColorHashByName(label.color)
-                        .lightFontColor,
+                        ?.lightFontColor,
                 }}
                 onClick={onClick}
                 onMouseEnter={() => setHoveredLabelId(label.id)}
