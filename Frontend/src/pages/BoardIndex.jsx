@@ -12,7 +12,6 @@ import {
     copyGroup,
     moveAllCards,
     archiveAllCards,
-    sortGroup,
     dragGroup,
     createLabel,
     deleteLabel,
@@ -24,7 +23,7 @@ import { editUser, loadWorkspaceUsers } from "../store/actions/user.actions"
 
 import { AddGroupBtn } from "../cmps/Group/AddGroupBtn"
 import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal.jsx"
-import { BoardHeader } from "../cmps/BoardHeader/BoardHeader.jsx"
+import { BoardHeader } from "../cmps/BoardHeader/BoardHeader"
 import useScrollByGrab from "../customHooks/useScrollByGrab"
 import { useParams, useOutletContext } from "react-router-dom"
 import { utilService } from "../services/util.service"
@@ -154,10 +153,6 @@ export function BoardIndex() {
         const res = await copyGroup(board.id, group, user)
     }
 
-    async function onSortGroup(groupId, sortBy, sortOrder) {
-        const res = await sortGroup(board.id, groupId, sortBy, sortOrder)
-    }
-
     function onStarToggle(starredIds) {
         editUser({ ...user, starredBoardIds: starredIds })
     }
@@ -277,7 +272,6 @@ export function BoardIndex() {
                                             copyGroup={onCopyGroup}
                                             moveAllCards={moveAllCards}
                                             archiveAllCards={archiveAllCards}
-                                            sortGroup={onSortGroup}
                                             labelActions={onLabelAction}
                                             isDraggingOverId={isDraggingOverId}
                                         />
