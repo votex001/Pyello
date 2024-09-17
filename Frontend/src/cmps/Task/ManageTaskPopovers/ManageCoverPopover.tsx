@@ -11,7 +11,7 @@ import { editTask } from "../../../store/actions/board.actions"
 interface ManageCoverPopoverProps {
     anchorEl: React.ReactNode
     task?: Task
-    isFullWidth: boolean
+    isFullWidth?: boolean
 }
 
 export function ManageCoverPopover({

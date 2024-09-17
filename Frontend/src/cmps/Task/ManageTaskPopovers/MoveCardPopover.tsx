@@ -11,7 +11,7 @@ import { RootState } from "../../../store/store"
 
 interface MoveCardPopoverProps {
     anchorEl: React.ReactNode
-    task: Task
+    task?: Task
     onUpdateTask?: () => void
 }
 
@@ -55,7 +55,7 @@ export function MoveCardPopover({
                 return {
                     name: g?.name,
                     id: g?.id,
-                    isCurrent: task.idGroup === g?.id,
+                    isCurrent: task?.idGroup === g?.id,
                 }
             })
     )
@@ -133,7 +133,7 @@ export function MoveCardPopover({
                     .map((g) => ({
                         name: g?.name,
                         id: g?.id,
-                        isCurrent: task.idGroup === g.id,
+                        isCurrent: task?.idGroup === g.id,
                     }))
             )
             if (selectedBoard.id !== task?.idBoard) {
@@ -151,7 +151,7 @@ export function MoveCardPopover({
         return array?.map((item, i) => ({
             name: `${i + 1}`,
             id: `${item}`,
-            isCurrent: item === task.pos,
+            isCurrent: item === task?.pos,
         }))
     }
 
@@ -185,17 +185,18 @@ export function MoveCardPopover({
         setIsOpen(false)
 
         if (
-            selectedBoardId === task.idBoard &&
+            selectedBoardId === task?.idBoard &&
             board &&
             selectedGroupId &&
-            user
+            user &&
+            task
         ) {
             const moveTaskEvent = {
                 boardId: board.id,
-                sourceGroupId: task.idGroup,
+                sourceGroupId: task?.idGroup,
                 destinationGroupId: selectedGroupId,
-                taskId: task.id,
-                sourceIndex: task.pos,
+                taskId: task?.id,
+                sourceIndex: task?.pos,
                 destinationIndex: selectedPosition,
             }
             await moveTask(moveTaskEvent, board, user)
@@ -215,8 +216,8 @@ export function MoveCardPopover({
             await moveTaskBetweenBoards(moveTaskEvent)
         }
 
-        if (selectedBoardId !== task.idBoard) {
-            navigate(`/b/${task.idBoard}`)
+        if (selectedBoardId !== task?.idBoard) {
+            navigate(`/b/${task?.idBoard}`)
         }
         if (onUpdateTask) {
             onUpdateTask()

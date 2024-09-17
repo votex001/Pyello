@@ -10,7 +10,7 @@ import { User } from "../../../models/user.model"
 
 interface ManageMembersPopoverProps {
     anchorEl: React.ReactNode
-    task: Task
+    task?: Task
 }
 
 export function ManageMembersPopover({

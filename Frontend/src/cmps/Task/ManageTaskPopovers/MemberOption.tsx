@@ -7,7 +7,7 @@ import { editTask } from "../../../store/actions/board.actions"
 import { User } from "../../../models/user.model"
 
 interface MemberOptionProps {
-    task: Task
+    task?: Task
     member: User
     isSelected: boolean
 }
@@ -18,6 +18,8 @@ export function MemberOption({ task, member, isSelected }: MemberOptionProps) {
     )
 
     function onEditTask() {
+        if (!task) return
+
         const newTaskMemberIds = [...task.idMembers]
         if (isSelected) {
             newTaskMemberIds.splice(newTaskMemberIds.indexOf(member.id), 1)
