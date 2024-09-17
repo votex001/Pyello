@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, RefObject } from "react"
 
-function useScrollPercentage(ref: RefObject<HTMLElement>) {
-    const [scrollPercentage, setScrollPercentage] = useState(0)
+function useScrollPercentage(
+    ref: RefObject<HTMLElement>
+): [number, (percentage: number) => void] {
+    const [scrollPercentage, setScrollPercentage] = useState<number>(0)
 
     const updateScrollPercentage = useCallback(() => {
         const element = ref.current
@@ -13,7 +15,7 @@ function useScrollPercentage(ref: RefObject<HTMLElement>) {
     }, [ref])
 
     const setScrollToPercentage = useCallback(
-        (percentage:number) => {
+        (percentage: number) => {
             const element = ref.current
             if (!element) return
 
@@ -22,7 +24,7 @@ function useScrollPercentage(ref: RefObject<HTMLElement>) {
             element.scrollTop = scrollTop
             setScrollPercentage(percentage)
         },
-        [ref],
+        [ref]
     )
 
     useEffect(() => {
