@@ -106,8 +106,10 @@
         }
 
         &.selected {
-            color: var(--ds-text-selected, #0052cc);
             box-shadow: inset 2px 0px 0px var(--ds-border-selected, #0052cc);
+            * {
+                color: var(--ds-text-selected, #0052cc);
+            }
 
             &:hover {
                 background-color: var(

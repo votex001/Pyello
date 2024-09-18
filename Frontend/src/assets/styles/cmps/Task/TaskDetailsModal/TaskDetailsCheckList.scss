@@ -12,6 +12,7 @@
             line-height: 20px;
             font-weight: 600;
             padding-top: 2px;
+
             .title-input {
                 outline: none;
                 background-color: var(--ds-background-input, #ffffff);
@@ -87,6 +88,9 @@
                 width: 100%;
                 padding: 0 8px 0 8px;
                 border-radius: 12px 0 0 12px;
+                &:has(.title-input) {
+                    padding-top: 10px;
+                }
                 &.open {
                     border-radius: 12px;
                 }
