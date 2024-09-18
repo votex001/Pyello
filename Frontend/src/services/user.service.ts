@@ -27,12 +27,15 @@ async function getByUserName(username: string): Promise<User | undefined> {
         console.log(err)
     }
 }
-async function getByEmail(email: string): Promise<User | undefined> {
+async function getByEmail(email: string): Promise<{ exist: boolean }> {
     try {
-        const user = await httpService.get<User>("user/e", { email })
+        const user = await httpService.get<{ exist: boolean }>("user/e", {
+            email,
+        })
         return user
     } catch (err) {
         console.error(err)
+        throw err
     }
 }
 

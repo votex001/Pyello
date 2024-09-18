@@ -1,25 +1,29 @@
 import { ReactSVG } from "react-svg"
-import logo from "/img/trelloAuthLogo.svg"
-import { useEffect, useRef, useState } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { useSelector } from "react-redux"
 import { login, signup } from "../store/actions/user.actions"
 import { UserAvatar } from "../cmps/UserAvatar"
 import { Link, useSearchParams } from "react-router-dom"
+import logo from "/img/trelloAuthLogo.svg"
 import { userService } from "../services/user.service"
-
-export function AuthPage({ isLogin = false }) {
-    const user = useSelector((state) => state.userModule.user)
-    const [verified, setVerified] = useState(false)
-    const [alert, setAlert] = useState(false)
-    const [email, setEmail] = useState("")
-    const [fullName, setFullName] = useState("")
-    const [pass, setPass] = useState("")
+import { RootState } from "../store/store"
+interface AuthPageProps {
+    isLogin?: boolean
+}
+export function AuthPage({ isLogin = false }: AuthPageProps) {
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const [verified, setVerified] = useState<boolean>(false)
+    const [alert, setAlert] = useState<boolean>(false)
+    const [email, setEmail] = useState<string>("")
+    const [fullName, setFullName] = useState<string>("")
+    const [pass, setPass] = useState<string>("")
     const navigate = useNavigate()
     const [searchParams, setSearchParams] = useSearchParams()
-    const emailInput = useRef(null)
-    const nameInput = useRef(null)
-    const passInput = useRef(null)
+    const emailInput = useRef<HTMLInputElement>(null)
+    const nameInput = useRef<HTMLInputElement>(null)
+    const passInput = useRef<HTMLInputElement>(null)
+
     useEffect(() => {
         setAlert(false)
         setVerified(false)
@@ -27,7 +31,7 @@ export function AuthPage({ isLogin = false }) {
 
     useEffect(() => {
         login()
-        document.querySelector("html").classList.remove("dark")
+        document.querySelector("html")?.classList.remove("dark")
         setAlert(false)
         setVerified(false)
     }, [])
@@ -49,8 +53,9 @@ export function AuthPage({ isLogin = false }) {
     }, [verified, emailInput, passInput, nameInput])
 
     useEffect(() => {
-        if (searchParams.get("login_hint")) {
-            setEmail(searchParams.get("login_hint"))
+        const loginHint = searchParams.get("login_hint")
+        if (loginHint) {
+            setEmail(loginHint)
         }
     }, [searchParams])
 
@@ -60,7 +65,7 @@ export function AuthPage({ isLogin = false }) {
         }
     }, [user])
 
-    async function onSubmit(e) {
+    async function onSubmit(e: FormEvent) {
         e.preventDefault()
         if (!email) {
             setAlert(true)
@@ -117,10 +122,10 @@ export function AuthPage({ isLogin = false }) {
             }
         }
     }
-    async function onLogout(e) {
+    async function onLogout(e: FormEvent) {
         e.preventDefault()
         await userService.logout()
-        navigate(0, { replace: true })
+        window.location.reload()
     }
     return (
         <main className="auth-page">
@@ -294,9 +299,9 @@ export function AuthPage({ isLogin = false }) {
                             </div>
                         </div>
                         <div className="logout">
-                            <Link onClick={onLogout} className="link">
+                            <a onClick={onLogout} className="link">
                                 Logout
-                            </Link>
+                            </a>
                         </div>
                     </section>
                 )}

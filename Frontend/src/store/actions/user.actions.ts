@@ -28,7 +28,7 @@ export async function editUser(user: User) {
         console.log("UserActions: err in editUser", err)
     }
 }
-export async function login(credentials: {
+export async function login(credentials?: {
     password: string
     email: string
 }): Promise<User> {

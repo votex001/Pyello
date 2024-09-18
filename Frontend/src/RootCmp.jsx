@@ -8,7 +8,7 @@ import { UserBoards } from "./pages/UserBoards.jsx"
 import { UserSettings } from "./cmps/UserProf/UserSettings"
 import { UserMsg } from "./cmps/UserMsg"
 import { HomePage } from "./pages/HomePage.jsx"
-import { AuthPage } from "./pages/AuthPage.jsx"
+import { AuthPage } from "./pages/AuthPage"
 export function RootCmp() {
     return (
         <div>

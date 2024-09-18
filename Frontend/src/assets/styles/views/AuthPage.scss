@@ -184,6 +184,7 @@
                 border-bottom: 1px solid rgb(193, 199, 208);
 
                 .link {
+                    cursor: pointer;
                     text-decoration: none;
                     color: var(--ds-link, #0052cc);
                     &:hover {
