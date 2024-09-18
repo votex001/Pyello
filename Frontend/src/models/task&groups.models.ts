@@ -26,11 +26,7 @@ export interface CheckList {
 }
 
 export interface Cover {
-    attachment: {
-        link: string
-        text: string
-        avgBgColor: { color: string; isDark: boolean }
-    } | null
+    attachment: attachment | null
     color: string | null
     size: "small" | "normal" | "full"
     brightness: "light" | "dark"
@@ -38,10 +34,13 @@ export interface Cover {
     scaled: string | null
 }
 export interface attachment {
+    avgBgColor: { color: string; isDark: boolean }
+    createdAt: string
+    format: string
     id: string
+    isDark: boolean
     link: string
     text: string
-    createdAt: string
     type: string
 }
 
@@ -51,6 +50,9 @@ export interface Task {
     updatedAt: string
     members: string[]
     checkLists: CheckList[]
+    badges: {
+        description: boolean
+    }
 
     closed: boolean
     dueComplete: boolean

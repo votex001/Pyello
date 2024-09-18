@@ -5,7 +5,7 @@ export interface User {
     darkMode: "light" | "default" | "dark"
     username: string
     email: string
-    starredBoardIds: []
+    starredBoardIds: string[]
     isAdmin: boolean | undefined
     imgUrl: string | undefined
 }
