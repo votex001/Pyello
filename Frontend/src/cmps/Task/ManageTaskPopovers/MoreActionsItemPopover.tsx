@@ -3,7 +3,7 @@ import { Popover } from "antd"
 import React, { useState } from "react"
 
 interface MoreActionsItemPopoverProps {
-    anchorEl: React.ReactNode
+    anchorEl?: React.ReactNode
     onDeleteItem?: () => void
     onConvertToTask?: () => void
 }

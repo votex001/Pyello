@@ -10,7 +10,7 @@ import { AddCheckListActivity } from "../../../models/activities.models"
 
 interface AddChecklistPopoverProps {
     anchorEl: React.ReactNode
-    task: Task
+    task?: Task
 }
 
 export function AddChecklistPopover({
