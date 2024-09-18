@@ -116,6 +116,9 @@ function createNewTask(task: {
         updatedAt: new Date().toISOString(),
         members: [],
         checkLists: [],
+        badges: {
+            description: false,
+        },
 
         closed: false,
         dueComplete: false,
@@ -450,7 +453,7 @@ function taskDueStatus(task: {
     return ["", ""]
 }
 
-function getDateLabel(date?: string | dayjs.Dayjs): string {
+function getDateLabel(date?: string | dayjs.Dayjs | undefined | null): string {
     if (!date) return ""
 
     const parsedDate = dayjs(date)
