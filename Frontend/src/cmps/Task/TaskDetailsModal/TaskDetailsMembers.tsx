@@ -4,24 +4,37 @@ import { UserAvatar } from "../../UserAvatar"
 import { PlusOutlined } from "@ant-design/icons"
 import { ManageMembersPopover } from "../ManageTaskPopovers/ManageMembersPopover"
 import { ProfilePopover } from "../ManageTaskPopovers/ProfilePopover"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import { Member } from "../../../models/board.models"
+import { editTask } from "../../../store/actions/board.actions"
 
-export function TaskDetailsMembers({ currentTask, editTask }) {
-    const boardMembers = useSelector((state) => state.boardModule.board.members)
-    const [selectedMembers, setSelectedMembers] = useState([])
+interface TaskDetailsMembersProps {
+    currentTask?: Task
+}
+
+export function TaskDetailsMembers({ currentTask }: TaskDetailsMembersProps) {
+    const boardMembers = useSelector(
+        (state: RootState) => state.boardModule.board?.members
+    )
+    const [selectedMembers, setSelectedMembers] = useState<Member[]>([])
 
     useEffect(() => {
-        setSelectedMembers(
-            boardMembers.filter((member) =>
-                currentTask.idMembers.includes(member.id),
-            ),
-        )
+        if (boardMembers) {
+            setSelectedMembers(
+                boardMembers.filter((member) =>
+                    currentTask?.idMembers.includes(member.id)
+                )
+            )
+        }
     }, [currentTask, boardMembers])
-    function onEditTask(memberId) {
-        const newTaskMemberIds = [...currentTask.idMembers]
+    function onEditTask(memberId: string) {
+        const newTaskMemberIds = currentTask ? [...currentTask.idMembers] : []
 
         newTaskMemberIds.splice(newTaskMemberIds.indexOf(memberId), 1)
-
-        editTask({ ...currentTask, idMembers: newTaskMemberIds })
+        if (currentTask) {
+            editTask({ ...currentTask, idMembers: newTaskMemberIds })
+        }
     }
 
     return (
@@ -50,14 +63,12 @@ export function TaskDetailsMembers({ currentTask, editTask }) {
                     />
                 ))}
                 <ManageMembersPopover
-                    editTask={editTask}
                     anchorEl={
                         <button className="add-members-btn">
                             <PlusOutlined />
                         </button>
                     }
                     task={currentTask}
-                    taskMemberIds={currentTask.idMembers}
                 />
             </article>
         </section>

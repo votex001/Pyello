@@ -5,11 +5,24 @@ import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { UserAvatar } from "../UserAvatar"
 import { WorkspaceProfileMenu } from "./WorkspaceProfileMenu"
+import { RootState } from "../../store/store"
 
-export function WorkspaceHeader({ bgColor, userName, setDarkMode, darkMode }) {
+interface WorkspaceHeaderProps {
+    bgColor: string
+    userName?: string
+    setDarkMode: (string: "light" | "dark" | "default") => void
+    darkMode: "light" | "dark" | "default" | ""
+}
+
+export function WorkspaceHeader({
+    bgColor,
+    userName,
+    setDarkMode,
+    darkMode,
+}: WorkspaceHeaderProps) {
     const navigate = useNavigate()
-    const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const board = useSelector((state: RootState) => state.boardModule.board)
 
     const dynamicIconColor =
         board?.prefs?.backgroundBrightness === "dark" ? "#fff" : "#42526E"
@@ -86,12 +99,11 @@ export function WorkspaceHeader({ bgColor, userName, setDarkMode, darkMode }) {
             </nav>
             <section>
                 <WorkspaceProfileMenu
-                    user={user}
                     darkMode={darkMode}
                     setDarkMode={setDarkMode}
                     anchorEl={
                         <button className="user-avatar">
-                            <UserAvatar memberProp={user} size={28} />
+                            <UserAvatar user={user} size={28} />
                         </button>
                     }
                 />

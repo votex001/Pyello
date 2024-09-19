@@ -5,27 +5,38 @@ import themeDark from "/img/workspace/theme-dark.svg"
 import themeDefault from "/img/workspace/theme-default.svg"
 import { useSelector } from "react-redux"
 import { editUser } from "../../store/actions/user.actions"
+import { RootState } from "../../store/store"
 
-export function WorkspaceThemePopover({ anchorEl, setDarkMode, darkMode }) {
-    const user = useSelector((state) => state.userModule.user)
+interface WorkspaceThemePopoverProps {
+    anchorEl: React.ReactNode
+    setDarkMode: (string: "light" | "dark" | "default") => void
+    darkMode: "light" | "dark" | "default" | ""
+}
+
+export function WorkspaceThemePopover({
+    anchorEl,
+    setDarkMode,
+    darkMode,
+}: WorkspaceThemePopoverProps) {
+    const user = useSelector((state: RootState) => state.userModule.user)
     const [isOpen, setIsOpen] = useState(false)
-    const [selectedOption, setSelectedOption] = useState()
+    const [selectedOption, setSelectedOption] = useState("")
 
-    function onClose() {
-        setIsOpen(false)
-    }
-    const handleRadioChange = (e) => {
+    const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedOption(e.target.value)
     }
     useEffect(() => {
         if (selectedOption) {
             if (selectedOption === "light") {
+                if (!user) return
                 editUser({ ...user, darkMode: "light" })
                 setDarkMode("light")
             } else if (selectedOption === "dark") {
+                if (!user) return
                 editUser({ ...user, darkMode: "dark" })
                 setDarkMode("dark")
             } else if (selectedOption === "default") {
+                if (!user) return
                 editUser({ ...user, darkMode: "default" })
                 setDarkMode("default")
             }
@@ -88,7 +99,6 @@ export function WorkspaceThemePopover({ anchorEl, setDarkMode, darkMode }) {
             trigger="click"
             placement="leftTop"
             open={isOpen}
-            close={onClose}
             onOpenChange={setIsOpen}
             arrow={false}
             content={

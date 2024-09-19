@@ -5,19 +5,34 @@ import { StarBoardBtn } from "../CustomCpms/StarBoardBtn"
 import { AddBoardPopover } from "./AddBoardPopover"
 import { CloseBoardPopover } from "./CloseBoardPopover"
 
+interface WorkspaceMenuProps {
+    boardsInfo?: {
+        id?: string
+        name: string
+        closed: boolean
+        coverImg: string | null
+    }[]
+    selectedBoardId: string
+    starredBoardIds: string[]
+    onStarClick: (id: string) => void
+    colorTheme?: string
+    closeBoard: (id: string) => void
+    leaveBoard: (id: string) => void
+}
+
 export function WorkspaceMenu({
     boardsInfo,
     selectedBoardId,
     starredBoardIds,
     onStarClick,
-    onAddBoard,
     colorTheme,
     closeBoard,
     leaveBoard,
-}) {
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [hoveredBoardId, setHoveredBoardId] = useState(null)
-    const [selectedBoardOptionsId, setSelectedBoardOptionsId] = useState(null)
+}: WorkspaceMenuProps) {
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [hoveredBoardId, setHoveredBoardId] = useState<string>("")
+    const [selectedBoardOptionsId, setSelectedBoardOptionsId] =
+        useState<string>("")
 
     useEffect(() => {
         const root = document.documentElement
@@ -28,14 +43,13 @@ export function WorkspaceMenu({
         root.style.setProperty("--dynamic-text", dynamicTextColor)
         root.style.setProperty("--dynamic-light-decrease", dynamicLightDecrease)
     }, [colorTheme])
-    // const bgTextColor = colorTheme === "dark" ? "#fff" : "#000";
     const navigate = useNavigate()
 
-    function onSelectBoard(boardId) {
+    function onSelectBoard(boardId: string) {
         navigate(`/b/${boardId}`, { replace: true })
     }
 
-    function onSelectBoardOptions(boardId) {
+    function onSelectBoardOptions(boardId: string) {
         setSelectedBoardOptionsId(boardId)
     }
 
@@ -101,14 +115,11 @@ export function WorkspaceMenu({
                                 </span>
                             </p>
                         </article>
-                        {/* <h3>Workspace views</h3>
-                        <p>Table</p>
-                        <p>Calendar</p> */}
+
                         <article className="workspace-menu-boards">
                             <header className="workspace-menu-boards-header">
                                 <h3>Your Boards</h3>
                                 <AddBoardPopover
-                                    onAddBoard={onAddBoard}
                                     anchorEl={
                                         <SvgButton
                                             className="board-add-btn"
@@ -118,12 +129,12 @@ export function WorkspaceMenu({
                                 />
                             </header>
                             {boardsInfo
-                                .sort((a, b) => {
+                                ?.sort((a, b) => {
                                     const aIsStarred = starredBoardIds.includes(
-                                        a.id
+                                        a.id!
                                     )
                                     const bIsStarred = starredBoardIds.includes(
-                                        b.id
+                                        b.id!
                                     )
 
                                     if (aIsStarred && !bIsStarred) return -1
@@ -139,19 +150,21 @@ export function WorkspaceMenu({
                                                 : ""
                                         }`}
                                         key={board.id}
-                                        onClick={() => onSelectBoard(board.id)}
+                                        onClick={() => onSelectBoard(board.id!)}
                                         onMouseEnter={() =>
-                                            setHoveredBoardId(board.id)
+                                            setHoveredBoardId(board.id!)
                                         }
                                         onMouseLeave={() =>
-                                            setHoveredBoardId(null)
+                                            setHoveredBoardId("")
                                         }
                                     >
-                                        <img
-                                            className="board-cover-img"
-                                            src={board.coverImg}
-                                            alt="board cover"
-                                        />
+                                        {board.coverImg && (
+                                            <img
+                                                className="board-cover-img"
+                                                src={board.coverImg}
+                                                alt="board cover"
+                                            />
+                                        )}
                                         <p className="board-name">
                                             {board.name}
                                         </p>
@@ -171,7 +184,7 @@ export function WorkspaceMenu({
                                             )}
                                             {(selectedBoardId === board.id ||
                                                 starredBoardIds.includes(
-                                                    board.id
+                                                    board.id!
                                                 ) ||
                                                 hoveredBoardId ===
                                                     board.id) && (
@@ -191,14 +204,5 @@ export function WorkspaceMenu({
                 </section>
             )}
         </aside>
-    )
-}
-
-const AddBoardBtn = () => {
-    return (
-        <article className="board-tab-add">
-            <p>Create new board</p>
-            <p>{10 - boards.length} remaining</p>
-        </article>
     )
 }

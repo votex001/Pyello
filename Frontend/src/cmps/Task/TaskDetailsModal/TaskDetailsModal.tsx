@@ -17,41 +17,52 @@ import { TaskDetailsMarkdown } from "./TaskDetailsMarkdown"
 import { NameInput } from "../../CustomCpms/NameInput"
 import { TaskDetailsCheckList } from "./TaskDetailsCheckList"
 import { TaskDetailsDates } from "./TaskDetailsDates"
-import { editTask, updateBoard } from "../../../store/actions/board.actions"
+import { addTask, editTask } from "../../../store/actions/board.actions"
 import { TaskDetailsAttachment } from "./TaskDetailsAttachment"
 import { ManageAttachmentsPopover } from "../ManageTaskPopovers/ManageAttachmentsPopover"
 import { useDocumentTitle } from "../../../customHooks/useDocumentTitle"
+import { RootState } from "../../../store/store"
+import {
+    Activity,
+    JoinTaskActivity,
+    RemoveCheckListActivity,
+} from "../../../models/activities.models"
+import { CheckList } from "../../../models/task&groups.models"
+
+interface TaskDetailsModalProps {
+    taskId: string
+    onCloseTask: () => void
+}
+
 export function TaskDetailsModal({
     taskId,
-    labelActions,
     onCloseTask,
-    addTask,
-    board,
-    editBoard,
-}) {
-    const group = useSelector((state) =>
-        state.boardModule.board.groups?.find((g) =>
+}: TaskDetailsModalProps) {
+    const group = useSelector((state: RootState) =>
+        state.boardModule.board?.groups.find((g) =>
             g.tasks?.find((t) => t.id === taskId)
         )
     )
-    const task = useSelector((state) =>
-        state.boardModule.board.groups
+    const task = useSelector((state: RootState) =>
+        state.boardModule.board?.groups
             ?.find((g) => g.tasks?.find((t) => t.id === taskId))
             ?.tasks.find((t) => t.id === taskId)
     )
+    const board = useSelector((state: RootState) => state.boardModule.board)
     useDocumentTitle(`${task?.name} on ${board?.name} | Pyello`)
-    const [openedInputId, setOpenedInputId] = useState(null)
+    const [openedInputId, setOpenedInputId] = useState("")
 
-    const user = useSelector((state) => state.userModule.user)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const navigate = useNavigate()
 
-    const isMember = task?.idMembers?.includes(user?.id)
-    const hasMembers = task?.idMembers?.length > 0
+    const isMember = user ? task?.idMembers?.includes(user?.id) : null
+    const hasMembers = task ? task?.idMembers?.length > 0 : null
     const isImgCover = task?.cover?.attachment
     const isColorCover = task?.cover?.color
     const isNoCover = !task?.cover?.attachment && !task?.cover?.color
 
     async function onJoin() {
+        if (!task || !user) return
         const newActivity = utilService.createActivity(
             {
                 type: "joinTask",
@@ -59,7 +70,7 @@ export function TaskDetailsModal({
                 targetName: task.name,
             },
             user
-        )
+        ) as JoinTaskActivity
 
         await editTask(
             {
@@ -70,14 +81,14 @@ export function TaskDetailsModal({
         )
     }
 
-    function onClose(e) {
+    function onClose(e: any) {
         if (e.key === "Escape") return
         onCloseTask()
-        navigate(`/b/${task.idBoard}`, { replace: true })
+        navigate(`/b/${task?.idBoard}`, { replace: true })
     }
 
-    function onRenameTask(name) {
-        editTask({ ...task, name })
+    function onRenameTask(name: string) {
+        if (task) editTask({ ...task, name })
     }
 
     if (!task) {
@@ -113,34 +124,12 @@ export function TaskDetailsModal({
                                 label="Cover"
                             />
                         }
-                        editTask={editTask}
                         task={task}
                     />
                 </div>
             </article>
         </section>
     )
-    // const colorCoverHeader = (
-    //   <section
-    //     className={`details-header-color-cover`}
-    //     style={{
-    //       backgroundColor: utilService.getColorHashByName(task.cover.color)
-    //         ?.bgColor,
-    //     }}
-    //   >
-    //     <article className={`details-header-cover-actions-wrapper`}>
-    //       <div style={{ position: "relative", display: "inline-block" }}>
-    //         <ManageCoverPopover
-    //           anchorEl={
-    //             <SvgButton src={coverIcon} className="cover-btn" label="Cover" />
-    //           }
-    //           editTask={editTask}
-    //           task={task}
-    //         />
-    //       </div>
-    //     </article>
-    //   </section>
-    // );
 
     const imgCoverHeader = (
         <section
@@ -164,7 +153,6 @@ export function TaskDetailsModal({
                                 label="Cover"
                             />
                         }
-                        editTask={editTask}
                         task={task}
                     />
                 </div>
@@ -173,7 +161,8 @@ export function TaskDetailsModal({
     )
 
     // checkList functions
-    function changeCheckList(checkListId, changes) {
+    function changeCheckList(checkListId: string, changes: Partial<CheckList>) {
+        if (!task) return
         const updatedTask = {
             ...task,
             checkLists: task.checkLists.map((c) =>
@@ -182,8 +171,13 @@ export function TaskDetailsModal({
         }
         editTask(updatedTask)
     }
-
-    async function changeItem(checkListId, itemId, changes, activity) {
+    async function changeItem(
+        checkListId: string,
+        itemId: string,
+        changes: Partial<CheckList>,
+        activity: Activity
+    ) {
+        if (!task) return
         const updatedTask = {
             ...task,
             checkLists: task.checkLists.map((c) =>
@@ -200,36 +194,27 @@ export function TaskDetailsModal({
         editTask(updatedTask, activity)
     }
 
-    async function deleteList(checkList) {
+    async function deleteList(checkList: CheckList) {
+        if (!task || !user) return
         const newActivity = utilService.createActivity(
             {
                 type: "removeCheckList",
                 targetId: task.id,
                 targetName: task.name,
-                checklistName: checkList.name,
+                checklistName: checkList.label,
             },
             user
-        )
+        ) as RemoveCheckListActivity
         const newTask = {
             ...task,
             checkLists: task.checkLists.filter((c) => c.id !== checkList.id),
         }
 
-        if (!newTask.checkLists.length) {
-            const newCheckListTaskIds = board.checkListTaskIds.filter(
-                (i) => i !== task.id
-            )
-
-            await editBoard({
-                ...board,
-                checkListTaskIds: newCheckListTaskIds,
-                activities: [...board?.activities, newActivity],
-            })
-        }
-        await editTask(newTask)
+        await editTask(newTask, newActivity)
     }
 
-    function deleteItem(listId, itemId) {
+    function deleteItem(listId: string, itemId: string) {
+        if (!task) return
         const newTask = {
             ...task,
             checkLists: task.checkLists.map((c) =>
@@ -246,22 +231,26 @@ export function TaskDetailsModal({
         editTask(newTask)
     }
 
-    async function createAsTask(name) {
-        let maxPos = group.tasks.reduce(
+    async function createAsTask(name: string) {
+        if (!task || !user || !group || !board) return
+        let maxPos = group?.tasks.reduce(
             (max, item) => (item.pos > max ? item.pos : max),
             0
         )
         maxPos
         const newTask = {
+            ...task,
             name,
-            pos: maxPos + 1000,
-            groupId: task.idGroup,
-            idBoard: task.idBoard,
+            pos: maxPos || 0 + 1000,
+            groupId: task?.idGroup,
+            idBoard: task?.idBoard,
+            addToTop: false,
         }
 
-        await addTask(newTask, user, group)
+        await addTask(newTask, user, group, 0, board)
     }
-    function onSetOpenId(id) {
+
+    function onSetOpenId(id: string) {
         setOpenedInputId(id)
     }
 
@@ -289,7 +278,7 @@ export function TaskDetailsModal({
                         value={task.name}
                         maxRows={5}
                         expandInputWidth={false}
-                        maxLength={null}
+                        maxLength={0}
                         onSubmit={onRenameTask}
                     />
                     <span className="task-group">
@@ -299,7 +288,6 @@ export function TaskDetailsModal({
                             anchorEl={
                                 <a className="group-link">{group?.name}</a>
                             }
-                            onCloseTask={onCloseTask}
                         />
                     </span>
                 </span>
@@ -309,27 +297,16 @@ export function TaskDetailsModal({
                 <section className="details-body__left">
                     <article className="subsection wrap-section">
                         {hasMembers && (
-                            <TaskDetailsMembers
-                                currentTask={task}
-                                editTask={editTask}
-                            />
+                            <TaskDetailsMembers currentTask={task} />
                         )}
                         {task?.idLabels?.length > 0 && (
-                            <TaskDetailsLabels
-                                task={task}
-                                editTask={editTask}
-                                labelActions={labelActions}
-                            />
+                            <TaskDetailsLabels task={task} />
                         )}
                         {(task.start || task.due) && (
-                            <TaskDetailsDates
-                                task={task}
-                                editTask={editTask}
-                                editBoard={editBoard}
-                            />
+                            <TaskDetailsDates task={task} />
                         )}
                     </article>
-                    <TaskDetailsMarkdown editTask={editTask} task={task} />
+                    <TaskDetailsMarkdown task={task} />
                     {task?.checkLists?.length > 0 &&
                         task?.checkLists
                             ?.sort((a, b) => a.pos - b.pos)
@@ -345,7 +322,6 @@ export function TaskDetailsModal({
                                     createAsTask={createAsTask}
                                     openedInputId={openedInputId}
                                     setOpenedInputId={onSetOpenId}
-                                    editBoard={editBoard}
                                 />
                             ))}
                     {task?.attachments?.length > 0 && (
@@ -359,22 +335,18 @@ export function TaskDetailsModal({
                                 <h3 className="section-title">Attachments</h3>
                                 <ManageAttachmentsPopover
                                     task={task}
-                                    editTask={editTask}
                                     anchorEl={
                                         <button className="add-attachment-btn">
                                             Add
                                         </button>
                                     }
-                                    editBoard={editBoard}
                                 />
                             </header>
                             {task?.attachments.map((attachment) => (
                                 <TaskDetailsAttachment
                                     key={attachment.id}
                                     attachment={attachment}
-                                    editTask={editTask}
                                     task={task}
-                                    editBoard={editBoard}
                                 />
                             ))}
                         </section>
@@ -393,18 +365,8 @@ export function TaskDetailsModal({
                             </button>
                         </article>
                     )}
-                    <TaskDetailsAddToCard
-                        task={task}
-                        editTask={editTask}
-                        labelActions={labelActions}
-                        editBoard={editBoard}
-                        isNoCover={isNoCover}
-                    />
-                    <TaskDetailsActions
-                        task={task}
-                        editTask={editTask}
-                        onClose={onClose}
-                    />
+                    <TaskDetailsAddToCard task={task} isNoCover={isNoCover} />
+                    <TaskDetailsActions task={task} />
                 </section>
             </main>
         </Modal>

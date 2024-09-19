@@ -5,21 +5,27 @@ import { useState } from "react"
 import { utilService } from "../../../services/util.service"
 import { useSelector } from "react-redux"
 import { Image } from "antd"
+import { attachment, Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import { editTask, updateBoard } from "../../../store/actions/board.actions"
+import { RemoveAttachmentActivity } from "../../../models/activities.models"
+
+interface TaskDetailsAttachmentProps {
+    attachment: attachment
+    task?: Task
+}
 
 export function TaskDetailsAttachment({
     attachment,
-    editTask,
     task,
-    editBoard,
-}) {
+}: TaskDetailsAttachmentProps) {
     const [previewVisible, setPreviewVisible] = useState(false)
-    const user = useSelector((state) => state.userModule.user)
-    const board = useSelector((state) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const board = useSelector((state: RootState) => state.boardModule.board)
     const { link, text } = attachment
 
     const isCover = task?.cover?.attachment?.id === attachment.id
-
-    function onDownload(e) {
+    function onDownload(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault()
         e.stopPropagation()
 
@@ -44,24 +50,25 @@ export function TaskDetailsAttachment({
     }
 
     async function onDelete() {
+        if (!task || !board || !user) return
         const newActivity = utilService.createActivity(
             {
                 type: "removeAttachment",
                 targetId: task.id,
                 targetName: task.name,
-                attachmentLink: link,
+                attachment: link,
                 attachmentName: text,
             },
-            user,
-        )
-        await editBoard({
+            user
+        ) as RemoveAttachmentActivity
+        await updateBoard({
             ...board,
             activities: [...board?.activities, newActivity],
         })
         const newTask = {
             ...task,
             attachments: task?.attachments?.filter(
-                (att) => att.id !== attachment.id,
+                (att) => att.id !== attachment.id
             ),
         }
         if (isCover) {
@@ -73,19 +80,24 @@ export function TaskDetailsAttachment({
         editTask(newTask)
     }
 
-    function onEdit(newAttachment) {
-        editTask({
-            ...task,
-            attachments: task?.attachments?.map((att) =>
-                att.id === attachment.id ? newAttachment : att,
-            ),
-        })
+    function onEdit(newAttachment: attachment) {
+        if (task) {
+            editTask({
+                ...task,
+                attachments: task?.attachments?.map((att) =>
+                    att.id === attachment.id ? newAttachment : att
+                ),
+            })
+        }
     }
 
-    function onClickAttachment(e) {
+    function onClickAttachment(e: React.MouseEvent<HTMLElement>) {
         e.stopPropagation()
 
-        if (e.target.classList.contains("attachment-action")) {
+        if (
+            e.target instanceof Element &&
+            e.target.classList.contains("attachment-action")
+        ) {
             return
         }
 
@@ -96,7 +108,7 @@ export function TaskDetailsAttachment({
         }
     }
 
-    function onMakeCover(e) {
+    function onMakeCover(e: React.MouseEvent<HTMLElement>) {
         e.stopPropagation()
 
         const coverSize = task?.cover?.size || "normal"
@@ -109,10 +121,10 @@ export function TaskDetailsAttachment({
                     size: coverSize,
                 },
                 attachments: task?.attachments?.map((att) =>
-                    att.id === attachment.id ? { ...att, isCover: false } : att,
+                    att.id === attachment.id ? { ...att, isCover: false } : att
                 ),
             })
-        } else {
+        } else if (task) {
             editTask({
                 ...task,
                 cover: {
@@ -122,7 +134,7 @@ export function TaskDetailsAttachment({
                     size: coverSize,
                 },
                 attachments: task?.attachments?.map((att) =>
-                    att.id === attachment.id ? { ...att, isCover: true } : att,
+                    att.id === attachment.id ? { ...att, isCover: true } : att
                 ),
             })
         }
@@ -190,7 +202,7 @@ export function TaskDetailsAttachment({
                     {!isLink && (
                         <>
                             <a
-                                href={attachment.url}
+                                href={attachment.link}
                                 className="attachment-action"
                                 onClick={onDownload}
                             >
@@ -208,8 +220,6 @@ export function TaskDetailsAttachment({
                                     ? "Remove attachment?"
                                     : "Delete attachment?"
                             }
-                            onClose={() => {}}
-                            backToList={() => {}}
                             onDelete={onDelete}
                             anchorEl={
                                 <label className="attachment-action">
@@ -243,8 +253,10 @@ export function TaskDetailsAttachment({
         </section>
     )
 }
-
-function createdAtFormatter({ createdAt }) {
+interface createdAtFormatterProps {
+    createdAt: string
+}
+function createdAtFormatter({ createdAt }: createdAtFormatterProps) {
     const now = dayjs()
     const date = dayjs(createdAt)
     const diffSeconds = now.diff(date, "second")

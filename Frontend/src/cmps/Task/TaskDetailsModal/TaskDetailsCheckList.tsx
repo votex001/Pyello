@@ -4,12 +4,35 @@ import { NameInput } from "../../CustomCpms/NameInput"
 import checkListIcon from "/img/board-index/detailsImgs/checkListIcon.svg"
 import { ReactSVG } from "react-svg"
 import { Progress } from "antd"
-import TextArea from "antd/es/input/TextArea"
 import { utilService } from "../../../services/util.service"
 import { EllipsisOutlined } from "@ant-design/icons"
 import { MoreActionsItemPopover } from "../ManageTaskPopovers/MoreActionsItemPopover"
-import { EmojiPopover } from "../ManageTaskPopovers/EmojiPopover"
 import { useSelector } from "react-redux"
+import { CheckItem, CheckList, Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import {
+    Activity,
+    CheckedItemInCheckListActivity,
+    IncompleteItemInCheckListActivity,
+} from "../../../models/activities.models"
+
+interface TaskDetailsCheckListProps {
+    checkList: CheckList
+    changeCheckList: (id: string, changes: Partial<CheckList>) => void
+    changeItem: (
+        checkListId: string,
+        itemId: string,
+        changes: Partial<CheckList>,
+        activity: Activity
+    ) => void
+    deleteList: (checkList: CheckList) => void
+    deleteItem: (checkListId: string, itemId: string) => void
+    createAsTask: (itemName: string) => void
+    setOpenedInputId: (id: string) => void
+    openedInputId: string
+    task?: Task
+}
+
 export function TaskDetailsCheckList({
     checkList,
     changeCheckList,
@@ -20,18 +43,16 @@ export function TaskDetailsCheckList({
     setOpenedInputId,
     openedInputId,
     task,
-    editBoard,
-}) {
+}: TaskDetailsCheckListProps) {
     const [checkedCount, setCheckedCount] = useState({
         checked: 0,
         all: checkList.checkItems.length,
     })
     const [onAdd, setOnAdd] = useState(false)
     const [hideChecked, setHideCHecked] = useState(false)
-    const [checkItems, setCheckItems] = useState([])
+    const [checkItems, setCheckItems] = useState<CheckItem[]>([])
     const [isChangingTitle, setIsChangingTitle] = useState(false)
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const [inputIsOpen, setInputIsOpen] = useState(false)
 
     useEffect(() => {
@@ -68,28 +89,28 @@ export function TaskDetailsCheckList({
         }
     }, [onAdd, openedInputId])
 
-    async function onChangeCheckListLabel(newName) {
+    async function onChangeCheckListLabel(newName: string) {
         changeCheckList(checkList.id, { label: newName })
     }
 
-    async function onChangeItem(item, changes) {
+    async function onChangeItem(item: CheckItem, changes: Partial<CheckItem>) {
+        if (!task || !user) return
         const newActivity = utilService.createActivity(
             {
+                type: changes.isChecked
+                    ? "checkedItemInCheckList"
+                    : "incompleteItemInCheckList",
                 targetId: task.id,
                 targetName: task.name,
                 itemName: item.label,
             },
             user
-        )
-        if (changes.isChecked) {
-            newActivity.type = "checkedItemInCheckList"
-        } else {
-            newActivity.type = "incompleteItemInCheckList"
-        }
+        ) as CheckedItemInCheckListActivity | IncompleteItemInCheckListActivity
+
         await changeItem(checkList.id, item.id, changes, newActivity)
     }
 
-    function onAddNewItem(label) {
+    function onAddNewItem(label: string) {
         if (label.trim() === "") {
             setOnAdd(false)
             return
@@ -114,13 +135,15 @@ export function TaskDetailsCheckList({
     function onDeleteList() {
         deleteList(checkList)
     }
-    function onDeleteItem(itemId) {
+    function onDeleteItem(itemId: string) {
         deleteItem(checkList.id, itemId)
     }
-    async function onConvertToTask(itemId, itemName) {
+    async function onConvertToTask(itemId: string, itemName: string) {
         await createAsTask(itemName)
         deleteItem(checkList.id, itemId)
     }
+    const percentage = (checkedCount.checked / checkedCount.all) * 100
+    const roundedPercentage = Number(percentage.toFixed(0)) || 0
 
     return (
         <section className="task-details-checklist">
@@ -178,15 +201,9 @@ export function TaskDetailsCheckList({
                 }
                 percentPosition={{ align: "start", type: "outer" }}
                 className={`progres-bar ${
-                    ((checkedCount.checked / checkedCount.all) * 100).toFixed(
-                        0
-                    ) >= 100
-                        ? "completed"
-                        : ""
+                    roundedPercentage >= 100 ? "completed" : ""
                 }`}
-                format={(percent, successPercent) =>
-                    (successPercent = `${percent}%`)
-                }
+                format={(percent, successPercent) => `${percent}%`}
             />
             <ul className="task-details-list">
                 <MoreActionsItemPopover />
@@ -217,7 +234,7 @@ export function TaskDetailsCheckList({
                                         setInputIsOpen(false)
                                     }
                                 }}
-                                onCloseInput={() => setOpenedInputId(null)}
+                                onCloseInput={() => setOpenedInputId("")}
                                 inputIsOpen={openedInputId === item.id}
                                 onSubmit={(label) =>
                                     onChangeItem(item, { label })

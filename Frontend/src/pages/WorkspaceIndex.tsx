@@ -21,11 +21,16 @@ import { utilService } from "../services/util.service"
 import { ErrorPage } from "./ErrorPage"
 import { socketService } from "../services/socket.service"
 import { setSessionStorage, getSessionStorage } from "../services/local.service"
+import { RootState } from "../store/store"
+import { Board } from "../models/board.models"
+import { CloseBoardActivity } from "../models/activities.models"
 
 export function WorkspaceIndex() {
-    const user = useSelector((state) => state.userModule.user)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const [isLoaded, setIsLoaded] = useState(true)
-    const boardsInfo = useSelector((state) => state.workspaceModule.boards)
+    const boardsInfo = useSelector(
+        (state: RootState) => state.workspaceModule.boards
+    )
         ?.filter((b) => user && b?.members?.some((m) => m.id === user.id))
         .filter((b) => !b.closed)
         .map((b) => ({
@@ -34,15 +39,21 @@ export function WorkspaceIndex() {
             closed: b.closed,
             coverImg: b.prefs.backgroundImage,
         }))
-    const boards = useSelector((state) => state.workspaceModule.boards)
-    const board = useSelector((state) => state.boardModule.board)
-    const boardBgPrefs = useSelector((state) => state.boardModule.board)?.prefs
+    const boards = useSelector(
+        (state: RootState) => state.workspaceModule.boards
+    )
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const boardBgPrefs = useSelector(
+        (state: RootState) => state.boardModule.board
+    )?.prefs
 
-    const [selectedBoardId, setSelectedBoardId] = useState(null)
-    const [starredBoardIds, setStarredBoardIds] = useState([])
+    const [selectedBoardId, setSelectedBoardId] = useState<string>("")
+    const [starredBoardIds, setStarredBoardIds] = useState<string[]>([])
     const [wrongInviteLink, setWrongInviteLink] = useState(false)
     const [isUserBoards, setIsUserBoards] = useState(false)
-    const [darkMode, setDarkMode] = useState()
+    const [darkMode, setDarkMode] = useState<"light" | "dark" | "default" | "">(
+        ""
+    )
     const [openBoardMenu, setOpenBoardMenu] = useState(false)
     const [showBtn, setShowBtn] = useState(false)
 
@@ -83,7 +94,7 @@ export function WorkspaceIndex() {
 
     useEffect(() => {
         if (user) {
-            setDarkMode(user.darkMode)
+            setDarkMode(user?.darkMode)
             setSessionStorage("userId", user.id)
         }
     }, [user])
@@ -103,11 +114,17 @@ export function WorkspaceIndex() {
         }
         if (params.cardId) {
             setIsLoaded(false)
-            const boardId = await loadBoardByTaskId(params.cardId)
-            setSelectedBoardId(boardId)
-            setIsUserBoards(false)
-            viewBoard(boardId)
-            setIsLoaded(true)
+            try {
+                const boardId = await loadBoardByTaskId(params.cardId)
+                if (!boardId) throw `Can't find board with id ${params.cardId}`
+                setSelectedBoardId(boardId)
+                setIsUserBoards(false)
+                viewBoard(boardId)
+                setIsLoaded(true)
+            } catch (e) {
+                console.log(e)
+                throw e
+            }
         }
     }
 
@@ -115,7 +132,7 @@ export function WorkspaceIndex() {
     //Make sure that changes dont break navigation
     useEffect(() => {
         if (!params.boardId && !params.cardId && user && !isUserBoards) {
-            setSelectedBoardId(null)
+            setSelectedBoardId("")
         }
     }, [params, user, isUserBoards])
 
@@ -139,11 +156,11 @@ export function WorkspaceIndex() {
     }
 
     useEffect(() => {
-        setStarredBoardIds(user?.starredBoardIds)
+        if (user) setStarredBoardIds(user?.starredBoardIds)
     }, [user])
 
     useEffect(() => {
-        if (params.link && params.link !== board.invLink) {
+        if (params.link && params.link !== board?.invLink) {
             setWrongInviteLink(true)
         } else {
             setWrongInviteLink(false)
@@ -153,22 +170,23 @@ export function WorkspaceIndex() {
     useEffect(() => {
         // Update <html> class based on darkMode state
         if (darkMode === "dark") {
-            document.querySelector("html").classList.add("dark")
+            document.querySelector("html")?.classList.add("dark")
         } else if (darkMode === "light") {
-            document.querySelector("html").classList.remove("dark")
+            document.querySelector("html")?.classList.remove("dark")
         }
         if (darkMode === "default") {
             if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                document.querySelector("html").classList.add("dark")
+                document.querySelector("html")?.classList.add("dark")
             } else if (
                 !window.matchMedia("(prefers-color-scheme: dark)").matches
             ) {
-                document.querySelector("html").classList.remove("dark")
+                document.querySelector("html")?.classList.remove("dark")
             }
         }
     }, [darkMode])
 
-    function onStarClick(boardId) {
+    function onStarClick(boardId: string) {
+        if (!user) return
         const isStarred = user?.starredBoardIds.includes(boardId)
         const starredBoardIds = isStarred
             ? user.starredBoardIds.filter((id) => id !== boardId)
@@ -176,20 +194,21 @@ export function WorkspaceIndex() {
         editUser({ ...user, starredBoardIds })
     }
 
-    async function onAddBoard(board) {
+    async function onAddBoard(board: Board) {
         const boardId = await createBoard(board)
         navigate(`/b/${boardId}`)
     }
 
-    function onCloseBoard(boardId) {
+    function onCloseBoard(boardId: string) {
         console.log("onCloseBoard", boardId)
-        const board = boards.find((b) => b.id === boardId)
+        const board = boards?.find((b) => b.id === boardId)
+        if (!board || !user) return
         const newActivity = utilService.createActivity(
             {
                 type: "closeBoard",
             },
             user
-        )
+        ) as CloseBoardActivity
         if (board) {
             updateBoard({
                 ...board,
@@ -199,12 +218,12 @@ export function WorkspaceIndex() {
         }
     }
 
-    function onLeaveBoard(boardId) {
-        const board = boards.find((b) => b.id === boardId)
+    function onLeaveBoard(boardId: string) {
+        const board = boards?.find((b) => b.id === boardId)
         if (board) {
             updateBoard({
                 ...board,
-                members: board.members.filter((m) => m.id !== user.id),
+                members: board.members.filter((m) => m.id !== user?.id),
             })
         }
     }
@@ -244,7 +263,7 @@ export function WorkspaceIndex() {
                         <section className="workspace-content">
                             {isLoaded && (
                                 <>
-                                    {board.id ? (
+                                    {board?.id ? (
                                         <>
                                             <WorkspaceMenu
                                                 colorTheme={
@@ -253,7 +272,7 @@ export function WorkspaceIndex() {
                                                 boardsInfo={
                                                     user?.isAdmin
                                                         ? boards
-                                                              .filter(
+                                                              ?.filter(
                                                                   (b) =>
                                                                       !b.closed
                                                               )
@@ -274,7 +293,6 @@ export function WorkspaceIndex() {
                                                     starredBoardIds
                                                 }
                                                 onStarClick={onStarClick}
-                                                onAddBoard={onAddBoard}
                                                 closeBoard={onCloseBoard}
                                                 leaveBoard={onLeaveBoard}
                                             />

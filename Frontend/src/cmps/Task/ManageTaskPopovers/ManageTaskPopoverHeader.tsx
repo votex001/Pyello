@@ -2,7 +2,7 @@ import { SvgButton } from "../../CustomCpms/SvgButton"
 
 interface ManageTaskPopoverHeaderProps {
     title: string
-    close: (e: any) => void
+    close: (e: React.MouseEvent<HTMLButtonElement>) => void
     back?: (() => void) | null
 }
 

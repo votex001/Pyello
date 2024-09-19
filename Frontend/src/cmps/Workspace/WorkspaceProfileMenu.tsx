@@ -1,4 +1,3 @@
-import { CloseOutlined } from "@ant-design/icons"
 import { Popover } from "antd"
 import { useState } from "react"
 import { UserAvatar } from "../UserAvatar"
@@ -6,13 +5,22 @@ import { Link } from "react-router-dom"
 import more from "/img/workspace/more.svg"
 import { ReactSVG } from "react-svg"
 import { WorkspaceThemePopover } from "./WorkspaceThemePopover"
+import { useSelector } from "react-redux"
+import { RootState } from "../../store/store"
+
+interface WorkspaceProfileMenuProps {
+    setDarkMode: (string: "light" | "dark" | "default") => void
+    darkMode: "light" | "dark" | "default" | ""
+    anchorEl: React.ReactNode
+}
+
 export function WorkspaceProfileMenu({
     anchorEl,
-    user,
     setDarkMode,
     darkMode,
-}) {
+}: WorkspaceProfileMenuProps) {
     const [isOpen, setIsOpen] = useState(false)
+    const user = useSelector((state: RootState) => state.userModule.user)
 
     function onClose() {
         setIsOpen(false)
@@ -41,7 +49,6 @@ export function WorkspaceProfileMenu({
             trigger="click"
             placement="bottomRight"
             open={isOpen}
-            close={onClose}
             onOpenChange={setIsOpen}
             arrow={false}
             content={
@@ -51,7 +58,7 @@ export function WorkspaceProfileMenu({
                         <section className="profile">
                             <UserAvatar
                                 className="user-avatar"
-                                memberProp={user}
+                                user={user}
                                 size={40}
                             />
                             <div className="names">

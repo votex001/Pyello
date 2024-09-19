@@ -1,3 +1,4 @@
+import { taskCoverImgs } from "../services/Data"
 import { Activity } from "./activities.models"
 import { Group } from "./task&groups.models"
 
@@ -45,7 +46,7 @@ export interface Board {
     name: string
     groups: Group[]
     labels: Label[]
-    coverImgs: any[]
+    coverImgs: taskCoverImgs[]
     activities: Activity[]
     updatedAt: number
     viewedAt: number

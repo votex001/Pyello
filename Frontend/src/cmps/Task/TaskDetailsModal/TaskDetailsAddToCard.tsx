@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import fieldsIcon from "/img/board-index/detailsImgs/fieldsIcon.svg"
 import { ManageDatesPopover } from "../ManageTaskPopovers/ManageDatesPopover"
 import { ManageAttachmentsPopover } from "../ManageTaskPopovers/ManageAttachmentsPopover"
@@ -6,19 +5,17 @@ import { ManageMembersPopover } from "../ManageTaskPopovers/ManageMembersPopover
 import { ManageLabelsPopover } from "../ManageTaskPopovers/ManageLabelsPopover"
 import { ManageCoverPopover } from "../ManageTaskPopovers/ManageCoverPopover"
 import { AddChecklistPopover } from "../ManageTaskPopovers/AddChecklistPopover"
+import { Task } from "../../../models/task&groups.models"
+
+interface TaskDetailsAddToCardProps {
+    task?: Task
+    isNoCover: boolean
+}
 
 export function TaskDetailsAddToCard({
     task,
-    editTask,
-    labelActions,
-    editBoard,
     isNoCover,
-}) {
-    const [isCover, setIsCover] = useState(false)
-    useEffect(() => {
-        setIsCover(task?.cover?.color || task?.cover?.idUploadedBackground)
-    }, [task?.cover?.color, task?.cover?.idUploadedBackground])
-
+}: TaskDetailsAddToCardProps) {
     const addToCard = [
         {
             popover: (
@@ -29,7 +26,6 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Members</label>
                         </button>
                     }
-                    editTask={editTask}
                     task={task}
                 />
             ),
@@ -43,10 +39,7 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Labels</label>
                         </button>
                     }
-                    taskLabels={task?.labels}
-                    editTask={editTask}
                     task={task}
-                    labelActions={labelActions}
                 />
             ),
         },
@@ -59,24 +52,15 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Checklists</label>
                         </label>
                     }
-                    editBoard={editBoard}
                     task={task}
-                    editTask={editTask}
                 />
             ),
         },
         {
             popover: (
                 <ManageDatesPopover
-                    editBoard={editBoard}
                     task={task}
-                    editTask={editTask}
                     anchorEl={
-                        // <SvgButton
-                        //   src={clockIcon}
-                        //   className="floating-button"
-                        //   label="Dates"
-                        // />
                         <button className="details-anchor-btn">
                             <label className="pyello-icon icon-clock " />
                             <label className="btn-label">Dates</label>
@@ -89,8 +73,6 @@ export function TaskDetailsAddToCard({
             popover: (
                 <ManageAttachmentsPopover
                     task={task}
-                    editTask={editTask}
-                    editBoard={editBoard}
                     anchorEl={
                         <button className="details-anchor-btn">
                             <label className="pyello-icon icon-attachment " />
@@ -114,7 +96,6 @@ export function TaskDetailsAddToCard({
                             <label className="btn-label">Cover</label>
                         </button>
                     }
-                    editTask={editTask}
                     task={task}
                     isFullWidth={true}
                 />

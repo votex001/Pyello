@@ -17,7 +17,7 @@ interface UserAvatarProps {
         fullName: string
         imgUrl?: string
     }
-    user?: User
+    user?: User | null
     size?: number
     src?: string
     img?: null | ReactElement

@@ -6,19 +6,22 @@ import { ReactSVG } from "react-svg"
 import atlassian from "/img/atlassianLogo.svg"
 import homeImg from "/img/homeImg.png"
 import { useDocumentTitle } from "../customHooks/useDocumentTitle"
+import { RootState } from "../store/store"
 
 export function HomePage() {
     useDocumentTitle("Manage Your Team’s Projects From Anywhere | Pyello")
-    const user = useSelector((state) => state.userModule.user)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const [email, setEmail] = useState("")
     const navigate = useNavigate()
 
     useEffect(() => {
-        onLogin()
-        document.querySelector("html").classList.remove("dark")
+        if (!user) {
+            onLogin()
+        }
+        document.querySelector("html")?.classList.remove("dark")
     }, [])
 
-    function onSignUp(e) {
+    function onSignUp(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         if (email) {
             navigate(`/signup?login_hint=${email}`)
@@ -30,6 +33,7 @@ export function HomePage() {
         try {
             await login()
         } catch (err) {
+            console.error("Login failed", err)
             throw err
         }
     }

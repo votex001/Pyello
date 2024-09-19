@@ -5,17 +5,24 @@ import {
     MDXEditor,
     BoldItalicUnderlineToggles,
     toolbarPlugin,
+    MDXEditorMethods,
 } from "@mdxeditor/editor"
 import { TaskDetailsSectionHeader } from "./TaskDetailsSectionHeader"
 import { useClickOutside } from "../../../customHooks/useClickOutside"
+import { Task } from "../../../models/task&groups.models"
+import { editTask } from "../../../store/actions/board.actions"
 
-export function TaskDetailsMarkdown({ editTask, task }) {
+interface TaskDetailsMarkdownProps {
+    task?: Task
+}
+
+export function TaskDetailsMarkdown({ task }: TaskDetailsMarkdownProps) {
     const [sectionRef, isEditing, setIsEditing] = useClickOutside(false)
     const [markdown, setMarkdown] = useState("")
-    const ref = useRef(null)
+    const ref = useRef<MDXEditorMethods>(null)
 
     useEffect(() => {
-        setMarkdown(task.desc)
+        setMarkdown(task?.desc || "")
     }, [task])
 
     useEffect(() => {
@@ -24,19 +31,20 @@ export function TaskDetailsMarkdown({ editTask, task }) {
         }
     }, [isEditing])
 
-    const isEmpty = task.desc.trim() === ""
+    const isEmpty = task?.desc.trim() === ""
 
-    function handleChange(value) {
+    function handleChange(value: string) {
         setMarkdown(value)
     }
 
     function onCancel() {
         setIsEditing(false)
-        setMarkdown(task.desc)
+        setMarkdown(task?.desc || "")
     }
 
     function onSave() {
         const isDesc = markdown.trim() !== ""
+        if (!task) return
         const newTask = {
             ...task,
             desc: markdown,
@@ -77,14 +85,13 @@ export function TaskDetailsMarkdown({ editTask, task }) {
                         onClick={() => setIsEditing(true)}
                     >
                         <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-                            {task.desc}
+                            {task?.desc}
                         </ReactMarkdown>
                     </article>
                 )}
                 {isEditing && (
                     <MDXEditor
                         ref={ref}
-                        name="body"
                         className={`markdown-editor ${
                             isEditing ? "focused" : ""
                         }`}

@@ -1,5 +1,5 @@
-import { Popover, Input } from "antd"
-import { useState, useRef } from "react"
+import { Input } from "antd"
+import { useState } from "react"
 import { ManageTaskPopoverHeader } from "../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
 import { utilService } from "../../services/util.service"
 import { CustomSelect } from "../CustomCpms/CustomSelect"
@@ -7,7 +7,10 @@ import privateIcon from "/img/board-index/headerImgs/privateIcon.svg"
 import publicIcon from "/img/board-index/headerImgs/publicIcon.svg"
 import peopleIcon from "/img/board-index/headerImgs/peopleIcon.svg"
 import { ReactSVG } from "react-svg"
-import Popup from "@atlaskit/popup"
+import Popup, { TriggerProps } from "@atlaskit/popup"
+import { useNavigate } from "react-router"
+import { TooltipPlacement } from "antd/es/tooltip"
+import { createBoard } from "../../store/actions/workspace.actions"
 
 const options = [
     {
@@ -25,6 +28,7 @@ const options = [
                 </div>
             </article>
         ),
+        isCurrent: false,
     },
     {
         id: "workspace",
@@ -41,6 +45,7 @@ const options = [
                 </div>
             </article>
         ),
+        isCurrent: true,
     },
     {
         id: "public",
@@ -57,21 +62,51 @@ const options = [
                 </div>
             </article>
         ),
+        isCurrent: false,
     },
 ]
 
-export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
+interface AddBoardPopoverProps {
+    anchorEl: React.ReactNode
+    placement?: TooltipPlacement
+}
+interface BgImg {
+    background: string
+    title: string
+    backgroundColor: string
+    backgroundImage: string
+    backgroundBrightness: string
+    backgroundImageScaled: {
+        width: number
+        height: number
+        url: string
+    }[]
+}
+
+interface BgColor {
+    background: string
+    backgroundColor: string
+    emoji: string
+    backgroundImage: string
+    backgroundBrightness: string
+}
+
+export function AddBoardPopover({
+    anchorEl,
+    placement = "right",
+}: AddBoardPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [boardName, setBoardName] = useState("")
+    const [boardName, setBoardName] = useState<string>("")
     const [focused, setFocused] = useState(false)
-    const [selectedBg, setSelectedBg] = useState(utilService.getBgImgs()[0])
+    const [selectedBg, setSelectedBg] = useState<BgImg | BgColor>(
+        utilService.getBgImgs()[0]
+    )
     const [selectedBgUrl, setSelectedBgUrl] = useState(
         utilService.getBgImgs()[0].backgroundImageScaled[2]?.url
     )
+    const navigate = useNavigate()
 
-    const popoverRef = useRef(null) // Add a ref for the Popover
-
-    function onOpenChange(e) {
+    function onOpenChange(e: boolean) {
         setBoardName("")
         setIsOpen(e)
     }
@@ -80,14 +115,14 @@ export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
         setFocused(true)
     }
 
-    function onBgSelect(background) {
+    function onBgSelect(background: string) {
         const bgImg = utilService
             .getBgImgs()
             .find((bg) => bg.background === background)
         const bgColor = utilService
             .getBgGradientColors()
             .find((bg) => bg.background === background)
-        setSelectedBg(bgImg || bgColor)
+        setSelectedBg(bgImg! || bgColor!)
         if (bgImg) {
             setSelectedBgUrl(bgImg.backgroundImageScaled[2]?.url)
         } else if (bgColor) {
@@ -103,12 +138,11 @@ export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
             name: boardName,
             backgroundData: selectedBg,
         })
-        onAddBoard(newBoard)
+        const boardId = await createBoard(newBoard)
         setBoardName("")
         onOpenChange(false)
+        navigate(`/b/${boardId}`)
     }
-
-    //TODO: add visibility options
 
     const content = (
         <section className="add-board-popover-content">
@@ -176,7 +210,6 @@ export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
             )}
             <p className="title">Visibility</p>
             <CustomSelect
-                className="board-visibility-select"
                 options={options}
                 value="workspace"
                 onSelect={() => {}}
@@ -205,7 +238,7 @@ export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
         setIsOpen((prev) => !prev)
     }
 
-    const trigger = (triggerProps) => {
+    const trigger = (triggerProps: TriggerProps) => {
         return (
             <label
                 {...triggerProps}
@@ -222,7 +255,7 @@ export function AddBoardPopover({ onAddBoard, anchorEl, placement = "right" }) {
             id="add-board-popover-popup"
             isOpen={isOpen}
             onClose={() => setIsOpen(false)}
-            placement={placement}
+            placement={placement as any}
             content={() => content}
             trigger={trigger}
             zIndex={10000}

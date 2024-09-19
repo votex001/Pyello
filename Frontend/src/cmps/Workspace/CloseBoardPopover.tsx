@@ -1,8 +1,16 @@
-import { Popover, Input, Button } from "antd"
-import { useState, useEffect } from "react"
+import { Popover, Button } from "antd"
+import { useState } from "react"
 import { ManageTaskPopoverHeader } from "../Task/ManageTaskPopovers/ManageTaskPopoverHeader"
 import { EllipsisOutlined } from "@ant-design/icons"
 import { ReactSVG } from "react-svg"
+
+interface CloseBoardPopoverProps {
+    boardName: string
+    boardId: string
+    onSelectBoardOptions: (s: string) => void
+    closeBoard: (s: string) => void
+    leaveBoard: (s: string) => void
+}
 
 export function CloseBoardPopover({
     boardName,
@@ -10,41 +18,39 @@ export function CloseBoardPopover({
     onSelectBoardOptions,
     closeBoard,
     leaveBoard,
-}) {
+}: CloseBoardPopoverProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [action, setAction] = useState(null)
-    const [backToList, setBackToList] = useState(null)
+    const [action, setAction] = useState('')
+    const [backToList, setBackToList] = useState<(() => void) | null>(null)
 
-    const cardTitle = "ADD TITLE"
-
-    function onClose(e) {
+    function onClose(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         setIsOpen(false)
-        setAction(null)
+        setAction('')
     }
 
-    function onNextPage(_) {
+    function onNextPage() {
         setBackToList(() => onBackToList)
     }
 
     function onBackToList() {
-        setAction(null)
+        setAction('')
         setBackToList(null)
     }
 
-    function onOpenPopover(e) {
+    function onOpenPopover(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         setIsOpen(true)
         onSelectBoardOptions(boardId)
     }
 
-    function onCloseBoard(e) {
+    function onCloseBoard(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         closeBoard(boardId)
         setIsOpen(false)
     }
 
-    function onLeaveBoard(e) {
+    function onLeaveBoard(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         leaveBoard(boardId)
         setIsOpen(false)
@@ -54,7 +60,6 @@ export function CloseBoardPopover({
             className="close-board-popover"
             trigger="click"
             placement="bottomRight"
-            close={onClose}
             open={isOpen}
             onOpenChange={setIsOpen}
             arrow={false}

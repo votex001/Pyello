@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react"
 import { GroupActionsMenuPopover } from "./GroupActionsMenuPopover"
 import { Input, InputRef } from "antd"
 import { Group } from "../../models/task&groups.models"
-import { User } from "../../models/user.model"
 import { editGroup } from "../../store/actions/board.actions"
 interface BoardGroupHeaderProps {
     draggableProvided: {
@@ -10,19 +9,11 @@ interface BoardGroupHeaderProps {
     }
     group: Group
     openAddTask: () => void
-    archiveGroup: () => void
-    copyGroup: (group: Group) => void
-    moveAllCards: () => void
-    archiveAllCards: (boardId: string, groupId: string, user: User) => void
 }
 export function BoardGroupHeader({
     draggableProvided,
     group,
     openAddTask,
-    archiveGroup,
-    copyGroup,
-    moveAllCards,
-    archiveAllCards,
 }: BoardGroupHeaderProps) {
     const [isEditGroupName, setIsEditGroupName] = useState<boolean>(false)
     const [newGroupName, setNewGroupName] = useState<string>(group.name)
@@ -74,14 +65,7 @@ export function BoardGroupHeader({
                     {group.name}
                 </p>
             )}
-            <GroupActionsMenuPopover
-                openAddTask={openAddTask}
-                archiveGroup={archiveGroup}
-                group={group}
-                copyGroup={copyGroup}
-                moveAllCards={moveAllCards}
-                archiveAllCards={archiveAllCards}
-            />
+            <GroupActionsMenuPopover openAddTask={openAddTask} group={group} />
         </header>
     )
 }

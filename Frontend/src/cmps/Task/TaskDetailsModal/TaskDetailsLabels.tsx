@@ -4,23 +4,29 @@ import { useSelector } from "react-redux"
 import { utilService } from "../../../services/util.service"
 import { useState } from "react"
 import { Tooltip } from "antd"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
 
-export function TaskDetailsLabels({ task, editTask, labelActions }) {
-    const boardLabels = useSelector((state) => state.boardModule.board.labels)
-    const [hoveredLabelId, setHoveredLabelId] = useState(null)
+interface TaskDetailsLabelsProps {
+    task?: Task
+}
+
+export function TaskDetailsLabels({ task }: TaskDetailsLabelsProps) {
+    const boardLabels = useSelector(
+        (state: RootState) => state.boardModule.board?.labels
+    )
+    const [hoveredLabelId, setHoveredLabelId] = useState("")
     return (
         <section className="task-details-labels">
             <p className="sub-title">Labels</p>
 
             <ManageLabelsPopover
-                editTask={editTask}
-                labelActions={labelActions}
                 task={task}
                 anchorEl={
                     <article className="label-list">
                         {boardLabels
                             ?.filter((bLabel) =>
-                                task.idLabels.includes(bLabel.id)
+                                task?.idLabels.includes(bLabel.id)
                             )
                             .map((labelInfo) => {
                                 return (
@@ -46,19 +52,19 @@ export function TaskDetailsLabels({ task, editTask, labelActions }) {
                                                     labelInfo.id
                                                         ? utilService.getColorHashByName(
                                                               labelInfo.color
-                                                          ).hoveredBgColor
+                                                          )?.hoveredBgColor
                                                         : utilService.getColorHashByName(
                                                               labelInfo.color
-                                                          ).bgColor,
+                                                          )?.bgColor,
                                                 color: utilService.getColorHashByName(
                                                     labelInfo.color
-                                                ).lightFontColor,
+                                                )?.lightFontColor,
                                             }}
                                             onMouseEnter={() =>
                                                 setHoveredLabelId(labelInfo.id)
                                             }
                                             onMouseLeave={() =>
-                                                setHoveredLabelId(null)
+                                                setHoveredLabelId("")
                                             }
                                         >
                                             {labelInfo.name}

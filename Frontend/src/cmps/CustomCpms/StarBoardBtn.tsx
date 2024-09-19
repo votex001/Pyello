@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 interface StarBoardBtnProps {
     starredBoardIds?: string[]
     boardId?: string
-    starClick?: (id: string) => void
+    starClick: (id: string) => void
 }
 
 export function StarBoardBtn({

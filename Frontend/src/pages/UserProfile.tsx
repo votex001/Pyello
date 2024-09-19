@@ -6,15 +6,20 @@ import { ErrorPage } from "./ErrorPage"
 import { userService } from "../services/user.service"
 import { Skeleton } from "antd"
 import { MdAddAPhoto } from "react-icons/md"
-import CloudinaryUpload from "../cmps/CloudinaryUpload"
+import CloudinaryUpload, {
+    cloudinaryAttachment,
+} from "../cmps/CloudinaryUpload"
 import { editUser } from "../store/actions/user.actions"
 import { showSuccessMsg } from "../services/event-bus.service"
 import { useDocumentTitle } from "../customHooks/useDocumentTitle"
+import { RootState } from "../store/store"
+import { User } from "../models/user.model"
+
 export function UserProfile() {
     useDocumentTitle(`Profile | Pyello`)
     const params = useParams()
-    const user = useSelector((state) => state.userModule.user)
-    const [currentUser, setCurrentUser] = useState(null)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const [currentUser, setCurrentUser] = useState<User | null>(null)
     const navigate = useNavigate()
     const [isLoaded, setIsLoaded] = useState(false)
 
@@ -38,7 +43,7 @@ export function UserProfile() {
         },
         // { label: "Cards", to: `/u/${user?.username}/cards`, visible: true },
     ]
-    async function getUser(username) {
+    async function getUser(username: string) {
         setIsLoaded(false) // Start loading
 
         try {
@@ -58,8 +63,10 @@ export function UserProfile() {
         }
     }
 
-    function uploadPhoto(data) {
-        editUser({ ...user, imgUrl: data.secure_url })
+    function uploadPhoto(data: cloudinaryAttachment) {
+        if (user) {
+            editUser({ ...user, imgUrl: data.secure_url })
+        }
         showSuccessMsg("Success")
     }
     return (
@@ -69,14 +76,14 @@ export function UserProfile() {
                     {currentUser ? (
                         <section className="user-profile">
                             <header className="header-members-details">
-                                {currentUser.id === user.id ? (
+                                {currentUser.id === user?.id ? (
                                     <CloudinaryUpload
                                         onAttachUrl={uploadPhoto}
                                         anchorEl={
                                             <span className="change-img">
                                                 <UserAvatar
                                                     size={48}
-                                                    memberProp={currentUser}
+                                                    user={currentUser}
                                                     className="img"
                                                 />
                                                 <MdAddAPhoto className="icon" />
@@ -86,7 +93,7 @@ export function UserProfile() {
                                 ) : (
                                     <UserAvatar
                                         size={48}
-                                        memberProp={currentUser}
+                                        user={currentUser}
                                         className="img"
                                     />
                                 )}

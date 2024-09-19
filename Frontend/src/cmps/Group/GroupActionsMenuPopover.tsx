@@ -6,21 +6,17 @@ import TextArea, { TextAreaRef } from "antd/es/input/TextArea"
 import { useSelector } from "react-redux"
 import { Group } from "../../models/task&groups.models"
 import { RootState } from "../../store/store"
-import { User } from "../../models/user.model"
-import { sortGroup } from "../../store/actions/board.actions"
+import {
+    archiveAllCards,
+    archiveGroup,
+    copyGroup,
+    moveAllCards,
+    sortGroup,
+} from "../../store/actions/board.actions"
 
 interface GroupActionsMenuPopoverProps {
     group?: Group
     openAddTask: () => void
-    archiveGroup: () => void
-    copyGroup: (group: Group) => void
-    moveAllCards: (
-        boardId: string,
-        groupId: string,
-        targetGroupId: string,
-        user: User
-    ) => void
-    archiveAllCards: (boardId: string, groupId: string, user: User) => void
 }
 type ActionOptions =
     | "Copy list"
@@ -31,10 +27,6 @@ type ActionOptions =
 export function GroupActionsMenuPopover({
     group,
     openAddTask,
-    archiveGroup,
-    copyGroup,
-    moveAllCards,
-    archiveAllCards,
 }: GroupActionsMenuPopoverProps) {
     const board = useSelector((state: RootState) => state.boardModule.board)
     const user = useSelector((state: RootState) => state.userModule.user)
@@ -63,7 +55,8 @@ export function GroupActionsMenuPopover({
     }
 
     function onArchiveGroup() {
-        archiveGroup()
+        if (!board || !group || !user) return
+        archiveGroup(board.id!, group.id, user)
         setOpenGroupMenu(false)
     }
 
@@ -86,11 +79,12 @@ export function GroupActionsMenuPopover({
     }
 
     function onCopyGroup() {
+        if (!board || !user) return
         setAction(null)
         setBackToList(null)
         setOpenGroupMenu(false)
         if (group && copyListName) {
-            copyGroup({ ...group, name: copyListName })
+            copyGroup(board.id!, { ...group, name: copyListName }, user)
         }
     }
 

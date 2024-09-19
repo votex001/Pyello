@@ -3,39 +3,33 @@ import { useSelector } from "react-redux"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
 import { BoardGroup } from "../cmps/Group/BoardGroup"
 import {
-    addTask,
     addGroup,
-    archiveGroup,
-    editGroup,
-    editTask,
-    editLabel,
-    copyGroup,
-    moveAllCards,
-    archiveAllCards,
     dragGroup,
-    createLabel,
-    deleteLabel,
     updateBoard,
     moveTask,
-    loadBoard,
 } from "../store/actions/board.actions"
 import { editUser, loadWorkspaceUsers } from "../store/actions/user.actions"
 
 import { AddGroupBtn } from "../cmps/Group/AddGroupBtn"
-import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal.jsx"
+import { TaskDetailsModal } from "../cmps/Task/TaskDetailsModal/TaskDetailsModal"
 import { BoardHeader } from "../cmps/BoardHeader/BoardHeader"
 import useScrollByGrab from "../customHooks/useScrollByGrab"
 import { useParams, useOutletContext } from "react-router-dom"
-import { utilService } from "../services/util.service"
 import { useDocumentTitle } from "../customHooks/useDocumentTitle"
+import { RootState } from "../store/store"
 
 export function BoardIndex() {
-    const [selectedTaskId, setSelectedTaskId] = useState(null)
+    const [selectedTaskId, setSelectedTaskId] = useState("")
     const [isDraggingOverId, setIsDraggingOverId] = useState(null)
-    const board = useSelector((state) => state.boardModule.board)
+    const board = useSelector((state: RootState) => state.boardModule.board)
     useDocumentTitle(`${board?.name} | Pyello`)
-    const user = useSelector((state) => state.userModule.user)
-    const outletProps = useOutletContext()
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const outletProps: {
+        setOpenBoardMenu?: React.Dispatch<React.SetStateAction<boolean>>
+        openBoardMenu?: boolean
+        showBtn?: boolean
+        setShowBtn?: React.Dispatch<React.SetStateAction<boolean>>
+    } = useOutletContext()
     const params = useParams()
 
     useEffect(() => {
@@ -84,109 +78,41 @@ export function BoardIndex() {
         }
     }
 
-    async function loadUsers(membersIds) {
+    async function loadUsers(membersIds: string[]) {
         await loadWorkspaceUsers(membersIds)
     }
 
     const { scrollContainerRef, handlers } = useScrollByGrab()
 
-    async function onAddTask(task, group, tasksToSkip) {
-        const newTask = {
-            ...task,
-            idBoard: board.id,
-        }
-        try {
-            await addTask(newTask, user, group, tasksToSkip, board)
-        } catch (error) {
-            console.log("onAddCard", error)
-        }
-    }
-
-    async function onAddGroup(name) {
+    async function onAddGroup(name: string) {
+        if (!board || !user) return
         const group = {
             name: name,
+            idBoard: board?.id!,
+            pos: board.groups.length,
         }
-        const res = await addGroup(group, board.id, user)
-        // console.log("onAddGroup", res);
+        await addGroup(group, board.id!, user)
     }
 
-    async function onArchiveGroup(boardId, groupId) {
-        const res = await archiveGroup(boardId, groupId, user)
-    }
-
-    async function onEditGroup(group) {
-        const res = await editGroup(board.id, group)
-    }
-
-    async function onEditTask(task, activity) {
-        if (task.closed) {
-            const newActivity = utilService.createActivity(
-                {
-                    type: "archiveTask",
-                    targetId: task.id,
-                    targetName: task.name,
-                },
-                user
-            )
-            await updateBoard({
-                ...board,
-                groups: board.groups.map((g) =>
-                    g.id === task.idGroup
-                        ? {
-                              ...g,
-                              tasks: g.tasks.map((t) =>
-                                  t.id === task.id ? task : t
-                              ),
-                          }
-                        : g
-                ),
-                activities: [...board?.activities, newActivity],
-            })
-        } else {
-            const newActivity = utilService.createActivity(activity, user)
-            await editTask(task, newActivity)
-        }
-        loadBoard(board.id)
-    }
-
-    async function onCopyGroup(group) {
-        const res = await copyGroup(board.id, group, user)
-    }
-
-    function onStarToggle(starredIds) {
+    function onStarToggle(starredIds: string[]) {
+        if (!user) return
         editUser({ ...user, starredBoardIds: starredIds })
     }
 
-    async function onLabelAction(action, label, task) {
-        if (action === "edit") {
-            editLabel(board.id, label)
-        }
-        if (action === "delete") {
-            deleteLabel(board.id, label.id)
-        }
-        if (action === "create") {
-            createLabel(board.id, task, label)
-        }
-    }
-
-    async function editBoard(changes) {
-        await updateBoard({ ...board, ...changes })
-    }
-
-    function onDragStart(result) {
+    function onDragStart(result: any) {
         setIsDraggingOverId(null)
         if (result?.source?.droppableId !== "board") {
             setIsDraggingOverId(result?.source?.droppableId)
         }
     }
 
-    function onDragUpdate(result) {
+    function onDragUpdate(result: any) {
         if (result?.destination?.droppableId !== "board") {
             setIsDraggingOverId(result?.destination?.droppableId)
         }
     }
 
-    async function onDragEnd(result) {
+    async function onDragEnd(result: any) {
         setIsDraggingOverId(null)
         const { destination, source, draggableId, type } = result
         if (!destination) {
@@ -199,6 +125,7 @@ export function BoardIndex() {
             return
         }
 
+        if (!board) return
         if (type === "group") {
             const dragGroupEvent = {
                 boardId: board.id,
@@ -208,6 +135,7 @@ export function BoardIndex() {
             }
             await dragGroup(dragGroupEvent, board)
         } else if (type === "task") {
+            if (!user) return
             const dragTaskEvent = {
                 boardId: board.id,
                 sourceGroupId: source.droppableId,
@@ -242,17 +170,43 @@ export function BoardIndex() {
                         droppableId="board"
                         direction="horizontal"
                         type="group"
-                        className="droppable-board"
                     >
                         {(provided) => (
                             <main
                                 className="board-groups"
                                 ref={(el) => {
                                     provided.innerRef(el)
-                                    scrollContainerRef.current = el
+                                    if (el instanceof HTMLDivElement) {
+                                        scrollContainerRef.current = el
+                                    }
                                 }}
                                 {...provided.droppableProps}
-                                {...handlers}
+                                onMouseDown={(
+                                    e: React.MouseEvent<HTMLElement>
+                                ) => {
+                                    // Handle mouse down
+                                    handlers.onMouseDown(e.nativeEvent)
+                                }}
+                                onMouseMove={(
+                                    e: React.MouseEvent<HTMLElement>
+                                ) => {
+                                    // Handle mouse move
+                                    handlers.onMouseMove(e.nativeEvent)
+                                }}
+                                onMouseLeave={() => {
+                                    // Handle mouse leave
+                                    handlers.onMouseLeave()
+                                }}
+                                onMouseUp={() => {
+                                    // Handle mouse up
+                                    handlers.onMouseUp()
+                                }}
+                                // Separate handler for drag events if needed
+                                onDragOver={(
+                                    e: React.DragEvent<HTMLElement>
+                                ) => {
+                                    e.preventDefault()
+                                }}
                             >
                                 {board.groups
                                     .filter((g) => !g.closed)
@@ -260,19 +214,6 @@ export function BoardIndex() {
                                         <BoardGroup
                                             key={group.id}
                                             group={group}
-                                            addTask={onAddTask}
-                                            archiveGroup={() =>
-                                                onArchiveGroup(
-                                                    board.id,
-                                                    group.id
-                                                )
-                                            }
-                                            editGroup={onEditGroup}
-                                            editTask={onEditTask}
-                                            copyGroup={onCopyGroup}
-                                            moveAllCards={moveAllCards}
-                                            archiveAllCards={archiveAllCards}
-                                            labelActions={onLabelAction}
                                             isDraggingOverId={isDraggingOverId}
                                         />
                                     ))}
@@ -286,13 +227,7 @@ export function BoardIndex() {
             {selectedTaskId && (
                 <TaskDetailsModal
                     taskId={selectedTaskId}
-                    editTask={onEditTask}
-                    onCloseTask={() => setSelectedTaskId(null)}
-                    labelActions={onLabelAction}
-                    board={board}
-                    editBoard={editBoard}
-                    closeTask={() => setSelectedTaskId(null)}
-                    addTask={addTask}
+                    onCloseTask={() => setSelectedTaskId("")}
                 />
             )}
         </section>

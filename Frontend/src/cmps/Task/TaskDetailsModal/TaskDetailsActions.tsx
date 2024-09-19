@@ -3,20 +3,42 @@ import defaultProfile from "/img/defaultProfile.svg"
 import checkListIcon from "/img/board-index/detailsImgs/checkListIcon.svg"
 
 import { MoveCardPopover } from "../ManageTaskPopovers/MoveCardPopover"
-import { updateBoard } from "../../../store/actions/board.actions"
+import { editTask, updateBoard } from "../../../store/actions/board.actions"
 import { useSelector } from "react-redux"
 import { ActionPopover } from "../../BoardHeader/BoardMenu/ActionPopover"
 import { useNavigate } from "react-router"
 import { utilService } from "../../../services/util.service"
+import { Task } from "../../../models/task&groups.models"
+import { RootState } from "../../../store/store"
+import {
+    ArchiveTaskActivity,
+    UnArchiveActivity,
+} from "../../../models/activities.models"
 
-export function TaskDetailsActions({ task, editTask, onClose }) {
-    const board = useSelector((state) => state.boardModule.board)
-    const user = useSelector((state) => state.userModule.user)
+interface TaskDetailsActionsProps {
+    task?: Task
+}
+
+export function TaskDetailsActions({ task }: TaskDetailsActionsProps) {
+    const board = useSelector((state: RootState) => state.boardModule.board)
+    const user = useSelector((state: RootState) => state.userModule.user)
     const navigate = useNavigate()
     function onArchiveTask() {
-        editTask({ ...task, closed: true })
+        if (!user || !task) return
+        const newActivity = utilService.createActivity(
+            {
+                type: "archiveTask",
+                targetId: task.id,
+                targetName: task.name,
+            },
+            user
+        ) as ArchiveTaskActivity
+        if (task) {
+            editTask({ ...task, closed: true }, newActivity)
+        }
     }
     async function onSendBack() {
+        if (!task || !board || !user) return
         const newActivity = utilService.createActivity(
             {
                 type: "unArchive",
@@ -24,7 +46,7 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
                 targetName: task.name,
             },
             user
-        )
+        ) as UnArchiveActivity
         task.closed = false
         await updateBoard({
             ...board,
@@ -42,11 +64,15 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
         })
     }
     async function onDeleteTask() {
+        if (!board || !task) return
         const newBoard = {
             ...board,
             groups: board.groups.map((g) =>
                 g.id === task.idGroup
-                    ? { ...g, tasks: g.tasks.filter((t) => t.id !== task.id) }
+                    ? {
+                          ...g,
+                          tasks: g.tasks.filter((t) => t.id !== task.id),
+                      }
                     : g
             ),
         }
@@ -60,7 +86,6 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
             popover: (
                 <MoveCardPopover
                     task={task}
-                    onCloseTask={onClose}
                     anchorEl={
                         <button className="details-anchor-btn">
                             <label className="pyello-icon icon-move " />
@@ -73,7 +98,7 @@ export function TaskDetailsActions({ task, editTask, onClose }) {
         { svg: labelIcon, text: "Copy" },
         { svg: checkListIcon, text: "Make template" },
         {
-            popover: task.closed ? (
+            popover: task?.closed ? (
                 <>
                     <button className="details-anchor-btn" onClick={onSendBack}>
                         <label className="pyello-icon icon-refresh " />

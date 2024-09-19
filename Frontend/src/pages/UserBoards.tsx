@@ -5,13 +5,16 @@ import { ReactSVG } from "react-svg"
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { AddBoardPopover } from "../cmps/Workspace/AddBoardPopover"
-import { createBoard } from "../store/actions/workspace.actions"
 import { editUser } from "../store/actions/user.actions"
 import { ArchiveModal } from "../cmps/UserBoards/ArchiveModal"
-import { SvgButton } from "../cmps/CustomCpms/SvgButton"
+import { RootState } from "../store/store"
+import { Board } from "../models/board.models"
+
 export function UserBoards() {
-    const user = useSelector((state) => state.userModule.user)
-    const boards = useSelector((state) => state.workspaceModule.boards)
+    const user = useSelector((state: RootState) => state.userModule.user)
+    const boards = useSelector(
+        (state: RootState) => state.workspaceModule.boards
+    )
     const [isOpenModal, setIsOpenModal] = useState(false)
     const params = useParams()
     const navigate = useNavigate()
@@ -22,17 +25,13 @@ export function UserBoards() {
         }
     }, [user, params])
 
-    function onStarClick(boardId) {
+    function onStarClick(boardId: string) {
+        if (!user) return
         const isStarred = user.starredBoardIds.includes(boardId)
         const starredBoardIds = isStarred
             ? user.starredBoardIds.filter((id) => id !== boardId)
             : [...user.starredBoardIds, boardId]
         editUser({ ...user, starredBoardIds })
-    }
-
-    async function onAddBoard(board) {
-        const boardId = await createBoard(board)
-        navigate(`/b/${boardId}`)
     }
 
     if (!user) return null
@@ -48,7 +47,7 @@ export function UserBoards() {
                     <article className="section-content">
                         {boards
                             ?.filter((board) =>
-                                user?.starredBoardIds.includes(board.id)
+                                user?.starredBoardIds.includes(board?.id!)
                             )
                             .map((board) => (
                                 <BoardTab
@@ -113,17 +112,18 @@ export function UserBoards() {
                                 />
                             ))}
                         <AddBoardPopover
-                            onAddBoard={onAddBoard}
-                            placement="right-end"
+                            placement="rightBottom"
                             anchorEl={
                                 <article className="board-tab-add-in-workspace">
                                     <p className="board-tab-add-title">
                                         Create new board
                                     </p>
                                     <p className="board-tab-add-subtitle">
-                                        {10 -
-                                            boards?.filter((b) => !b.closed)
-                                                .length}{" "}
+                                        {boards
+                                            ? 10 -
+                                              boards.filter((b) => !b.closed)
+                                                  .length
+                                            : 10}{" "}
                                         remaining
                                     </p>
                                 </article>
@@ -134,7 +134,7 @@ export function UserBoards() {
                 <section className="bottom">
                     <button
                         className="btn"
-                        disabled={!boards?.filter((b) => b.closed).length > 0}
+                        disabled={boards?.some((b) => b.closed) === false}
                         onClick={() => setIsOpenModal(true)}
                     >
                         View all closed boards
@@ -147,11 +147,15 @@ export function UserBoards() {
         </section>
     )
 }
-
-const BoardTab = ({ board, starredBoardIds, starClick }) => {
+interface BoardTabProps {
+    board?: Board
+    starredBoardIds: string[]
+    starClick: (id: string) => void
+}
+const BoardTab = ({ board, starredBoardIds, starClick }: BoardTabProps) => {
     const navigate = useNavigate()
     const [isHover, setIsHover] = useState(false)
-    const isStarred = starredBoardIds?.includes(board.id)
+    const isStarred = starredBoardIds?.includes(board?.id!)
     return (
         <article
             className="board-tab"
@@ -164,26 +168,17 @@ const BoardTab = ({ board, starredBoardIds, starClick }) => {
             }}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
-            onClick={() => navigate(`/b/${board.id}`)}
+            onClick={() => navigate(`/b/${board?.id}`)}
         >
             <span className="tab-bg" />
-            <h2 className="board-title">{board.name}</h2>
+            <h2 className="board-title">{board?.name}</h2>
             {(isHover || isStarred) && (
                 <StarBoardBtn
                     starredBoardIds={starredBoardIds}
-                    boardId={board.id}
+                    boardId={board?.id}
                     starClick={starClick}
                 />
             )}
-        </article>
-    )
-}
-
-const AddBoardBtn = ({ onAddBoard }) => {
-    return (
-        <article className="board-tab-add">
-            <p>Create new board</p>
-            <p>{10 - boards.length} remaining</p>
         </article>
     )
 }

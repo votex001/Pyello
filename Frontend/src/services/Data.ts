@@ -826,7 +826,25 @@ export const boardLabelColorOptions: LabelColorOption[] = [
     },
 ]
 
-export const taskCoverImgs = [
+interface scaledImgs {
+    id: string
+    scaled: boolean
+    url: string
+    bytes: number
+    height: number
+    width: number
+    _id?: undefined
+}
+
+export interface taskCoverImgs {
+    bg: string
+    fontColor: string
+    id: string
+    photographer: string
+    scaledImgs: scaledImgs[]
+    brightness: string
+}
+export const taskCoverImgs: taskCoverImgs[] = [
     {
         bg: "#f2a912",
         fontColor: "#fff",
@@ -843,7 +861,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dcb2ec30a8857a4466d7",
-                _id: "6684dcb2ec30a8857a4466d7",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x171/6d7f2d57ebfce6e57a63f9cacc470bb6/photo-1719329411191-be2cda36a37c.webp",
                 bytes: 8914,
@@ -852,7 +869,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dcb2ec30a8857a4466d8",
-                _id: "6684dcb2ec30a8857a4466d8",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/6d7f2d57ebfce6e57a63f9cacc470bb6/photo-1719329411191-be2cda36a37c.webp",
                 bytes: 20338,
@@ -870,7 +886,7 @@ export const taskCoverImgs = [
         scaledImgs: [
             {
                 id: "6684dcc62182ea43e6103e60",
-                _id: "6684dcc62182ea43e6103e60",
+
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x93/0f86a0bbb044d2bfc21f224456f2044a/photo-1719328555718-90eb4fac3e31.webp",
                 bytes: 2470,
@@ -879,7 +895,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dcc62182ea43e6103e61",
-                _id: "6684dcc62182ea43e6103e61",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x171/0f86a0bbb044d2bfc21f224456f2044a/photo-1719328555718-90eb4fac3e31.webp",
                 bytes: 6980,
@@ -888,7 +903,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dcc62182ea43e6103e62",
-                _id: "6684dcc62182ea43e6103e62",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/0f86a0bbb044d2bfc21f224456f2044a/photo-1719328555718-90eb4fac3e31.webp",
                 bytes: 21922,
@@ -906,7 +920,6 @@ export const taskCoverImgs = [
         scaledImgs: [
             {
                 id: "6684dd435af9199cb6283700",
-                _id: "6684dd435af9199cb6283700",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/67x100/753af4c32d1d87db146413e85ab15ece/photo-1719844841024-3c7166816fc7.webp",
                 bytes: 1104,
@@ -915,7 +928,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dd435af9199cb6283701",
-                _id: "6684dd435af9199cb6283701",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/128x192/753af4c32d1d87db146413e85ab15ece/photo-1719844841024-3c7166816fc7.webp",
                 bytes: 2946,
@@ -924,7 +936,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dd435af9199cb6283702",
-                _id: "6684dd435af9199cb6283702",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/320x480/753af4c32d1d87db146413e85ab15ece/photo-1719844841024-3c7166816fc7.webp",
                 bytes: 13346,
@@ -942,7 +953,6 @@ export const taskCoverImgs = [
         scaledImgs: [
             {
                 id: "6684dcba9bd9eadcbe170caa",
-                _id: "6684dcba9bd9eadcbe170caa",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x93/45fe2b2cb99b9307e941023890f4fe2f/photo-1719217469234-bb53c12ed515.webp",
                 bytes: 1472,
@@ -951,7 +961,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dcba9bd9eadcbe170cab",
-                _id: "6684dcba9bd9eadcbe170cab",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x171/45fe2b2cb99b9307e941023890f4fe2f/photo-1719217469234-bb53c12ed515.webp",
                 bytes: 3522,
@@ -960,7 +969,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dcba9bd9eadcbe170cac",
-                _id: "6684dcba9bd9eadcbe170cac",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x320/45fe2b2cb99b9307e941023890f4fe2f/photo-1719217469234-bb53c12ed515.webp",
                 bytes: 9048,
@@ -978,7 +986,6 @@ export const taskCoverImgs = [
         scaledImgs: [
             {
                 id: "6684dd0c0378ec4fd5affe96",
-                _id: "6684dd0c0378ec4fd5affe96",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/140x79/c1e752f0947b58d7bf9cd82cd2855e0f/photo-1719357101152-32d926e518d4.webp",
                 bytes: 1994,
@@ -987,7 +994,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dd0c0378ec4fd5affe97",
-                _id: "6684dd0c0378ec4fd5affe97",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/256x144/c1e752f0947b58d7bf9cd82cd2855e0f/photo-1719357101152-32d926e518d4.webp",
                 bytes: 5474,
@@ -996,7 +1002,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dd0c0378ec4fd5affe98",
-                _id: "6684dd0c0378ec4fd5affe98",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/480x270/c1e752f0947b58d7bf9cd82cd2855e0f/photo-1719357101152-32d926e518d4.webp",
                 bytes: 17200,
@@ -1014,7 +1019,6 @@ export const taskCoverImgs = [
         scaledImgs: [
             {
                 id: "6684dd1343b8a9a9a6298b97",
-                _id: "6684dd1343b8a9a9a6298b97",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/67x100/f09c338fecffe282c5311ee0c4dccd76/photo-1719216324560-523fc4ddb8b9.webp",
                 bytes: 1230,
@@ -1023,7 +1027,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dd1343b8a9a9a6298b98",
-                _id: "6684dd1343b8a9a9a6298b98",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/128x192/f09c338fecffe282c5311ee0c4dccd76/photo-1719216324560-523fc4ddb8b9.webp",
                 bytes: 3350,
@@ -1032,7 +1035,6 @@ export const taskCoverImgs = [
             },
             {
                 id: "6684dd1343b8a9a9a6298b99",
-                _id: "6684dd1343b8a9a9a6298b99",
                 scaled: true,
                 url: "https://trello-backgrounds.s3.amazonaws.com/SharedBackground/320x480/f09c338fecffe282c5311ee0c4dccd76/photo-1719216324560-523fc4ddb8b9.webp",
                 bytes: 17352,

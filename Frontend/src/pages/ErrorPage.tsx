@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux"
+import { RootState } from "../store/store"
 
 export function ErrorPage({ wrongUrl = false }) {
-    const user = useSelector((state) => state.userModule.user)
+    const user = useSelector((state: RootState) => state.userModule.user)
     return (
         <div
             style={{

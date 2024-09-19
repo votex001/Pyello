@@ -14,21 +14,10 @@ import { addTask } from "../../store/actions/board.actions"
 
 interface BoardGroupProps {
     group?: Group
-    archiveGroup: () => void
-    copyGroup: () => void
-    moveAllCards: () => void
-    archiveAllCards: () => void
     isDraggingOverId: string | null
 }
 
-export function BoardGroup({
-    group,
-    archiveGroup,
-    copyGroup,
-    moveAllCards,
-    archiveAllCards,
-    isDraggingOverId,
-}: BoardGroupProps) {
+export function BoardGroup({ group, isDraggingOverId }: BoardGroupProps) {
     const [newTasksAboveInput, setNewTasksAboveInput] = useState<Task[]>([])
     const [sortedTasks, setSortedTasks] = useState<Task[]>([])
     const [isTopAddTaskOpen, setIsTopAddTaskOpen] = useState<boolean>(false)
@@ -159,10 +148,6 @@ export function BoardGroup({
                                 draggableProvided={draggableProvided}
                                 group={group}
                                 openAddTask={openTopAddTask}
-                                archiveGroup={archiveGroup}
-                                copyGroup={copyGroup}
-                                moveAllCards={moveAllCards}
-                                archiveAllCards={archiveAllCards}
                             />
                             <Droppable droppableId={group.id} type="task">
                                 {(droppableProvided, snapshot) => (
