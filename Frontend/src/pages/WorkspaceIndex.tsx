@@ -9,7 +9,6 @@ import {
     viewBoard,
 } from "../store/actions/board.actions"
 import { login, editUser } from "../store/actions/user.actions"
-import { createBoard } from "../store/actions/workspace.actions"
 import { useSelector } from "react-redux"
 import {
     setBoards,
@@ -22,7 +21,6 @@ import { ErrorPage } from "./ErrorPage"
 import { socketService } from "../services/socket.service"
 import { setSessionStorage, getSessionStorage } from "../services/local.service"
 import { RootState } from "../store/store"
-import { Board } from "../models/board.models"
 import { CloseBoardActivity } from "../models/activities.models"
 
 export function WorkspaceIndex() {
@@ -192,11 +190,6 @@ export function WorkspaceIndex() {
             ? user.starredBoardIds.filter((id) => id !== boardId)
             : [...user.starredBoardIds, boardId]
         editUser({ ...user, starredBoardIds })
-    }
-
-    async function onAddBoard(board: Board) {
-        const boardId = await createBoard(board)
-        navigate(`/b/${boardId}`)
     }
 
     function onCloseBoard(boardId: string) {
